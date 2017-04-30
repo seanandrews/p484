@@ -1,0 +1,1 @@
+This is a slightly modified copy of radmc3dPy by Attila Juhasz. The original code is publicly available but the licensing is vague, so the modified code is being maintained here in a private repository for personal use. There is some renaming to avoid conflict with importing the original copy of radmc3dPy. 
