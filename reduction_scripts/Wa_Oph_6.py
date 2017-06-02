@@ -113,7 +113,6 @@ SB1_contms_p1 = field+'_'+tag+'_contp1.ms'
 os.system('rm -rf '+SB1_contms_p1)
 split2(vis=SB1_initcont, outputvis=SB1_contms_p1, datacolumn='corrected')
 
-# Clean after first phase-cal
 
 SB1_contimage_p1 = field+'_'+tag+'_p1continuum'
 os.system('rm -rf '+SB1_contimage_p1+'.*')
@@ -133,6 +132,83 @@ clean(vis=SB1_contms_p1,
 
 # cleaned for two cycles of 100 iterations each
 # peak: 41.1 mJy/beam
-# rms: 50 microJy/beam 
+# rms: 50 microJy/beam
+
+# Second phase self-cal 
+
+SB1_p2 = field+'_'+tag+'.p2'
+os.system('rm -rf '+SB1_p2)
+gaincal(vis=SB1_contms_p1, caltable=SB1_p2, gaintype='T',  
+        spw=contspws, refant=SB1refant, calmode='p', 
+        solint='int', minsnr=2.0, minblperant=4)
+
+plotcal(caltable=SB1_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna')
+
+applycal(vis=SB1_contms_p1, spw=contspws, gaintable=[SB1_p2], calwt=T, flagbackup=F)
+
+SB1_contms_p2 = field+'_'+tag+'_contp2.ms'
+os.system('rm -rf '+SB1_contms_p2)
+split2(vis=SB1_contms_p1, outputvis=SB1_contms_p2, datacolumn='corrected')
+
+SB1_contimage_p2 = field+'_'+tag+'_p2continuum'
+os.system('rm -rf '+SB1_contimage_p2+'.*')
+clean(vis=SB1_contms_p2, 
+      imagename=SB1_contimage_p2, 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      multiscale = [0, 10, 30, 50], # this is really up to the user. The choices here matter less than they do for the extended data. 
+      robust=0.5,
+      gain = 0.3,
+      imsize=500,
+      cell='0.03arcsec', 
+      mask='circle[[258pix,238pix],1.25arcsec]',
+      interactive=True)
+
+# cleaned for two cycles of 100 iterations each
+# peak: 41.1 mJy/beam
+# rms: 46 microJy/beam
+
+# improvement in rms is small, so we move on to amplitude self-cal
+
+SB1_ap1 = field+'_'+tag+'.ap1'
+os.system('rm -rf '+SB1_ap1)
+gaincal(vis=SB1_contms_p2, caltable=SB1_ap1, gaintype='T',  
+        spw=contspws, refant=SB1refant, calmode='ap', 
+        solint='60s', minsnr=2.0, minblperant=4, solnorm = True)
+
+plotcal(caltable=SB1_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna')
+
+applycal(vis=SB1_contms_p2, spw=contspws, gaintable=[SB1_ap1], calwt=T, flagbackup=F)
+
+SB1_contms_ap1 = field+'_'+tag+'_contap1.ms'
+os.system('rm -rf '+SB1_contms_ap1)
+split2(vis=SB1_contms_p2, outputvis=SB1_contms_ap1, datacolumn='corrected')
+
+SB1_contimage_ap1 = field+'_'+tag+'_ap1continuum'
+os.system('rm -rf '+SB1_contimage_ap1+'.*')
+clean(vis=SB1_contms_ap1, 
+      imagename=SB1_contimage_ap1, 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      multiscale = [0, 10, 30, 50], # this is really up to the user. The choices here matter less than they do for the extended data. 
+      robust=0.5,
+      gain = 0.3,
+      imsize=500,
+      cell='0.03arcsec', 
+      mask='circle[[258pix,238pix],1.25arcsec]',
+      interactive=True)
+
+# cleaned for two cycles of 100 iterations each
+# peak: 41.1 mJy/beam
+# rms: 43 microJy/beam
+
+### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
+SB1_contms_final = field+'_'+tag+'_contfinal.ms'
+os.system('mv '+SB1_contms_ap1+' '+SB1_contms_final)
+
 
 
