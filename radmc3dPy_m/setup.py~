@@ -202,7 +202,7 @@ def problemSetupDust(model='', binary=True, writeDustTemp=False, old=False, dfun
         mdl = __import__(model)
     except:
         try:
-            mdl  = __import__('radmc3dPy_m.models.'+model, fromlist=['']) 
+            mdl  = __import__('radmc3dPy.models.'+model, fromlist=['']) 
         except:
             print 'ERROR'
             print ' '+model+'.py could not be imported'
@@ -507,7 +507,7 @@ def problemSetupGas(model='', fullsetup=False, binary=True,  writeGasTemp=False,
         mdl = __import__(model)
     except:
         try:
-            mdl  = __import__('radmc3dPy_m.models.'+model, fromlist=['']) 
+            mdl  = __import__('radmc3dPy.models.'+model, fromlist=['']) 
         except:
             print 'ERROR'
             print ' '+model+'.py could not be imported'
@@ -932,7 +932,7 @@ def validateModel(model='', dustModel=False, gasModel=False, writeDustTemp=False
         mdl = __import__(model)
     except:
         try:
-            mdl  = __import__('radmc3dPy_m.models.'+model, fromlist=['']) 
+            mdl  = __import__('radmc3dPy.models.'+model, fromlist=['']) 
         except:
             print 'ERROR'
             print ' '+model+'.py could not be imported'

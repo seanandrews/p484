@@ -292,8 +292,6 @@ class radmc3dImage(object):
         stokes       : {'I', 'Q', 'U', 'V', 'PI'}
                        Stokes parameter to be written if the image contains Stokes IQUV (possible 
                        choices: 'I', 'Q', 'U', 'V', 'PI' -Latter being the polarized intensity)
-
-        single       : If True, write as single precision rather than double precision
         
         fitsheadkeys : dictionary
                         Dictionary containing all (extra) keywords to be added to the fits header. If 

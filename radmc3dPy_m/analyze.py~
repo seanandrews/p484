@@ -807,7 +807,7 @@ class radmc3dOctree(object):
             self.model = __import__(model)
         except:
             try:
-                self.model  = __import__('radmc3dPy_m.models.'+model, fromlist=['']) 
+                self.model  = __import__('radmc3dPy.models.'+model, fromlist=['']) 
             except:
                 print 'ERROR'
                 print ' '+model+'.py could not be imported'
@@ -6421,7 +6421,7 @@ class radmc3dPar(object):
                 mdl = __import__(model)
             except:
                 try:
-                    mdl  = __import__('radmc3dPy_m.models.'+model, fromlist=['']) 
+                    mdl  = __import__('radmc3dPy.models.'+model, fromlist=['']) 
                 except:
                     print 'ERROR'
                     print ' '+model+'.py could not be imported'
