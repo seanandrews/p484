@@ -217,7 +217,6 @@ os.system('cp -r '+SB1_contms_ap1+' '+SB1_contms_final)
 #############################
 
 #split out the CO 2-1 spectral window
-# Average the channels within spws
 linespw = '0'
 SB1_CO_ms = '/pool/firebolt1/LPscratch/Wa_Oph_6/'+field+'_'+tag+'_CO21.ms'
 os.system('rm -rf ' + SB1_CO_ms + '*')
