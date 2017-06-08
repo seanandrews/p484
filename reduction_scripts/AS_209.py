@@ -3,7 +3,7 @@ This script is written for CASA 4.5.3
 Note that the imaging algorithms were rewritten significantly between CASA 4.5.3 and CASA 4.7.2 
 """
 
-field = 'Wa_Oph_6'
+field = 'AS_209'
 
 ##################################################################
 ##################################################################
@@ -30,12 +30,12 @@ contspws = '0~3'
 flagmanager(vis=SB1,mode='save', versionname='before_cont_flags')
 
 # Flag the CO 2-1 line
-flagchannels='0:1870~2000' 
+flagchannels='0:1890~1960' 
 
 flagdata(vis=SB1,mode='manual', spw=flagchannels, flagbackup=False, field = field)
 
 # Average the channels within spws
-SB1_initcont = field+'_'+tag+'_initcont.ms'
+SB1_initcont = '/pool/firebolt1/LPscratch/AS_209/'+field+'_'+tag+'_initcont.ms'
 print SB1_initcont #just to double check for yourself that the name is actually ok
 os.system('rm -rf ' + SB1_initcont + '*')
 split2(vis=SB1,
@@ -59,14 +59,16 @@ plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'phase', field = field,
        ydatacolumn = 'data',avgchannel = '16', 
        coloraxis = 'spw', iteraxis = 'antenna')
 
+flagdata(vis=SB1_initcont,mode='manual', spw='2', flagbackup=False, field = field, scan = '29', antenna = 'DV15')
+
 plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
        ydatacolumn = 'data',avgchannel = '16', 
        coloraxis = 'spw', iteraxis = 'antenna')
-# As noted in the README, SPW 1 does not seem as well-behaved as the other SPWs. We'll see how self-cal does. 
+# As noted in the README from NAASC, SPW 1 does not seem as well-behaved as the other SPWs. We'll see how self-cal does. 
 
 # Create dirty image 
 SB1_initcontimage_dirty = field+'_'+tag+'_initcontinuum_dirty'
-os.system('rm -rf '+SB1_initcontimage+'.*')
+os.system('rm -rf '+SB1_initcontimage_dirty+'.*')
 clean(vis=SB1_initcont, 
       imagename=SB1_initcontimage_dirty, 
       mode='mfs', 
@@ -93,11 +95,11 @@ clean(vis=SB1_initcont,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[258pix,238pix],1.25arcsec]',
+      mask='circle[[250pix,250pix],1.4arcsec]',
       interactive=True)
 
-# cleaned for 1 cycle (100 iterations)
-# peak: 39.3 mJy/beam
+# cleaned for 3 cycles (100 iterations each)
+# peak: 27.5 mJy/beam
 # rms: 0.15 mJy/beam
 
 # First phase-self-cal
@@ -105,7 +107,7 @@ SB1_p1 = field+'_'+tag+'.p1'
 os.system('rm -rf '+SB1_p1)
 gaincal(vis=SB1_initcont, caltable=SB1_p1, gaintype='T',  
         spw=contspws, refant=SB1refant, calmode='p', 
-        solint='int', minsnr=2.0, minblperant=4)
+        solint='30s', minsnr=2.0, minblperant=4)
 
 plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna')
 
@@ -129,12 +131,12 @@ clean(vis=SB1_contms_p1,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[258pix,238pix],1.25arcsec]',
+      mask='circle[[250pix,250pix],1.4arcsec]',
       interactive=True)
 
-# cleaned for two cycles of 100 iterations each
-# peak: 41.1 mJy/beam
-# rms: 50 microJy/beam
+# cleaned for 6 cycles of 100 iterations each
+# peak: 28.2 mJy/beam
+# rms: 52 microJy/beam
 
 # Second phase self-cal 
 
@@ -142,7 +144,7 @@ SB1_p2 = field+'_'+tag+'.p2'
 os.system('rm -rf '+SB1_p2)
 gaincal(vis=SB1_contms_p1, caltable=SB1_p2, gaintype='T',  
         spw=contspws, refant=SB1refant, calmode='p', 
-        solint='int', minsnr=2.0, minblperant=4)
+        solint='15s', minsnr=2.0, minblperant=4)
 
 plotcal(caltable=SB1_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna')
 
@@ -165,12 +167,13 @@ clean(vis=SB1_contms_p2,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[258pix,238pix],1.25arcsec]',
+      mask='circle[[250pix,250pix],1.4arcsec]',
       interactive=True)
 
-# cleaned for two cycles of 100 iterations each
-# peak: 41.1 mJy/beam
-# rms: 46 microJy/beam
+# cleaned for 7 cycles of 100 iterations each
+# peak: 28.3 mJy/beam
+# rms: 49 microJy/beam
+
 
 # improvement in rms is small, so we move on to amplitude self-cal
 
@@ -201,12 +204,12 @@ clean(vis=SB1_contms_ap1,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[258pix,238pix],1.25arcsec]',
+      mask='circle[[250pix,250pix],1.4arcsec]',
       interactive=True)
 
-# cleaned for two cycles of 100 iterations each
-# peak: 41.1 mJy/beam
-# rms: 43 microJy/beam
+# cleaned for 7 cycles of 100 iterations each
+# peak: 28.2 mJy/beam
+# rms: 47 microJy/beam
 
 ### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
 SB1_contms_final = field+'_'+tag+'_contfinal.ms'
@@ -218,7 +221,7 @@ os.system('cp -r '+SB1_contms_ap1+' '+SB1_contms_final)
 
 #split out the CO 2-1 spectral window
 linespw = '0'
-SB1_CO_ms = '/pool/firebolt1/LPscratch/Wa_Oph_6/'+field+'_'+tag+'_CO21.ms'
+SB1_CO_ms = '/pool/firebolt1/LPscratch/AS_209/'+field+'_'+tag+'_CO21.ms'
 os.system('rm -rf ' + SB1_CO_ms + '*')
 split2(vis=SB1,
        field = field,
@@ -230,7 +233,7 @@ applycal(vis=SB1_CO_ms, spw='0', gaintable=[SB1_p1, SB1_p2, SB1_ap1], calwt=T, f
 
 SB1_CO_mscontsub = SB1_CO_ms+'.contsub'
 os.system('rm -rf '+SB1_CO_mscontsub) 
-fitspw = '0:0~1870;2000~3839' # channels for fitting continuum
+fitspw = '0:0~1890;1950~3839' # channels for fitting continuum
 uvcontsub(vis=SB1_CO_ms,
           spw=linespw, 
           fitspw=fitspw, 
@@ -240,34 +243,40 @@ uvcontsub(vis=SB1_CO_ms,
           want_cont=False) 
 
 plotms(vis = SB1_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field, 
-       ydatacolumn = 'data',avgtime = '1.e8',avgbaseline = True)
+       ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
 
 SB1_CO_mscontsubsplit = SB1_CO_mscontsub+'.split'
 #split out line channels for faster imaging
 os.system('rm -rf ' + SB1_CO_mscontsubsplit + '*')
 split2(vis=SB1_CO_mscontsub,
        field = field,
-       spw='0:1870~2000',      
+       spw='0:1890~1950',      
        outputvis=SB1_CO_mscontsubsplit, 
        datacolumn='data')
 
 plotms(vis = SB1_CO_mscontsubsplit, xaxis = 'channel', yaxis = 'amp', field = field, 
        ydatacolumn = 'data',avgtime = '1.e8',avgbaseline = True)
 
+
+CO_cvel = SB1_CO_mscontsub+'.cvel'
+
+os.system('rm -rf '+ CO_cvel)
+mstransform(vis = SB1_CO_mscontsubsplit, outputvis = CO_cvel,  keepflags = False,datacolumn = 'data', regridms = True,mode='velocity',start='-4.39km/s',width='0.635km/s',nchan=30, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
 SB1_CO_image = field+'_'+tag+'_CO21cube'
 os.system('rm -rf '+SB1_CO_image+'.*')
-clean(vis=SB1_CO_mscontsubsplit, 
+clean(vis=CO_cvel, 
       imagename=SB1_CO_image,
       mode = 'velocity',
       psfmode = 'clark',  
       imagermode='csclean',
       weighting = 'briggs',
-      multiscale = [0, 10, 30, 50, 100],
+      multiscale = [0, 10, 30, 50],
       robust = 1.0,
       gain = 0.3, 
       imsize = 500,
       cell = '0.03arcsec',
-      start='-5.2km/s',
+      start='-4.39km/s',
       width='0.635km/s',
       nchan=30, 
       outframe='LSRK', 
@@ -277,6 +286,32 @@ clean(vis=SB1_CO_mscontsubsplit,
       cyclefactor = 1, 
       threshold = '10mJy',
       interactive=True) 
+
+SB1_CO_image2 = field+'_'+tag+'_CO21cube_test2'
+os.system('rm -rf '+SB1_CO_image2+'.*')
+clean(vis= SB1_CO_mscontsubsplit, 
+      imagename=SB1_CO_image2,
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50],
+      robust = 1.0,
+      gain = 0.3, 
+      imsize = 500,
+      cell = '0.03arcsec',
+      start='-4.39km/s',
+      width='0.635km/s',
+      nchan=30, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '10mJy',
+      mask = SB1_CO_image+'.mask',
+      interactive=True) 
+
 
 
 
