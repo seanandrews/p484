@@ -35,7 +35,7 @@ flagchannels='0:1890~1960'
 flagdata(vis=SB1,mode='manual', spw=flagchannels, flagbackup=False, field = field)
 
 # Average the channels within spws
-SB1_initcont = '/pool/firebolt1/LPscratch/AS_209/'+field+'_'+tag+'_initcont.ms'
+SB1_initcont = field+'_'+tag+'_initcont.ms'
 print SB1_initcont #just to double check for yourself that the name is actually ok
 os.system('rm -rf ' + SB1_initcont + '*')
 split2(vis=SB1,
@@ -221,7 +221,7 @@ os.system('cp -r '+SB1_contms_ap1+' '+SB1_contms_final)
 
 #split out the CO 2-1 spectral window
 linespw = '0'
-SB1_CO_ms = '/pool/firebolt1/LPscratch/AS_209/'+field+'_'+tag+'_CO21.ms'
+SB1_CO_ms = field+'_'+tag+'_CO21.ms'
 os.system('rm -rf ' + SB1_CO_ms + '*')
 split2(vis=SB1,
        field = field,
