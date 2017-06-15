@@ -3,7 +3,7 @@ This script is written for CASA 4.5.3
 Note that the imaging algorithms were rewritten significantly between CASA 4.5.3 and CASA 4.7.2 
 """
 
-field = 'MY_Lup'
+field = 'GW_Lup'
 
 ##################################################################
 ##################################################################
@@ -39,7 +39,7 @@ contspws = '0~7'
 flagmanager(vis=SB1_field,mode='save', versionname='before_cont_flags')
 
 # Flag the CO 2-1 line
-flagchannels='0:1850~2000, 4:1850~2000' 
+flagchannels='0:1880~1960, 4:1880~1960' 
 
 flagdata(vis=SB1_field,mode='manual', spw=flagchannels, flagbackup=False, field = field)
 
@@ -126,25 +126,26 @@ clean(vis=SB1_initcont,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[252pix,253pix],0.9arcsec]',
+      mask='circle[[257pix,244pix],0.9arcsec]',
       interactive=True)
 
-# cleaned for 1 cycle (100 iterations)
-# peak: 24.3 mJy/beam
-# rms: 68 microJy/beam
+# cleaned for 2 cycles (200 iterations)
+# peak: 18.6 mJy/beam
+# rms: 63 microJy/beam
 
 # First phase-self-cal
 SB1_p1 = field+'_'+tag+'.p1'
 os.system('rm -rf '+SB1_p1)
-gaincal(vis=SB1_initcont, caltable=SB1_p1, gaintype='T', combine = 'spw', 
+gaincal(vis=SB1_initcont, caltable=SB1_p1, gaintype='T',  
         spw=contspws, refant=SB1refant, calmode='p', 
-        solint='20s', minsnr=2.0, minblperant=4)
+        solint='25s', minsnr=2.0, minblperant=4)
 
 plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2017/05/14/00:00:01~2017/05/14/11:59:59')
 
+
 plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2017/05/17/00:00:01~2017/05/17/11:59:59')
 
-applycal(vis=SB1_initcont, spw=contspws, spwmap = 8*[0], gaintable=[SB1_p1], calwt=T, flagbackup=F)
+applycal(vis=SB1_initcont, spw=contspws, gaintable=[SB1_p1], calwt=T, flagbackup=F)
 
 SB1_contms_p1 = field+'_'+tag+'_contp1.ms'
 os.system('rm -rf '+SB1_contms_p1)
@@ -164,18 +165,18 @@ clean(vis=SB1_contms_p1,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[252pix,253pix],0.9arcsec]',
+      mask='circle[[257pix,244pix],0.9arcsec]',
       interactive=True)
 
 # cleaned for 2 cycles with 100 iterations each
-# peak: 26.2 mJy/beam
-# rms: 38.9 microJy/beam
+# peak: 21.6 mJy/beam
+# rms: 33.6 microJy/beam
 
-# second round of phase self-cal didn't yield improvement, so we move on to amp self-cal 
+# Second round of phase cal hasn't been useful for the Lupus sources, so we move on to amplitude self-cal
 
 SB1_ap1 = field+'_'+tag+'.ap1'
 os.system('rm -rf '+SB1_ap1)
-gaincal(vis=SB1_contms_p1, caltable=SB1_ap1, gaintype='T', 
+gaincal(vis=SB1_contms_p1, caltable=SB1_ap1, gaintype='T',  
         spw=contspws, refant=SB1refant, calmode='ap', 
         solint='60s', minsnr=2.0, minblperant=4, solnorm = True)
 
@@ -202,12 +203,28 @@ clean(vis=SB1_contms_ap1,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[252pix,253pix],0.9arcsec]',
+      mask='circle[[257pix,244pix],0.9arcsec]',
       interactive=True)
 
 # cleaned for 2 cycles of 100 iterations each
-# peak: 26.2 mJy/beam
-# rms: 37.9 microJy/beam
+# peak: 21.6 mJy/beam
+# rms: 32.3 microJy/beam
+
+SB1_contimage_uniform = field+'_'+tag+'_uniform'
+os.system('rm -rf '+SB1_contimage_uniform+'.*')
+clean(vis=SB1_contms_ap1, 
+      imagename=SB1_contimage_uniform, 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      multiscale = [0, 10, 20, 30], # this is really up to the user. The choices here matter less than they do for the extended data. 
+      robust=-2,
+      gain = 0.1,
+      imsize=500,
+      cell='0.03arcsec', 
+      mask='circle[[257pix,244pix],0.9arcsec]',
+      interactive=True)
 
 ### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
 SB1_contms_final = field+'_'+tag+'_contfinal.ms'

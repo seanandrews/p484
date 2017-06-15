@@ -34,7 +34,7 @@ plotms(vis = SB1_field, xaxis = 'channel', yaxis = 'amplitude', field = field,
        avgbaseline = True, iteraxis = 'spw')
 
 
-# spws 0 and 4 contains the CO 2-1 line, while the other three are continuum SPWs
+# spws 0 and 4 contains the CO 2-1 line, while the other six are continuum SPWs
 contspws = '0~7'
 flagmanager(vis=SB1_field,mode='save', versionname='before_cont_flags')
 
