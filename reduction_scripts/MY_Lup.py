@@ -3,7 +3,7 @@ This script is written for CASA 4.5.3
 Note that the imaging algorithms were rewritten significantly between CASA 4.5.3 and CASA 4.7.2 
 """
 
-field = 'Sz_129'
+field = 'MY_Lup'
 
 ##################################################################
 ##################################################################
@@ -39,7 +39,7 @@ contspws = '0~7'
 flagmanager(vis=SB1_field,mode='save', versionname='before_cont_flags')
 
 # Flag the CO 2-1 line
-flagchannels='0:1880~1960, 4:1880~1960' 
+flagchannels='0:1850~2000, 4:1850~2000' 
 
 flagdata(vis=SB1_field,mode='manual', spw=flagchannels, flagbackup=False, field = field)
 
@@ -60,7 +60,7 @@ flagmanager(vis=SB1_field,mode='restore',
             versionname='before_cont_flags')
 
 # Check that amplitude vs. uvdist looks normal
-plotms(vis=SB1_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '30')
+plotms(vis=SB1_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '30', avgscan = True)
 
 # Inspect individual antennae. We do this step here rather than before splitting because plotms will load the averaged continuum much faster 
 
@@ -72,8 +72,6 @@ plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'phase', field = field,
 plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'phase', field = field, 
        ydatacolumn = 'data',avgchannel = '16', observation = '1',
        coloraxis = 'spw', iteraxis = 'antenna')
-#scan 107 seems iffy...check how it's dealt with in self-cal
-
 
 plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
        ydatacolumn = 'data',avgchannel = '16', observation = '0', 
@@ -128,26 +126,25 @@ clean(vis=SB1_initcont,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[253pix,246pix],0.8arcsec]',
+      mask='circle[[252pix,253pix],0.9arcsec]',
       interactive=True)
 
 # cleaned for 1 cycle (100 iterations)
-# peak: 23.0 mJy/beam
-# rms: 56 microJy/beam
+# peak: 24.3 mJy/beam
+# rms: 68 microJy/beam
 
 # First phase-self-cal
 SB1_p1 = field+'_'+tag+'.p1'
 os.system('rm -rf '+SB1_p1)
-gaincal(vis=SB1_initcont, caltable=SB1_p1, gaintype='T',  
+gaincal(vis=SB1_initcont, caltable=SB1_p1, gaintype='T', combine = 'spw', 
         spw=contspws, refant=SB1refant, calmode='p', 
-        solint='25s', minsnr=2.0, minblperant=4)
+        solint='20s', minsnr=2.0, minblperant=4)
 
 plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2017/05/14/00:00:01~2017/05/14/11:59:59')
 
-
 plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2017/05/17/00:00:01~2017/05/17/11:59:59')
 
-applycal(vis=SB1_initcont, spw=contspws, gaintable=[SB1_p1], calwt=T, flagbackup=F)
+applycal(vis=SB1_initcont, spw=contspws, spwmap = 8*[0], gaintable=[SB1_p1], calwt=T, flagbackup=F)
 
 SB1_contms_p1 = field+'_'+tag+'_contp1.ms'
 os.system('rm -rf '+SB1_contms_p1)
@@ -167,19 +164,18 @@ clean(vis=SB1_contms_p1,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[253pix,246pix],0.8arcsec]',
+      mask='circle[[252pix,253pix],0.9arcsec]',
       interactive=True)
 
 # cleaned for 2 cycles with 100 iterations each
-# peak: 24.7 mJy/beam
-# rms: 34.9 microJy/beam
+# peak: 26.2 mJy/beam
+# rms: 38.9 microJy/beam
 
-# Second round of phase cal didn't result in any noticeable improvement, so we move on to amplitude self-cal
-
+# second round of phase self-cal didn't yield improvement, so we move on to amp self-cal 
 
 SB1_ap1 = field+'_'+tag+'.ap1'
 os.system('rm -rf '+SB1_ap1)
-gaincal(vis=SB1_contms_p1, caltable=SB1_ap1, gaintype='T',  
+gaincal(vis=SB1_contms_p1, caltable=SB1_ap1, gaintype='T', 
         spw=contspws, refant=SB1refant, calmode='ap', 
         solint='60s', minsnr=2.0, minblperant=4, solnorm = True)
 
@@ -206,12 +202,12 @@ clean(vis=SB1_contms_ap1,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[253pix,246pix],0.8arcsec]',
+      mask='circle[[252pix,253pix],0.9arcsec]',
       interactive=True)
 
 # cleaned for 2 cycles of 100 iterations each
-# peak: 24.6 mJy/beam
-# rms: 33.9 microJy/beam
+# peak: 26.2 mJy/beam
+# rms: 37.9 microJy/beam
 
 ### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
 SB1_contms_final = field+'_'+tag+'_contfinal.ms'
