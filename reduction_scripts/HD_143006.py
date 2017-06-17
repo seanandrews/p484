@@ -1,22 +1,24 @@
 """
 This script is written for CASA 4.5.3
 Note that the imaging algorithms were rewritten significantly between CASA 4.5.3 and CASA 4.7.2 
+
+Datasets calibrated: 2016.1.00484.L/AS_205_b_06_TM1
 """
 
-field = 'HD_143006'
 
 ##################################################################
 ##################################################################
-## short baseline data
+## 2016.1.00484.L/AS_205_b_06_TM1 (as delivered to PI)
 ##################################################################
 ##################################################################
 
 SB1 = 'calibrated_final.ms' #replace as appropriate
 SB1refant = 'DV15, DA59'
 tag = 'SB1'
+field = 'HD_143006'
 
 #split out all the data from the given field
-SB1_field = '/pool/firebolt1/LPscratch/HD_143006/'+field+'_'+tag+'.ms'
+SB1_field = field+'_'+tag+'.ms'
 print SB1_field #just to double check for yourself that the name is actually ok
 os.system('rm -rf ' + SB1_field + '*')
 split2(vis=SB1,
@@ -299,6 +301,50 @@ clean(vis=SB1_contms_ap1,
 SB1_contms_final = field+'_'+tag+'_contfinal.ms'
 os.system('cp -r '+SB1_contms_ap1+' '+SB1_contms_final)
 
+##################################################################
+##################################################################
+## 2015.1.00964.S/HD143006_a_06_TE (as delivered to PI)
+##################################################################
+##################################################################
+
+SB2 = 'HD143006_calibrated.ms' #replace as appropriate
+SB2refant = 'DV11'
+tag = 'SB2'
+field = 'HD143006'
+
+# initial inspection of data before splitting out and averaging the continuum
+
+plotms(vis = SB2, xaxis = 'channel', yaxis = 'amplitude', field = field, 
+       ydatacolumn = 'data',avgtime = '1e8', avgscan = True, 
+       avgbaseline = True, iteraxis = 'spw')
+
+contspws = '0,1,2,9,10,11' #all the upper sideband windows
+
+flagmanager(vis=SB2,mode='save', versionname='before_cont_flags')
+
+# Flag the CO 2-1 line
+flagchannels='0:450~550, 9:450~550' #modify as appropriate for the given field
+
+flagdata(vis=SB2,mode='manual', spw=flagchannels, flagbackup=False, field = field)
+
+# Average the channels within spws
+SB2_initcont = field+'_'+tag+'_initcont.ms'
+print SB2_initcont #just to double check for yourself that the name is actually ok
+os.system('rm -rf ' + SB2_initcont + '*')
+split2(vis=SB2,
+       field = field,
+       spw=contspws,      
+       outputvis=SB2_initcont,
+       width=[960,960,256, 960,960,256], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
+       datacolumn='data')
+
+
+# Restore flagged line channels
+flagmanager(vis=SB2,mode='restore',
+            versionname='before_cont_flags')
+
+# Check that amplitude vs. uvdist looks normal
+plotms(vis=SB2_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '30s',avgscan = True)
 
 
 
