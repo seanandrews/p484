@@ -90,6 +90,10 @@ plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field,
        ydatacolumn = 'data',avgchannel = '16', observation = '1', 
        coloraxis = 'spw', iteraxis = 'antenna') 
 
+plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '2', 
+       coloraxis = 'spw', iteraxis = 'antenna') 
+
 # check the individual execution blocks
 SB1_EB1_initcontimage_dirty = field+'_'+tag+'_EB1_initcontinuum_dirty'
 os.system('rm -rf '+SB1_EB1_initcontimage_dirty+'.*')
@@ -346,5 +350,130 @@ flagmanager(vis=SB2,mode='restore',
 # Check that amplitude vs. uvdist looks normal
 plotms(vis=SB2_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '30s',avgscan = True)
 
+# Inspect individual antennae. We do this step here rather than before splitting because plotms will load the averaged continuum much faster 
+
+plotms(vis = SB2_initcont, xaxis = 'time', yaxis = 'phase', field = field, 
+       ydatacolumn = 'data',avgchannel = '15', observation = '0',
+       coloraxis = 'spw', iteraxis = 'antenna')
 
 
+plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'phase', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '1',
+       coloraxis = 'spw', iteraxis = 'antenna')
+
+flagdata(vis=SB1_initcont,mode='manual', spw='10', flagbackup=False, field = field, scan = '169, 177', antenna = 'DV15')
+
+
+plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '0', 
+       coloraxis = 'spw', iteraxis = 'antenna') 
+
+plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '1', 
+       coloraxis = 'spw', iteraxis = 'antenna') 
+
+# check individual execution blocks
+SB2_EB1_initcontimage_dirty = field+'_'+tag+'_EB1_initcontinuum_dirty'
+os.system('rm -rf '+SB2_EB1_initcontimage_dirty+'.*')
+clean(vis=SB2_initcont, 
+      imagename=SB2_EB1_initcontimage_dirty, 
+      observation = '0', 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      robust=0.5,
+      imsize=500,
+      cell='0.05arcsec', 
+      interactive=False, 
+      niter = 0)
+
+SB2_EB2_initcontimage_dirty = field+'_'+tag+'_EB2_initcontinuum_dirty'
+os.system('rm -rf '+SB2_EB2_initcontimage_dirty+'.*')
+clean(vis=SB2_initcont, 
+      imagename=SB2_EB2_initcontimage_dirty, 
+      observation = '1', 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      robust=0.5,
+      imsize=500,
+      cell='0.05arcsec', 
+      interactive=False, 
+      niter = 0)
+
+#start of self-calibration with model from higher S/N HD 143006 observations
+
+ft(vis = SB2_initcont, model = 'HD_143006_SB1_ap1continuum.model') 
+
+# First phase-self-cal
+SB2_p1 = field+'_'+tag+'.p1'
+os.system('rm -rf '+SB2_p1)
+gaincal(vis=SB2_initcont, caltable=SB2_p1, gaintype='T', combine = 'spw', 
+        spw='0~5', refant=SB2refant, calmode='p', 
+        solint='45s', minsnr=2.0, minblperant=4)
+
+plotcal(caltable=SB2_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna')
+
+applycal(vis=SB2_initcont, spw='0~5', spwmap = 6*[0], gaintable=[SB2_p1], calwt=T, flagbackup=F)
+
+SB2_contms_p1 = field+'_'+tag+'_contp1.ms'
+os.system('rm -rf '+SB2_contms_p1)
+split2(vis=SB2_initcont, outputvis=SB2_contms_p1, datacolumn='corrected')
+
+
+SB2_contimage_p1 = field+'_'+tag+'_p1continuum'
+os.system('rm -rf '+SB2_contimage_p1+'.*')
+clean(vis=SB2_contms_p1, 
+      imagename=SB2_contimage_p1, 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      multiscale = [0, 10, 20, 30], # this is really up to the user. The choices here matter less than they do for the extended data. 
+      robust=0.5,
+      gain = 0.3,
+      imsize=500,
+      cell='0.05arcsec', 
+      mask='circle[[250pix,250pix],1.1arcsec]',
+      interactive=True)
+
+# cleaned for 2 cycles of 100 iterations each
+# peak: 22.2 mJy/beam
+# rms: 68.9 microJy/beam
+
+
+SB2_ap1 = field+'_'+tag+'.ap1'
+os.system('rm -rf '+SB2_ap1)
+gaincal(vis=SB2_contms_p1, caltable=SB2_ap1, gaintype='T', combine = 'spw', 
+        spw='0~5', refant=SB2refant, calmode='ap', 
+        solint='inf', minsnr=2.0, minblperant=4, solnorm = True)
+
+plotcal(caltable=SB2_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna')
+
+applycal(vis=SB2_contms_p1, spw='0~5', spwmap = 6*[0], gaintable=[SB2_ap1], calwt=T, flagbackup=F)
+
+SB2_contms_ap1 = field+'_'+tag+'_contap1.ms'
+os.system('rm -rf '+SB2_contms_ap1)
+split2(vis=SB2_contms_p1, outputvis=SB2_contms_ap1, datacolumn='corrected')
+
+SB2_contimage_ap1 = field+'_'+tag+'_ap1continuum'
+os.system('rm -rf '+SB2_contimage_ap1+'.*')
+clean(vis=SB2_contms_ap1, 
+      imagename=SB2_contimage_ap1, 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      multiscale = [0, 10, 20, 30], # this is really up to the user. The choices here matter less than they do for the extended data. 
+      robust=0.5,
+      gain = 0.3,
+      imsize=500,
+      cell='0.05arcsec', 
+      mask='circle[[250pix,250pix],1.1arcsec]',
+      interactive=True)
+
+# cleaned for 2 cycles of 100 iterations each
+# peak: 22.2 mJy/beam
+# rms: 65.6 microJy/beam

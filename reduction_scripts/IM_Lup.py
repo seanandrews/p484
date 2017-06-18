@@ -200,6 +200,11 @@ split2(vis=SB1,
 
 applycal(vis=SB1_CO_ms, spw='0', gaintable=[SB1_p1, SB1_ap1], calwt=T, flagbackup=F)
 
+flagdata(vis=SB1_CO_ms,mode='manual', spw='0~1', flagbackup=False, field = field, timerange = '2015/06/10/00:18:30~2015/06/10/00:22:40', antenna = 'DA59')
+
+plotms(vis = SB1_CO_ms, xaxis = 'channel', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
+
 SB1_CO_mscontsub = SB1_CO_ms+'.contsub'
 os.system('rm -rf '+SB1_CO_mscontsub) 
 fitspw = '0:0~850;1100~1919' # channels for fitting continuum
@@ -213,7 +218,6 @@ uvcontsub(vis=SB1_CO_ms,
 
 plotms(vis = SB1_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field, 
        ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
-
 
 ##################################################################
 ##################################################################
@@ -560,7 +564,7 @@ os.system('cp -r '+SB3_contms_ap1+' '+SB3_contms_final)
 ##################################################################
 
 field = 'im_lup'
-SB4 = 'calibrated.ms' #replace as appropriate
+SB4 = '/data/astrochem1/jane/DeutChem/ImLup/deutcal/calibrated.ms' #replace as appropriate
 SB4refant = 'DA48'
 tag = 'SB4'
 
@@ -624,7 +628,7 @@ clean(vis=SB4_initcont,
       interactive=False, 
       niter = 0)
 
-#this is offset from SB1, 2, and 3, so we use the model from cleaning Pinte's data to start self-calibration
+#this seems slightly offset from SB1, 2, and 3, so we use the model from cleaning Pinte's data to start self-calibration
 ft(vis = SB4_initcont, model = 'Im_Lupi_SB1_ap1continuum.model') 
 
 # First phase-self-cal
@@ -738,6 +742,40 @@ clean(vis=SB4_contms_ap1,
 ### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
 SB4_contms_final = 'IM_Lup_'+tag+'_contfinal.ms'
 os.system('cp -r '+SB4_contms_ap1+' '+SB4_contms_final)
+
+##############################
+# Reduction of CO data in SB4
+#############################
+
+#split out the CO 2-1 spectral window
+linespw = '11'
+SB4_CO_ms = field+'_'+tag+'_CO21.ms'
+os.system('rm -rf ' + SB4_CO_ms + '*')
+split2(vis=SB4,
+       field = field,
+       spw=linespw,      
+       outputvis=SB4_CO_ms, 
+       datacolumn='data')
+
+applycal(vis=SB4_CO_ms, spw='0', spwmap = [[0], [0], [3]], gaintable=[SB4_p1, SB4_p2, SB4_ap1], calwt=T, flagbackup=F)
+
+plotms(vis = SB4_CO_ms, xaxis = 'channel', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
+
+SB4_CO_mscontsub = SB4_CO_ms+'.contsub'
+os.system('rm -rf '+SB4_CO_mscontsub) 
+fitspw = '0:0~500;630~959' # channels for fitting continuum
+uvcontsub(vis=SB4_CO_ms,
+          spw='0', 
+          fitspw=fitspw, 
+          excludechans=False, 
+          solint='int',
+          fitorder=1,
+          want_cont=False) 
+
+plotms(vis = SB4_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
+
 
 ##################################################################
 ##################################################################
