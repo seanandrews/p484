@@ -219,6 +219,38 @@ uvcontsub(vis=SB1_CO_ms,
 plotms(vis = SB1_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field, 
        ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
 
+# check individual observation
+
+SB1_CO_cvel = SB1_CO_mscontsub+'.cvel'
+
+os.system('rm -rf '+ SB1_CO_cvel)
+mstransform(vis = SB1_CO_mscontsub, outputvis = SB1_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-8.3km/s',width='0.635km/s',nchan=40, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
+SB1_CO_image = field+'_'+tag+'_CO21cube'
+os.system('rm -rf '+SB1_CO_image+'.*')
+clean(vis=SB1_CO_cvel, 
+      imagename=SB1_CO_image,
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50, 100],
+      robust = 1.0,
+      gain = 0.3, 
+      imsize = 500,
+      cell = '0.05arcsec',
+      start='-8.3km/s',
+      width='0.635km/s',
+      nchan=40, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '10mJy',
+      interactive=True) 
+
+
 ##################################################################
 ##################################################################
 ## 2013.1.00694.S/IM_Lup_a_06_TE (downloaded from the archive and calibrated w/ CASA pipeline)
@@ -706,13 +738,13 @@ clean(vis=SB4_contms_p2,
 
 SB4_ap1 = field+'_'+tag+'.ap1'
 os.system('rm -rf '+SB4_ap1)
-gaincal(vis=SB4_contms_p2, caltable=SB4_ap1, gaintype='T',  
+gaincal(vis=SB4_contms_p2, caltable=SB4_ap1, gaintype='T', combine = 'spw',   
         spw='0~4', refant=SB4refant, calmode='ap', 
         solint='60s', minsnr=2.0, minblperant=4, solnorm = True)
 
 plotcal(caltable=SB4_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna')
 
-applycal(vis=SB4_contms_p1, spw='0~4', gaintable=[SB4_ap1], calwt=T, flagbackup=F)
+applycal(vis=SB4_contms_p1, spw='0~4', spwmap = 5*[0], gaintable=[SB4_ap1], calwt=T, flagbackup=F)
 
 SB4_contms_ap1 = field+'_'+tag+'_contap1.ms'
 os.system('rm -rf '+SB4_contms_ap1)
@@ -757,7 +789,7 @@ split2(vis=SB4,
        outputvis=SB4_CO_ms, 
        datacolumn='data')
 
-applycal(vis=SB4_CO_ms, spw='0', spwmap = [[0], [0], [3]], gaintable=[SB4_p1, SB4_p2, SB4_ap1], calwt=T, flagbackup=F)
+applycal(vis=SB4_CO_ms, spw='0', gaintable=[SB4_p1, SB4_p2, SB4_ap1], calwt=T, flagbackup=F)
 
 plotms(vis = SB4_CO_ms, xaxis = 'channel', yaxis = 'amp', field = field, 
        ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
@@ -775,6 +807,37 @@ uvcontsub(vis=SB4_CO_ms,
 
 plotms(vis = SB4_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field, 
        ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
+
+# check individual observation
+
+SB4_CO_cvel = SB4_CO_mscontsub+'.cvel'
+
+os.system('rm -rf '+ SB4_CO_cvel)
+mstransform(vis = SB4_CO_mscontsub, outputvis = SB4_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-8.3km/s',width='0.635km/s',nchan=40, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
+SB4_CO_image = field+'_'+tag+'_CO21cube'
+os.system('rm -rf '+SB4_CO_image+'.*')
+clean(vis=SB4_CO_cvel, 
+      imagename=SB4_CO_image,
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50, 100],
+      robust = 1.0,
+      gain = 0.3, 
+      imsize = 500,
+      cell = '0.05arcsec',
+      start='-8.3km/s',
+      width='0.635km/s',
+      nchan=40, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '10mJy',
+      interactive=True) 
 
 
 ##################################################################
