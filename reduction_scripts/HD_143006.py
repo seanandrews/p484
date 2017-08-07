@@ -344,7 +344,7 @@ plotms(vis = SB1_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field,
 SB1_CO_cvel = SB1_CO_mscontsub+'.cvel'
 
 os.system('rm -rf '+ SB1_CO_cvel)
-mstransform(vis = SB1_CO_mscontsub, outputvis = SB1_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-2.0km/s',width='0.635km/s',nchan=30, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+mstransform(vis = SB1_CO_mscontsub, outputvis = SB1_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-1.0km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
 
 #check individual observation
 SB1_CO_image = field+'_'+tag+'_CO21cube'
@@ -360,9 +360,9 @@ clean(vis=SB1_CO_cvel,
       gain = 0.3, 
       imsize = 500,
       cell = '0.03arcsec',
-      start='-2.0km/s',
-      width='0.635km/s',
-      nchan=30, 
+      start='-1.0km/s',
+      width='0.35km/s',
+      nchan=60, 
       outframe='LSRK', 
       veltype='radio', 
       restfreq='230.53800GHz',
@@ -372,10 +372,10 @@ clean(vis=SB1_CO_cvel,
       interactive=True) 
 
 os.system('rm -rf '+SB1_CO_image+'.mom0')
-immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[0],outfile =SB1_CO_image+'.mom0', chans = '4~27')
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[0],outfile =SB1_CO_image+'.mom0', chans = '6~45')
 
 os.system('rm -rf '+SB1_CO_image+'.mom1')
-immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[1],outfile =SB1_CO_image+'.mom1', chans = '4~27', includepix = [.01, 10])
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[1],outfile =SB1_CO_image+'.mom1', chans = '6~45', includepix = [.015, 10])
 
 exportfits(imagename = SB1_CO_image+'.image', fitsimage = SB1_CO_image+'.image.fits')
 
@@ -585,7 +585,7 @@ plotms(vis = SB2_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field,
 SB2_CO_cvel = SB2_CO_mscontsub+'.cvel'
 
 os.system('rm -rf '+ SB2_CO_cvel)
-mstransform(vis = SB2_CO_mscontsub, outputvis = SB2_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-2.0km/s',width='0.635km/s',nchan=30, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+mstransform(vis = SB2_CO_mscontsub, outputvis = SB2_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-2.0km/s',width='0.635km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
 
 #check individual observation
 SB2_CO_image = field+'_'+tag+'_CO21cube'
@@ -617,6 +617,12 @@ immoments(axis = "spec",imagename=SB2_CO_image+'.image',moments=[0],outfile =SB2
 
 os.system('rm -rf '+SB2_CO_image+'.mom1')
 immoments(axis = "spec",imagename=SB2_CO_image+'.image',moments=[1],outfile =SB2_CO_image+'.mom1', chans = '4~27', includepix = [.025, 10])
+
+
+SB2_CO_cvel_hires = SB2_CO_mscontsub+'_hires.cvel'
+
+os.system('rm -rf '+ SB2_CO_cvel_hires)
+mstransform(vis = SB2_CO_mscontsub, outputvis = SB2_CO_cvel_hires,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-1.0km/s',width='0.2km/s',nchan=80, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
 
 ##################################################################
 ##################################################################
@@ -812,6 +818,10 @@ clean(vis=SB3_CO_cvel,
       interactive=True) 
 
 
+SB3_CO_cvel_hires = SB3_CO_mscontsub+'_hires.cvel'
+
+os.system('rm -rf '+ SB3_CO_cvel_hires)
+mstransform(vis = SB3_CO_mscontsub, outputvis = SB3_CO_cvel_hires,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-1.0km/s',width='0.2km/s',nchan=80, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
 
 ########## Data combinations
 
@@ -836,6 +846,20 @@ clean(vis='HD_143006_allSB_cont.ms',
       interactive=True)
 
 #currently have a helpdesk ticket pending because of problems with MS incompatibility....
+
+clean(vis=['HD143006_SB2_contap1.ms', 'HD143006_SB3_contap1.ms'] , 
+      imagename='HD143006_combinedcont', 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      multiscale = [0, 10, 20, 30], # this is really up to the user. The choices here matter less than they do for the extended data. 
+      robust=-2,
+      gain = 0.05,
+      imsize=500,
+      cell='0.03arcsec', 
+      mask='circle[[250pix,250pix],1.0arcsec]',
+      interactive=True)
 
 
 clean(vis=[SB1_CO_cvel,SB2_CO_cvel,SB3_CO_cvel], 
@@ -863,6 +887,32 @@ clean(vis=[SB1_CO_cvel,SB2_CO_cvel,SB3_CO_cvel],
 immoments(axis = "spec",imagename='HD143006_CO_combined.image',moments=[0],outfile ='HD143006_CO_combined.mom0', chans = '4~27')
 
 immoments(axis = "spec",imagename='HD143006_CO_combined.image',moments=[1],outfile ='HD143006_CO_combined.mom1', chans = '4~27', includepix = [.02, 10])
+
+os.system('rm -rf HD143006_CO_spectralhires.*')
+clean(vis=[SB2_CO_cvel_hires, SB3_CO_cvel_hires], 
+      imagename='HD143006_CO_spectralhires',
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50],
+      robust = 1.0,
+      gain = 0.3, 
+      imsize = 500,
+      cell = '0.05arcsec',
+      start='-1.0km/s',
+      width='0.2km/s',
+      nchan=80, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '5mJy',
+      interactive=True) 
+
+immoments(axis = "spec",imagename='HD143006_CO_spectralhires.image',moments=[0],outfile ='HD143006_CO_spectralhires.mom0', chans = '15~70')
+immoments(axis = "spec",imagename='HD143006_CO_spectralhires.image',moments=[1],outfile ='HD143006_CO_spectralhires.mom1', chans = '15~70', includepix = [.025, 10])
 
 #immoments(axis = "spec",imagename='HD143006_CO_spectralhighres.image',moments=[0],outfile ='HD143006_CO_spectralhighres.mom0', chans = '11~42')
 
