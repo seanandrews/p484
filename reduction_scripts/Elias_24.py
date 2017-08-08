@@ -59,11 +59,6 @@ plotms(vis=SB1_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '3
 
 # Inspect individual antennae. We do this step here rather than before splitting because plotms will load the averaged continuum much faster 
 
-#antenna 0, spw0, 6
-#antenna 5, spw1, 3, 4, 5
-#antenna 16, spw3,4,6
-#antenna 27, spw3, 4
-#antenna 36, spw3
 plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'phase', field = field, 
        ydatacolumn = 'data',avgchannel = '16', 
        coloraxis = 'spw', iteraxis = 'antenna')

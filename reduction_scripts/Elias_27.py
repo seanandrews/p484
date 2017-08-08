@@ -1,6 +1,9 @@
 """
 This script is written for CASA 4.5.3
 Note that the imaging algorithms were rewritten significantly between CASA 4.5.3 and CASA 4.7.2 
+
+Datasets calibrated:
+SB1: 2013.1.00498.S/HD_142666_a_06_TE (P.I. Perez)
 """
 
 field = 'Elia_2-27'
@@ -42,7 +45,7 @@ split2(vis=SB1,
        field = field,
        spw=contspws,      
        outputvis=SB1_initcont,
-       width=[30, 960, 8,15,15,240,240,8], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
+       width=[30, 480, 8,15,15,240,240,8], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
        datacolumn='data')
 
 
