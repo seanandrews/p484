@@ -223,7 +223,6 @@ os.system('cp -r '+SB1_contms_ap1+' '+SB1_contms_final)
 ##############################
 # Reduction of CO data in SB1
 #############################
-SB1_field = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_Xbd4641_X1e/group.uid___A001_Xbd4641_X1f/member.uid___A001_Xbd4641_X20/calibrated/Sz_129_SB1.ms'
 
 applycal(SB1_field, gaintable=[SB1_p1, SB1_ap1], calwt=T, flagbackup=F)
 
