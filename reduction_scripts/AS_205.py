@@ -40,7 +40,7 @@ contspws = '0~11'
 flagmanager(vis=SB1_field,mode='save', versionname='before_cont_flags')
 
 # Flag the CO 2-1 line
-flagchannels='0:1880~2250, 4:1880~2250, 8:1880~2250' 
+flagchannels='0:1880~2250, 4:1880~2250, 8:1880~2250' #1880 to 1950 would have been fine 
 
 flagdata(vis=SB1_field,mode='manual', spw=flagchannels, flagbackup=False, field = field)
 
@@ -255,5 +255,72 @@ clean(vis=SB1_contms_ap1,
       cell='0.02arcsec',
       mask='circle[[251pix,234pix],1.8arcsec]',
       interactive=True)
+
+##############################
+# Reduction of CO data in SB1
+#############################
+
+
+
+applycal(SB1_field, gaintable=[SB1_p1, SB1_ap1], calwt=T, flagbackup=F)
+
+#split out the CO 2-1 spectral window
+linespw = '0, 4, 8'
+SB1_CO_ms = field+'_'+tag+'_CO21.ms'
+os.system('rm -rf ' + SB1_CO_ms + '*')
+split2(vis=SB1_field,
+       field = field,
+       spw=linespw,      
+       outputvis=SB1_CO_ms, 
+       datacolumn='corrected')
+
+plotms(vis = SB1_CO_ms, xaxis = 'channel', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
+
+SB1_CO_mscontsub = SB1_CO_ms+'.contsub'
+os.system('rm -rf '+SB1_CO_mscontsub) 
+fitspw = '0:0~1880;1950~3839, 1:0~1880;1950~3839, 2:0~1880; 1950~3839' # channels for fitting continuum
+uvcontsub(vis=SB1_CO_ms,
+          spw='0~2', 
+          fitspw=fitspw, 
+          excludechans=False, 
+          solint='int',
+          fitorder=1,
+          want_cont=False) 
+
+plotms(vis = SB1_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgtime = '1.e8',avgbaseline  =True)
+
+
+CO_cvel = SB1_CO_mscontsub+'.cvel'
+
+os.system('rm -rf '+ CO_cvel)
+mstransform(vis = SB1_CO_mscontsub, outputvis = CO_cvel,  keepflags = False,datacolumn = 'data', regridms = True,mode='velocity',start='-9km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
+SB1_CO_image = field+'_'+tag+'_CO21cube'
+os.system('rm -rf '+SB1_CO_image+'.*')
+clean(vis=CO_cvel, 
+      imagename=SB1_CO_image,
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50],
+      robust = 1.0,
+      gain = 0.3, 
+      imsize = 500,
+      cell = '0.03arcsec',
+      start='-9km/s',
+      width='0.35km/s',
+      nchan=60, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '10mJy',
+      interactive=True) 
+
+
 
 
