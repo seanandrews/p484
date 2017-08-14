@@ -3,11 +3,11 @@ This script is written for CASA 4.5.3
 Note that the imaging algorithms were rewritten significantly between CASA 4.5.3 and CASA 4.7.2 
 
 Datasets calibrated:
-SB1: 2013.1.00798.S/Im_Lup_a_06_TE (P.I. Pinte)
-SB2: 2013.1.00694.S/IM_Lup_a_06_TE (P.I. Cleeves)
-SB3: 2013.1.00694.S/IM_Lup_a_06_TC (P.I. Cleeves)
-SB4: 2013.1.00226.S/im_lup_a_06_TE (P.I. Oberg)
-SB5: 2013.1.00226.S/im_lup_b_06_TE (P.I. Oberg)
+SB1: 2013.1.00798.S/Im_Lup_a_06_TE (PI: Pinte)
+SB2: 2013.1.00694.S/IM_Lup_a_06_TE (PI: Cleeves)
+SB3: 2013.1.00694.S/IM_Lup_a_06_TC (PI: Cleeves)
+SB4: 2013.1.00226.S/im_lup_a_06_TE (PI: Oberg)
+SB5: 2013.1.00226.S/im_lup_b_06_TE (PI: Oberg)
 
 Incidentally, there are windows covering 13CS 5-4 in SB1 and SB4
 There's nothing obvious in either window, but if you're curious, you could consider combining them
@@ -224,7 +224,7 @@ plotms(vis = SB1_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field,
 SB1_CO_cvel = SB1_CO_mscontsub+'.cvel'
 
 os.system('rm -rf '+ SB1_CO_cvel)
-mstransform(vis = SB1_CO_mscontsub, outputvis = SB1_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-8.3km/s',width='0.635km/s',nchan=40, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+mstransform(vis = SB1_CO_mscontsub, outputvis = SB1_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-5km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
 
 SB1_CO_image = field+'_'+tag+'_CO21cube'
 os.system('rm -rf '+SB1_CO_image+'.*')
@@ -239,15 +239,15 @@ clean(vis=SB1_CO_cvel,
       gain = 0.3, 
       imsize = 500,
       cell = '0.05arcsec',
-      start='-8.3km/s',
-      width='0.635km/s',
-      nchan=40, 
+      start='-5km/s',
+      width='0.35km/s',
+      nchan=60, 
       outframe='LSRK', 
       veltype='radio', 
       restfreq='230.53800GHz',
       negcomponent=1, 
       cyclefactor = 1, 
-      threshold = '10mJy',
+      threshold = '6mJy',
       interactive=True) 
 
 
@@ -414,7 +414,7 @@ clean(vis=SB2_contms_ap1,
 # rms: 47.3 microJy/beam
 
 
-### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
+### We are now done with self-cal of the continuum of SB2 and rename the final measurement set. 
 SB2_contms_final = 'IM_Lup_'+tag+'_contfinal.ms'
 os.system('cp -r '+SB2_contms_ap1+' '+SB2_contms_final)
 
@@ -585,7 +585,7 @@ clean(vis=[SB2_contms_ap1,SB3_contms_ap1],
 # rms: 42.9 microJy/beam
 
 
-### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
+### We are now done with self-cal of the continuum of SB3 and rename the final measurement set. 
 SB3_contms_final = 'IM_Lup_'+tag+'_contfinal.ms'
 os.system('cp -r '+SB3_contms_ap1+' '+SB3_contms_final)
 
@@ -596,7 +596,7 @@ os.system('cp -r '+SB3_contms_ap1+' '+SB3_contms_final)
 ##################################################################
 
 field = 'im_lup'
-SB4 = '/data/astrochem1/jane/DeutChem/ImLup/deutcal/calibrated.ms' #replace as appropriate
+SB4 = 'calibrated.ms' #replace as appropriate
 SB4refant = 'DA48'
 tag = 'SB4'
 
@@ -613,13 +613,13 @@ you are downloading the data from the archive, you need to change contspws to '1
 
 contspws = '8~12' #all upper sideband windows
 # Flag the CO 2-1 line
-flagchannels = '11:500~630'
+flagchannels = '11:450~700'
 flagmanager(vis=SB4, mode='save', versionname='before_cont_flags')
 
 flagdata(vis=SB4,mode='manual', spw=flagchannels, flagbackup=False, field = field)
 
 # Average the channels within spws
-SB4_initcont = field+'_'+tag+'_initcont.ms'
+SB4_initcont = '/pool/firebolt1/LPscratch/IM_Lup/'+field+'_'+tag+'_initcont.ms'
 print SB4_initcont #just to double check for yourself that the name is actually ok
 os.system('rm -rf ' + SB4_initcont + '*')
 split2(vis=SB4,
@@ -742,13 +742,13 @@ gaincal(vis=SB4_contms_p2, caltable=SB4_ap1, gaintype='T', combine = 'spw',
         spw='0~4', refant=SB4refant, calmode='ap', 
         solint='60s', minsnr=2.0, minblperant=4, solnorm = True)
 
-plotcal(caltable=SB4_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna')
+plotcal(caltable=SB4_ap2, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna')
 
-applycal(vis=SB4_contms_p1, spw='0~4', spwmap = 5*[0], gaintable=[SB4_ap1], calwt=T, flagbackup=F)
+applycal(vis=SB4_contms_p2, spw='0~4', spwmap = 5*[0], gaintable=[SB4_ap1], calwt=T, flagbackup=F)
 
 SB4_contms_ap1 = field+'_'+tag+'_contap1.ms'
 os.system('rm -rf '+SB4_contms_ap1)
-split2(vis=SB4_contms_p1, outputvis=SB4_contms_ap1, datacolumn='corrected')
+split2(vis=SB4_contms_p2, outputvis=SB4_contms_ap1, datacolumn='corrected')
 
 SB4_contimage_ap1 = field+'_'+tag+'_ap1continuum'
 os.system('rm -rf '+SB4_contimage_ap1+'.*')
@@ -767,11 +767,11 @@ clean(vis=SB4_contms_ap1,
       interactive=True)
 
 # cleaned for 3 cycles of 100 iterations each
-# peak: 89.6 mJy/beam
-# rms: 68.7 microJy/beam
+# peak: 68.4 mJy/beam
+# rms:  90 microJy/beam
 
 
-### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
+### We are now done with self-cal of the continuum of SB4 and rename the final measurement set. 
 SB4_contms_final = 'IM_Lup_'+tag+'_contfinal.ms'
 os.system('cp -r '+SB4_contms_ap1+' '+SB4_contms_final)
 
@@ -781,7 +781,7 @@ os.system('cp -r '+SB4_contms_ap1+' '+SB4_contms_final)
 
 #split out the CO 2-1 spectral window
 linespw = '11'
-SB4_CO_ms = field+'_'+tag+'_CO21.ms'
+SB4_CO_ms = '/pool/firebolt1/LPscratch/IM_Lup/'+field+'_'+tag+'_CO21.ms'
 os.system('rm -rf ' + SB4_CO_ms + '*')
 split2(vis=SB4,
        field = field,
@@ -796,7 +796,7 @@ plotms(vis = SB4_CO_ms, xaxis = 'channel', yaxis = 'amp', field = field,
 
 SB4_CO_mscontsub = SB4_CO_ms+'.contsub'
 os.system('rm -rf '+SB4_CO_mscontsub) 
-fitspw = '0:0~500;630~959' # channels for fitting continuum
+fitspw = '0:0~450;700~959' # channels for fitting continuum
 uvcontsub(vis=SB4_CO_ms,
           spw='0', 
           fitspw=fitspw, 
@@ -813,7 +813,7 @@ plotms(vis = SB4_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field,
 SB4_CO_cvel = SB4_CO_mscontsub+'.cvel'
 
 os.system('rm -rf '+ SB4_CO_cvel)
-mstransform(vis = SB4_CO_mscontsub, outputvis = SB4_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-8.3km/s',width='0.635km/s',nchan=40, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+mstransform(vis = SB4_CO_mscontsub, outputvis = SB4_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-5km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
 
 SB4_CO_image = field+'_'+tag+'_CO21cube'
 os.system('rm -rf '+SB4_CO_image+'.*')
@@ -828,9 +828,9 @@ clean(vis=SB4_CO_cvel,
       gain = 0.3, 
       imsize = 500,
       cell = '0.05arcsec',
-      start='-8.3km/s',
-      width='0.635km/s',
-      nchan=40, 
+      start='-5km/s',
+      width='0.35km/s',
+      nchan=60, 
       outframe='LSRK', 
       veltype='radio', 
       restfreq='230.53800GHz',
@@ -997,6 +997,13 @@ clean(vis=[SB3_contms_ap1, SB4_contms_ap1,SB5_contms_ap1],
 # peak: 79.9 mJy/beam
 # rms: 77 microJy/beam
 
+
+### We are now done with self-cal of the continuum of SB5 and rename the final measurement set. 
+SB5_contms_final = 'IM_Lup_'+tag+'_contfinal.ms'
+os.system('cp -r '+SB5_contms_ap1+' '+SB5_contms_final)
+
+#######################################################################
+
 # concatenate all short baseline observations
 
 concat(vis = [SB1_contms_ap1, SB2_contms_ap1,SB3_contms_ap1, SB4_contms_ap1,SB5_contms_ap1], concatvis = 'IM_Lup_allSB_cont.ms', freqtol = '20MHz', dirtol = '0.1arcsec', respectname = False, copypointing = False)
@@ -1029,4 +1036,29 @@ clean(vis='IM_Lup_allSB_cont.ms',
       mask='ellipse[[236pix,249pix],[3arcsec,2arcsec],145deg]',
       interactive=True)
 
+
+
+
+clean(vis=['Im_Lupi_SB1_CO21.ms.contsub.cvel', 'im_lup_SB4_CO21.ms.contsub.cvel'], 
+      imagename='IM_Lup_CO_combined',
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50, 100],
+      robust = 1.0,
+      gain = 0.3, 
+      imsize = 500,
+      cell = '0.05arcsec',
+      start='-5km/s',
+      width='0.35km/s',
+      nchan=60, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '6mJy',
+      mask = 'Im_Lupi_SB1_CO21cube.mask',   
+      interactive=True) 
 
