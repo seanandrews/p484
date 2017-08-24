@@ -372,10 +372,13 @@ clean(vis=SB1_CO_cvel,
       interactive=True) 
 
 os.system('rm -rf '+SB1_CO_image+'.mom0')
-immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[0],outfile =SB1_CO_image+'.mom0', chans = '6~45')
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[0],outfile =SB1_CO_image+'.mom0', chans = '5~45')
 
 os.system('rm -rf '+SB1_CO_image+'.mom1')
-immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[1],outfile =SB1_CO_image+'.mom1', chans = '6~45', includepix = [.015, 10])
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[1],outfile =SB1_CO_image+'.mom1', chans = '5~45', includepix = [.012, 10])
+
+os.system('rm -rf '+SB1_CO_image+'.mom8')
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[8],outfile =SB1_CO_image+'.mom8', chans = '5~45', includepix = [.012, 10])
 
 exportfits(imagename = SB1_CO_image+'.image', fitsimage = SB1_CO_image+'.image.fits')
 
@@ -585,7 +588,8 @@ plotms(vis = SB2_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field,
 SB2_CO_cvel = SB2_CO_mscontsub+'.cvel'
 
 os.system('rm -rf '+ SB2_CO_cvel)
-mstransform(vis = SB2_CO_mscontsub, outputvis = SB2_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-2.0km/s',width='0.635km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+mstransform(vis = SB2_CO_mscontsub, outputvis = SB2_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-1.0km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
 
 #check individual observation
 SB2_CO_image = field+'_'+tag+'_CO21cube'
@@ -601,22 +605,16 @@ clean(vis=SB2_CO_cvel,
       gain = 0.3, 
       imsize = 500,
       cell = '0.05arcsec',
-      start='-2.0km/s',
-      width='0.635km/s',
-      nchan=30, 
+      start='-1.0km/s',
+      width='0.35km/s',
+      nchan=60, 
       outframe='LSRK', 
       veltype='radio', 
       restfreq='230.53800GHz',
       negcomponent=1, 
       cyclefactor = 1, 
-      threshold = '6mJy',
+      threshold = '7mJy',
       interactive=True) 
-
-os.system('rm -rf '+SB2_CO_image+'.mom0')
-immoments(axis = "spec",imagename=SB2_CO_image+'.image',moments=[0],outfile =SB2_CO_image+'.mom0', chans = '4~27')
-
-os.system('rm -rf '+SB2_CO_image+'.mom1')
-immoments(axis = "spec",imagename=SB2_CO_image+'.image',moments=[1],outfile =SB2_CO_image+'.mom1', chans = '4~27', includepix = [.025, 10])
 
 
 SB2_CO_cvel_hires = SB2_CO_mscontsub+'_hires.cvel'
@@ -790,7 +788,8 @@ plotms(vis = SB3_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field,
 SB3_CO_cvel = SB3_CO_mscontsub+'.cvel'
 
 os.system('rm -rf '+ SB3_CO_cvel)
-mstransform(vis = SB3_CO_mscontsub, outputvis = SB3_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-2.0km/s',width='0.635km/s',nchan=30, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+mstransform(vis = SB3_CO_mscontsub, outputvis = SB3_CO_cvel,  keepflags = False, datacolumn = 'data', regridms = True,mode='velocity',start='-1.0km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
 
 #check individual observation
 SB3_CO_image = field+'_'+tag+'_CO21cube'
@@ -806,15 +805,15 @@ clean(vis=SB3_CO_cvel,
       gain = 0.3, 
       imsize = 500,
       cell = '0.05arcsec',
-      start='-2.0km/s',
-      width='0.635km/s',
-      nchan=30, 
+      start='-1.0km/s',
+      width='0.35km/s',
+      nchan=60, 
       outframe='LSRK', 
       veltype='radio', 
       restfreq='230.53800GHz',
       negcomponent=1, 
       cyclefactor = 1, 
-      threshold = '6mJy',
+      threshold = '10mJy',
       interactive=True) 
 
 
@@ -861,32 +860,35 @@ clean(vis=['HD143006_SB2_contap1.ms', 'HD143006_SB3_contap1.ms'] ,
       mask='circle[[250pix,250pix],1.0arcsec]',
       interactive=True)
 
-
+os.system('rm -rf HD143006_CO_combined.*')
 clean(vis=[SB1_CO_cvel,SB2_CO_cvel,SB3_CO_cvel], 
       imagename='HD143006_CO_combined',
       mode = 'velocity',
       psfmode = 'clark',  
       imagermode='csclean',
       weighting = 'briggs',
-      multiscale = [0, 10, 20, 30],
-      robust = 0.5,
-      gain = 0.1, 
+      multiscale = [0, 10, 30, 50],
+      robust = 1.0,
+      gain = 0.3, 
       imsize = 500,
       cell = '0.03arcsec',
-      start='-2.0km/s',
-      width='0.635km/s',
-      nchan=30, 
+      start='-1.0km/s',
+      width='0.35km/s',
+      nchan=60, 
       outframe='LSRK', 
       veltype='radio', 
       restfreq='230.53800GHz',
       negcomponent=1, 
       cyclefactor = 1, 
       threshold = '6mJy',
+      mask = 'HD_143006_SB1_CO21cube.mask', 
       interactive=True) 
 
-immoments(axis = "spec",imagename='HD143006_CO_combined.image',moments=[0],outfile ='HD143006_CO_combined.mom0', chans = '4~27')
+os.system('rm -rf HD143006_CO_combined.mom0')
+immoments(axis = "spec",imagename='HD143006_CO_combined.image',moments=[0],outfile ='HD143006_CO_combined.mom0', chans = '6~45')
 
-immoments(axis = "spec",imagename='HD143006_CO_combined.image',moments=[1],outfile ='HD143006_CO_combined.mom1', chans = '4~27', includepix = [.02, 10])
+os.system('rm -rf HD143006_CO_combined.mom1')
+immoments(axis = "spec",imagename='HD143006_CO_combined.image',moments=[1],outfile ='HD143006_CO_combined.mom1', chans = '6~45', includepix = [.01, 10])
 
 os.system('rm -rf HD143006_CO_spectralhires.*')
 clean(vis=[SB2_CO_cvel_hires, SB3_CO_cvel_hires], 

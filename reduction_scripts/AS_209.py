@@ -748,6 +748,9 @@ clean(vis=['AS_209_SB1_CO21.ms.contsub.cvel', 'as_209_SB2_CO21.ms.contsub.cvel']
       mask = 'AS_209_SB1_CO21cube.mask',
       interactive=True) 
 
+immoments(axis = "spec",imagename='AS_209_CO_combined.image',moments=[0],outfile ='AS_209_CO_combined.mom0', chans = '1~55')
+immoments(axis = "spec",imagename='AS_209_CO_combined.image',moments=[1],outfile ='AS_209_CO_combined.mom1', chans = '1~55', includepix = [.011, 10])
+
 os.system('rm -rf AS_209_CO_combined_2.*')
 clean(vis=['AS_209_SB1_CO21.ms.contsub.cvel', 'as_209_SB2_CO21.ms.contsub.cvel'], 
       imagename='AS_209_CO_combined_2',
@@ -771,5 +774,7 @@ clean(vis=['AS_209_SB1_CO21.ms.contsub.cvel', 'as_209_SB2_CO21.ms.contsub.cvel']
       threshold = '6mJy',
       mask = 'AS_209_SB1_CO21cube.mask',
       interactive=True) 
+
+
 
 

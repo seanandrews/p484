@@ -254,6 +254,11 @@ clean(vis=SB1_CO_cvel,
       threshold = '8mJy',
       interactive=True) 
 
+#re-image this with more channels on the low velocity side and with a higher threshold
+
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[0],outfile =SB1_CO_image+'.mom0', chans = '1~56')
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[1],outfile =SB1_CO_image+'.mom1', chans = '1~56', includepix = [.025, 10])
+
 
 
 
