@@ -321,5 +321,7 @@ clean(vis=CO_cvel,
       interactive=True) 
 
 
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[0],outfile =SB1_CO_image+'.mom0', chans = '4~69')
+immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[1],outfile =SB1_CO_image+'.mom1', chans = '4~69', includepix = [.013, 10])
 
 

@@ -216,6 +216,21 @@ clean(vis=SB1_contms_ap1,
 # peak: 24.6 mJy/beam
 # rms: 33.9 microJy/beam
 
+SB1_contimage_uniform = field+'_'+tag+'_uniform'
+os.system('rm -rf '+SB1_contimage_uniform+'.*')
+clean(vis=SB1_contms_ap1, 
+      imagename=SB1_contimage_uniform, 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='uniform', 
+      multiscale = [0, 10, 20, 30], # this is really up to the user. The choices here matter less than they do for the extended data. 
+      gain = 0.1,
+      imsize=500,
+      cell='0.02arcsec', 
+      mask='circle[[253pix,246pix],0.8arcsec]',
+      interactive=True)
+
 ### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
 SB1_contms_final = field+'_'+tag+'_contfinal.ms'
 os.system('cp -r '+SB1_contms_ap1+' '+SB1_contms_final)
