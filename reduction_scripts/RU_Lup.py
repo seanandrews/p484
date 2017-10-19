@@ -237,6 +237,24 @@ clean(vis=SB1_contms_ap1,
       cell='0.02arcsec',
       mask='circle[[251pix,252pix],1.2arcsec]',
       interactive=True)
+
+#large continuum field
+
+
+clean(vis='/data/sandrews/LP/reduced_data/RU_Lup/visibilities/RU_Lup_SB1_contfinal.ms', 
+      imagename='RU_Lup_largefieldcontinuum', 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      multiscale = [0, 10, 20, 30], 
+      robust=2.0,
+      gain = 0.1,
+      imsize=1500,
+      cell='0.03arcsec', 
+      interactive=True)
+
+
 ##############################
 # Reduction of CO data in SB1
 #############################
@@ -301,5 +319,151 @@ clean(vis=CO_cvel,
 
 immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[0],outfile =SB1_CO_image+'.mom0', chans = '3~46')
 immoments(axis = "spec",imagename=SB1_CO_image+'.image',moments=[1],outfile =SB1_CO_image+'.mom1', chans = '3~46', includepix = [.013, 10])
+
+SB1_CO_largeimage = field+'_'+tag+'_CO21largecube'
+os.system('rm -rf '+SB1_CO_largeimage+'.*')
+clean(vis=CO_cvel, 
+      imagename=SB1_CO_largeimage,
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50],
+      robust = 1.0,
+      gain = 0.1, 
+      imsize = 1000,
+      cell = '0.03arcsec',
+      start='-5km/s',
+      width='0.35km/s',
+      nchan=60, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '10mJy',
+      interactive=True) 
+
+impbcor(imagename = SB1_CO_largeimage+'.image', pbimage = SB1_CO_largeimage+'.flux', outfile = SB1_CO_largeimage+'.pbcor.image')
+
+immoments(axis = "spec",imagename=SB1_CO_largeimage+'.image',moments=[0],outfile =SB1_CO_largeimage+'.mom0', chans = '3~46')
+immoments(axis = "spec",imagename=SB1_CO_largeimage+'.pbcor.image',moments=[0],outfile =SB1_CO_largeimage+'.pbcor.mom0', chans = '3~46')
+
+immoments(axis = "spec",imagename=SB1_CO_largeimage+'.image',moments=[0],outfile =SB1_CO_largeimage+'_1sigcut.mom0', chans = '3~46', includepix = [.0025,10 ])
+
+immoments(axis = "spec",imagename=SB1_CO_largeimage+'.image',moments=[0],outfile =SB1_CO_largeimage+'_2sigcut.mom0', chans = '3~46', includepix = [.005,10 ])
+
+immoments(axis = "spec",imagename=SB1_CO_largeimage+'.image',moments=[0],outfile =SB1_CO_largeimage+'_3sigcut.mom0', chans = '3~46', includepix = [.0075,10 ])
+immoments(axis = "spec",imagename=SB1_CO_largeimage+'.pbcor.image',moments=[0],outfile =SB1_CO_largeimage+'_3sigcut.pbcor.mom0', chans = '3~46', includepix = [.0075,10 ])
+
+
+SB1_CO_naturalimage = field+'_'+tag+'_CO21natural'
+os.system('rm -rf '+SB1_CO_naturalimage+'.*')
+clean(vis=CO_cvel, 
+      imagename=SB1_CO_naturalimage,
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50],
+      robust = 2.0,
+      gain = 0.1, 
+      imsize = 1000,
+      cell = '0.03arcsec',
+      start='-5km/s',
+      width='0.35km/s',
+      nchan=60, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '6mJy',
+      interactive=True) 
+
+immoments(axis = "spec",imagename=SB1_CO_naturalimage+'.image',moments=[0],outfile =SB1_CO_naturalimage+'_3sigcut.mom0', chans = '3~46', includepix = [.0075,10 ])
+immoments(axis = "spec",imagename=SB1_CO_naturalimage+'.image',moments=[1],outfile =SB1_CO_naturalimage+'.mom1', chans = '3~46', includepix = [.0125, 10])
+immoments(axis = "spec",imagename=SB1_CO_naturalimage+'.image',moments=[8],outfile =SB1_CO_naturalimage+'.mom8', chans = '3~46', includepix = [.0075, 10])
+
+SB1_CO_naturalimage = field+'_'+tag+'_CO21natural'
+os.system('rm -rf '+SB1_CO_naturalimage+'.*')
+clean(vis=CO_cvel, 
+      imagename=SB1_CO_naturalimage,
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 30, 50],
+      robust = 2.0,
+      gain = 0.1, 
+      imsize = 1000,
+      cell = '0.03arcsec',
+      start='-5km/s',
+      width='0.35km/s',
+      nchan=60, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '6mJy',
+      interactive=True) 
+
+SB1_CO_taper = field+'_'+tag+'_CO21taper'
+os.system('rm -rf '+SB1_CO_taper+'.*')
+clean(vis=CO_cvel, 
+      imagename=SB1_CO_taper,
+      mode = 'velocity',
+      psfmode = 'clark',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 20, 30, 50],
+      robust = 2.0,
+      gain = 0.05, 
+      imsize = 1000,
+      cell = '0.03arcsec',
+      start='-5km/s',
+      width='0.35km/s',
+      nchan=60, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 1, 
+      threshold = '6mJy',
+      uvtaper = True,
+      outertaper = '0.2arcsec',
+      interactive=True) 
+
+immoments(axis = "spec",imagename=SB1_CO_taper+'.image',moments=[0],outfile =SB1_CO_taper+'_3sigcut.mom0', chans = '3~46', includepix = [.0075,10 ])
+
+SB1_CO_taper2 = field+'_'+tag+'_CO21taper2'
+os.system('rm -rf '+SB1_CO_taper2+'.*')
+clean(vis=CO_cvel, 
+      imagename=SB1_CO_taper2,
+      mode = 'velocity',
+      psfmode = 'hogbom',  
+      imagermode='csclean',
+      weighting = 'briggs',
+      multiscale = [0, 10, 20, 30],
+      robust = 2.0,
+      gain = 0.05, 
+      imsize = 500,
+      cell = '0.08arcsec',
+      start='-5km/s',
+      width='0.35km/s',
+      nchan=60, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      negcomponent=1, 
+      cyclefactor = 5, 
+      threshold = '8mJy',
+      uvtaper = True,
+      outertaper = '0.5arcsec',
+      interactive=True) 
+
+immoments(axis = "spec",imagename=SB1_CO_taper2+'.image',moments=[0],outfile =SB1_CO_taper2+'_3sigcut.mom0', chans = '3~46', includepix = [.0105,10 ])
+immoments(axis = "spec",imagename=SB1_CO_taper2+'.image',moments=[1],outfile =SB1_CO_taper2+'.mom1', chans = '3~46', includepix = [.0175, 10])
 
 

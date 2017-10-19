@@ -278,5 +278,257 @@ clean(vis=SB1_CO_mscontsubsplit,
       threshold = '10mJy',
       interactive=True) 
 
+##################################################################
+##################################################################
+## long baseline data
+##################################################################
+##################################################################
+LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X68/group.uid___A001_X8c5_X69/member.uid___A001_X8c5_X6a/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
+
+LB1_refant = 'DV09'
+tag = 'EB'
+
+# spws 3 and 7 contain the CO 2-1 line, while the others are continuum only
+contspws = '0~7'
+
+flagmanager(vis=LB_vis,mode='save', versionname='before_cont_flags')
+
+# Flag the CO 2-1 line
+# velocity range selected for flagging based on compact configuration data
+flagchannels='3:1880~1950, 7:1880~1950'
+
+flagdata(vis=LB_vis,mode='manual', spw=flagchannels, flagbackup=False, field = field)
+
+# Average the channels within spws
+LB1_initcont = field+'_'+tag+'_initcont.ms'
+os.system('rm -rf ' + LB1_initcont + '*')
+split2(vis=LB_vis,
+       field = field,
+       spw=contspws,      
+       outputvis=LB1_initcont,
+       width=[8,8,8,480, 8, 8, 8, 480], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
+       timebin = '6s',
+       datacolumn='data')
+
+# Restore flagged line channels
+flagmanager(vis=LB_vis,mode='restore',
+            versionname='before_cont_flags')
+
+plotms(vis=LB1_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '30')
+
+#check individual execution blocks
+LB1_initcontimage0 = field+'_'+tag+'_initcontinuum_0'
+os.system('rm -rf '+LB1_initcontimage0+'.*')
+tclean(vis=LB1_initcont, 
+      imagename=LB1_initcontimage0, 
+      specmode='mfs', 
+      deconvolver = 'multiscale',
+      scales = [0, 20, 40, 80], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.3,
+      imsize=2000,
+      cell='0.005arcsec', 
+      niter = 50000,
+      observation = '0', 
+      interactive = True, 
+      nterms = 1)
+
+#4 iterations
+
+LB1_initcontimage1 = field+'_'+tag+'_initcontinuum_1'
+os.system('rm -rf '+LB1_initcontimage1+'.*')
+tclean(vis=LB1_initcont, 
+      imagename=LB1_initcontimage1, 
+      specmode='mfs', 
+      deconvolver = 'multiscale',
+      scales = [0, 20, 40, 80], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.3,
+      imsize=2000,
+      cell='0.005arcsec', 
+      niter = 50000,
+      observation = '1', 
+      interactive = True, 
+      nterms = 1)
+
+#5 iterations
+
+LB1_initcontimage_noSB = field+'_'+tag+'_initcontinuum_noSB'
+os.system('rm -rf '+LB1_initcontimage_noSB+'.*')
+tclean(vis=LB1_initcont, 
+      imagename=LB1_initcontimage_noSB, 
+      specmode='mfs', 
+      deconvolver = 'multiscale',
+      scales = [0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.3,
+      imsize=1500,
+      cell='0.005arcsec', 
+      niter = 50000,
+      interactive = True, 
+      nterms = 1)
+
+#4 iterations
+
+#long baseline and short baseline images look properly aligned
+
+LB1_initcontimage = field+'_'+tag+'_initcontinuum'
+os.system('rm -rf '+LB1_initcontimage+'.*')
+clean(vis=[SB1_contms_final, LB1_initcont], 
+      imagename=LB1_initcontimage, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.1,
+      imsize=2000,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'circle[[1080pix, 890pix], 1arcsec]',
+      imagermode = 'csclean')
+
+#12 iterations
+#rms: 25 microJy/beam
+#peak: 4.7 mJy/beam
+
+#delmod(vis=LB1_initcont,field=field,otf=True)
+
+#clearcal(vis=LB1_initcont)
+
+# First round of phase-only self-cal
+LB1_p1 = field+'_'+tag+'.p1'
+os.system('rm -rf '+LB1_p1)
+gaincal(vis=LB1_initcont, caltable=LB1_p1, gaintype='T', combine = 'spw,scan', 
+        spw=contspws, refant=LB1_refant, calmode='p', 
+        solint='150s', minsnr=2.0, minblperant=4)
+
+applycal(vis=LB1_initcont, spw=contspws, spwmap = [0]*8, gaintable=[LB1_p1], calwt=True, applymode = 'calonly', flagbackup=False)
+
+LB1_contms_p1 = field+'_'+tag+'_contp1.ms'
+os.system('rm -rf '+LB1_contms_p1)
+split2(vis=LB1_initcont, outputvis=LB1_contms_p1, datacolumn='corrected')
+
+LB1_contimagep1 = field+'_'+tag+'_continuump1'
+os.system('rm -rf '+LB1_contimagep1+'.*')
+clean(vis=[SB1_contms_final, LB1_contms_p1], 
+      imagename=LB1_contimagep1, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.1,
+      imsize=2000,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'circle[[1080pix, 890pix], 1arcsec]',
+      imagermode = 'csclean')
+
+#20 iterations
+# rms: 15.4 microJy/beam
+# peak: 6.6 mJy/beam
+
+
+# Second round of phase-only self-cal
+LB1_p2 = field+'_'+tag+'.p2'
+os.system('rm -rf '+LB1_p2)
+gaincal(vis=LB1_contms_p1, caltable=LB1_p2, gaintype='T', combine = 'spw,scan', 
+        spw=contspws, refant=LB1_refant, calmode='p', 
+        solint='90s', minsnr=2.0, minblperant=4)
+
+applycal(vis=LB1_contms_p1, spw=contspws, spwmap = [0]*8, gaintable=[LB1_p2], calwt=True, applymode = 'calonly', flagbackup=False, interp='linearperobs')
+
+LB1_contms_p2 = field+'_'+tag+'_contp2.ms'
+os.system('rm -rf '+LB1_contms_p2)
+split2(vis=LB1_contms_p1, outputvis=LB1_contms_p2, datacolumn='corrected')
+
+
+LB1_contimagep2 = field+'_'+tag+'_continuump2'
+os.system('rm -rf '+LB1_contimagep2+'.*')
+clean(vis=[SB1_contms_final, LB1_contms_p2], 
+      imagename=LB1_contimagep2, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.1,
+      imsize=2000,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'circle[[1080pix, 890pix], 1arcsec]',
+      imagermode = 'csclean')
+
+#23 iterations
+# rms: 14.6 microJy/beam
+# peak: 6.9 mJy/beam
+
+# Third round of phase-only self-cal
+LB1_p3 = field+'_'+tag+'.p3'
+os.system('rm -rf '+LB1_p3)
+gaincal(vis=LB1_contms_p2, caltable=LB1_p3, gaintype='T', combine = 'spw', 
+        spw=contspws, refant=LB1_refant, calmode='p', 
+        solint='60s', minsnr=2.0, minblperant=4)
+
+applycal(vis=LB1_contms_p2, spw=contspws, spwmap = [0]*8, gaintable=[LB1_p3], calwt=True, applymode = 'calonly', flagbackup=False, interp='linearperobs')
+
+LB1_contms_p3 = field+'_'+tag+'_contp3.ms'
+os.system('rm -rf '+LB1_contms_p3)
+split2(vis=LB1_contms_p2, outputvis=LB1_contms_p3, datacolumn='corrected')
+
+LB1_contimagep3 = field+'_'+tag+'_continuump3'
+os.system('rm -rf '+LB1_contimagep3+'.*')
+clean(vis=[SB1_contms_final, LB1_contms_p3], 
+      imagename=LB1_contimagep3, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.1,
+      imsize=2000,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'circle[[1080pix, 890pix], 1arcsec]',
+      imagermode = 'csclean')
+
+#24 iterations
+# rms: 14.2 microJy/beam
+# peak: 7.0 mJy/beam
+
+LB1_contimage_robust0 = field+'_'+tag+'_continuum_robust0'
+os.system('rm -rf '+LB1_contimage_robust0+'.*')
+clean(vis=[SB1_contms_final, LB1_contms_p3], 
+      imagename=LB1_contimage_robust0, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.0,
+      gain = 0.1,
+      imsize=2000,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'circle[[1080pix, 890pix], 1arcsec]',
+      imagermode = 'csclean')
 
 
