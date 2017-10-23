@@ -334,7 +334,7 @@ tclean(vis=LB1_initcont,
       interactive = True, 
       nterms = 1)
 
-#4 iterations
+#4 cycles of 100 iterations each
 
 LB1_initcontimage1 = field+'_'+tag+'_initcontinuum_1'
 os.system('rm -rf '+LB1_initcontimage1+'.*')
@@ -353,7 +353,7 @@ tclean(vis=LB1_initcont,
       interactive = True, 
       nterms = 1)
 
-#5 iterations
+#5 cycles of 100 iterations each
 
 LB1_initcontimage_noSB = field+'_'+tag+'_initcontinuum_noSB'
 os.system('rm -rf '+LB1_initcontimage_noSB+'.*')
@@ -371,7 +371,7 @@ tclean(vis=LB1_initcont,
       interactive = True, 
       nterms = 1)
 
-#4 iterations
+#4 cycles of 100 iterations each
 
 #long baseline and short baseline images look properly aligned
 
@@ -394,7 +394,7 @@ clean(vis=[SB1_contms_final, LB1_initcont],
       mask = 'circle[[1080pix, 890pix], 1arcsec]',
       imagermode = 'csclean')
 
-#12 iterations
+#12 cycles of 100 iterations each
 #rms: 25 microJy/beam
 #peak: 4.7 mJy/beam
 
@@ -415,6 +415,7 @@ LB1_contms_p1 = field+'_'+tag+'_contp1.ms'
 os.system('rm -rf '+LB1_contms_p1)
 split2(vis=LB1_initcont, outputvis=LB1_contms_p1, datacolumn='corrected')
 
+
 LB1_contimagep1 = field+'_'+tag+'_continuump1'
 os.system('rm -rf '+LB1_contimagep1+'.*')
 clean(vis=[SB1_contms_final, LB1_contms_p1], 
@@ -434,7 +435,8 @@ clean(vis=[SB1_contms_final, LB1_contms_p1],
       mask = 'circle[[1080pix, 890pix], 1arcsec]',
       imagermode = 'csclean')
 
-#20 iterations
+
+#20 cycles of 100 iterations each
 # rms: 15.4 microJy/beam
 # peak: 6.6 mJy/beam
 
@@ -472,7 +474,7 @@ clean(vis=[SB1_contms_final, LB1_contms_p2],
       mask = 'circle[[1080pix, 890pix], 1arcsec]',
       imagermode = 'csclean')
 
-#23 iterations
+#23 cycles of 100 iterations each
 # rms: 14.6 microJy/beam
 # peak: 6.9 mJy/beam
 
@@ -508,7 +510,7 @@ clean(vis=[SB1_contms_final, LB1_contms_p3],
       mask = 'circle[[1080pix, 890pix], 1arcsec]',
       imagermode = 'csclean')
 
-#24 iterations
+#24 cycles of 100 iterations each
 # rms: 14.2 microJy/beam
 # peak: 7.0 mJy/beam
 
@@ -531,4 +533,5 @@ clean(vis=[SB1_contms_final, LB1_contms_p3],
       mask = 'circle[[1080pix, 890pix], 1arcsec]',
       imagermode = 'csclean')
 
+##22 cycles of 100 iterations each
 
