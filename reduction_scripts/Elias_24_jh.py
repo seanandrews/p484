@@ -15,7 +15,7 @@ field = 'Elias_24'
 ##################################################################
 ##################################################################
 
-SB1 = '/data/sandrews/LP/archival/2013.1.00498.S/science_goal.uid___A001_X13a_Xeb/group.uid___A001_X13a_Xec/member.uid___A001_X13a_Xed/calibrated/uid___A002_Xa657ad_X736.ms.split.cal' #replace as appropriate
+SB1 = 'uid___A002_Xa657ad_X736.ms.split.cal' #replace as appropriate
 SB1refant = 'DV09'
 tag = 'SB1'
 
@@ -249,4 +249,157 @@ clean(vis=SB1_CO_cvel,
 
 
 
+##################################################################
+##################################################################
+## long baseline data
+##################################################################
+##################################################################
+LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X4c/group.uid___A001_X8c5_X4d/member.uid___A001_X8c5_X4e/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
+field = 'Elias_24' 
+
+LB1_refant = 'DA61, DV24'
+tag = 'EB'
+
+# spws 3 and 7 contain the CO 2-1 line, while the others are continuum only
+contspws = '0~7'
+
+flagmanager(vis=LB_vis,mode='save', versionname='before_cont_flags')
+
+# Flag the CO 2-1 line
+# velocity range selected for flagging based on compact configuration data
+flagchannels='3:1880~1970, 7:1880~1970'
+
+flagdata(vis=LB_vis,mode='manual', spw=flagchannels, flagbackup=False, field = field)
+
+# Average the channels within spws
+LB1_initcont = field+'_'+tag+'_initcont.ms'
+os.system('rm -rf ' + LB1_initcont + '*')
+split2(vis=LB_vis,
+       field = field,
+       spw=contspws,      
+       outputvis=LB1_initcont,
+       width=[8,8,8,480, 8, 8, 8, 480], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
+       timebin = '6s',
+       datacolumn='data')
+
+# Restore flagged line channels
+flagmanager(vis=LB_vis,mode='restore',
+            versionname='before_cont_flags')
+
+plotms(vis=LB1_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '30')
+
+#check individual execution blocks
+LB1_initcontimage0 = field+'_'+tag+'_initcontinuum_0'
+os.system('rm -rf '+LB1_initcontimage0+'.*')
+clean(vis=LB1_initcont, 
+      observation = '0', 
+      imagename=LB1_initcontimage0, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 60], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.3,
+      imsize=2400,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'ellipse[[1164pix, 1072pix], [1.5arcsec,1.5arcsec],0deg]',
+      imagermode = 'csclean')
+
+
+#20 cycles of 100 iterations each 
+
+LB1_initcontimage1 = field+'_'+tag+'_initcontinuum_1'
+os.system('rm -rf '+LB1_initcontimage1+'.*')
+clean(vis=LB1_initcont, 
+      observation = '1', 
+      imagename=LB1_initcontimage1, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160, 320], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.3,
+      imsize=2400,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'ellipse[[1164pix, 1072pix], [1.5arcsec,1.5arcsec],0deg]',
+      imagermode = 'csclean')
+
+
+#22 cycles of 100 iterations each
+
+#long baseline and short baseline images look properly aligned
+
+
+concat(vis = [SB1_contms_final, LB1_initcont], concatvis = 'Elias_24_contcombined.ms', dirtol = '1arcsec', copypointing = False) 
+
+
+
+LB1_initcontimage = field+'_'+tag+'_initcontinuum'
+os.system('rm -rf '+LB1_initcontimage+'.*')
+clean(vis='Elias_24_contcombined.ms', 
+      imagename=LB1_initcontimage, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160, 320], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.1,
+      imsize=2400,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'ellipse[[1083pix, 1265pix], [1.5arcsec,1.5arcsec],0deg]',
+      imagermode = 'csclean')
+
+#80 cycles of 100 iterations each
+#rms: 18.5 microJy/beam
+#peak: 4.6 mJy/beam
+
+#delmod(vis=LB1_initcont,field=field,otf=True)
+
+#clearcal(vis=LB1_initcont)
+
+# First round of phase-only self-cal
+LB1_p1 = field+'_'+tag+'.p1'
+os.system('rm -rf '+LB1_p1)
+gaincal(vis='Elias_24_contcombined.ms', caltable=LB1_p1, gaintype='T', combine = 'spw,scan', 
+        spw='0~15', refant=LB1_refant, calmode='p', 
+        solint='150s', minsnr=2.0, minblperant=4)
+
+applycal(vis='Elias_24_contcombined.ms', spw='0~15', spwmap = [0]*16, gaintable=[LB1_p1], calwt=True, applymode = 'calonly', flagbackup=False, interp = 'linearperobs')
+
+tag = 'combined'
+
+LB1_contms_p1 = field+'_'+tag+'_contp1.ms'
+os.system('rm -rf '+LB1_contms_p1)
+split2(vis='Elias_24_contcombined.ms', outputvis=LB1_contms_p1, datacolumn='corrected')
+
+LB1_contimagep1 = field+'_'+tag+'_continuump1'
+os.system('rm -rf '+LB1_contimagep1+'.*')
+clean(vis=LB1_contms_p1, 
+      imagename=LB1_contimagep1, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160, 320], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.1,
+      imsize=2400,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'ellipse[[1083pix, 1265pix], [1.5arcsec,1.5arcsec],0deg]',
+      imagermode = 'csclean')
 
