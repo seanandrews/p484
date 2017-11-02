@@ -403,3 +403,67 @@ clean(vis=LB1_contms_p1,
       mask = 'ellipse[[1083pix, 1265pix], [1.5arcsec,1.5arcsec],0deg]',
       imagermode = 'csclean')
 
+#90 cycles of 100 iterations each
+#rms: 17.5 microJy/beam
+#peak: 4.7 mJy/beam
+
+
+# Second round of phase-only self-cal
+LB1_p2 = field+'_'+tag+'.p2'
+os.system('rm -rf '+LB1_p2)
+gaincal(vis=LB1_contms_p1, caltable=LB1_p2, gaintype='T', combine = 'spw, scan', 
+        spw='0~15', refant=LB1_refant, calmode='p', 
+        solint='90s', minsnr=2.0, minblperant=4)
+
+applycal(vis=LB1_contms_p1, spw='0~15', spwmap = [0]*16, gaintable=[LB1_p2], calwt=True, applymode = 'calonly', flagbackup=False, interp = 'linearperobs')
+
+LB1_contms_p2 = field+'_'+tag+'_contp2.ms'
+os.system('rm -rf '+LB1_contms_p2)
+split2(vis=LB1_contms_p1, outputvis=LB1_contms_p2, datacolumn='corrected')
+
+
+LB1_contimagep2 = field+'_'+tag+'_continuump2'
+os.system('rm -rf '+LB1_contimagep2+'.*')
+clean(vis= LB1_contms_p2, 
+      imagename=LB1_contimagep2, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160, 320], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.1,
+      imsize=2400,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      threshold = '0.06mJy',
+      mask = 'ellipse[[1083pix, 1265pix], [1.5arcsec,1.5arcsec],0deg]',
+      imagermode = 'csclean')
+
+#95 cycles of 100 iterations each
+#rms: 17.5 microJy/beam
+#peak: 4.8 mJy/beam
+
+LB1_contimage_uniform = field+'_'+tag+'_continuum_uniform'
+os.system('rm -rf '+LB1_contimage_uniform+'.*')
+clean(vis= LB1_contms_p2, 
+      imagename=LB1_contimage_uniform, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160, 320], 
+      weighting='uniform', 
+      gain = 0.1,
+      imsize=2400,
+      cell='0.003arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask = 'ellipse[[1083pix, 1265pix], [1.5arcsec,1.5arcsec],0deg]',
+      imagermode = 'csclean')
+
+#30 cycles of 100 iterations each
+
+
