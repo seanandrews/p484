@@ -286,7 +286,7 @@ clean(vis=SB1_CO_mscontsubsplit,
 LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X68/group.uid___A001_X8c5_X69/member.uid___A001_X8c5_X6a/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
 
 LB1_refant = 'DV09'
-tag = 'EB'
+tag = 'LB'
 
 # spws 3 and 7 contain the CO 2-1 line, while the others are continuum only
 contspws = '0~7'

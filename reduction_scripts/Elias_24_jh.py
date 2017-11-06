@@ -258,7 +258,7 @@ LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X4c/grou
 field = 'Elias_24' 
 
 LB1_refant = 'DA61, DV24'
-tag = 'EB'
+tag = 'LB'
 
 # spws 3 and 7 contain the CO 2-1 line, while the others are continuum only
 contspws = '0~7'
