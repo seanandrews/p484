@@ -167,7 +167,7 @@ def makeImage(vis,                     imagename,         mask=None,
               mode=MODE,               psfmode=PSFMODE,   imagermode=IMAGERMODE,
               weighting=WEIGHTING,     robust=ROBUST,     gain=GAIN,
               imsize=IMSIZE,           cell=CELL,         multiscale=MULTISCALE,   
-              cyclefactor=CYCLEFACTOR, interactive=True):
+              cyclefactor=CYCLEFACTOR, usescratch=True,   interactive=True):
     print ''
     print '*** Creating continuum image %s from %s with niter=%d' % (imagename, vis, niter)
     os.system('rm -rf %s.*' % imagename)
@@ -187,6 +187,7 @@ def makeImage(vis,                     imagename,         mask=None,
           imsize=imsize,
           cell=cell,
           multiscale=multiscale,
+          usescratch=usescratch,
           interactive=interactive)
 
 
@@ -265,15 +266,16 @@ contimage = field + '_ap1continuum'
 # makeImage(vis, imagename=contimage, mask=mask, niter=10000, interactive=False)
 
 # Concatenate LB and SB visibilities
-vis_output = 'AS_209_contfinal.ms'
+vis_output = 'AS_209_contmerged.ms'
 os.system('rm -rf %s' % vis_output)
+vis = LB1
 visFiles = [SB1, SB2, SB3, vis]
 print ''
 print '*** Merging visibilities into %s' % vis_output
 print '*** Input = %s' % str(visFiles)
 concat(visFiles, concatvis=vis_output, dirtol = '1arcsec', copypointing = False)
 
-# Make combined (LB+SB) image
+# First round of selfcal on combined LB+SB image
 print ''
 print '*** Creating images using ',vis
 vis = vis_output
@@ -283,21 +285,22 @@ contimage = field + '_combined_contin'
 nspw = getNspw(vis)
 spw = '0~%d' % (nspw-1)
 spwmap = [0] * nspw
-makeImage(vis, imagename=contimage, mask=mask, niter=100, robust=2)
-"""
-This selfcal does not work. I get the error message:
-2017-11-12 03:34:11     SEVERE  Calibrater::solve       Caught exception: Failure to load /pool/firebolt1/LPscratch/AS_209/as_209_SB2_contap1.ms/SOURCE/FT_MODEL7909_14928 image from disk
-2017-11-12 03:34:11     SEVERE          Exception Reported: Error in Calibrater::solve.
-*** Error *** Error in Calibrater::solve.
-2017-11-12 03:34:11     SEVERE  gaincal::::     Error in gaincal: Error in Calibrater::solve.
-2017-11-12 03:34:11     SEVERE  gaincal::::     An error occurred running task gaincal.
-2017-11-12 03:34:11     WARN    plotcal::utils::verify  Argument caltable failed to verify.
-2017-11-12 03:34:11     SEVERE  plotcal::::     An error occurred running task plotcal.
+makeImage(vis, imagename=contimage, mask=mask, niter=10000, robust=2.0, interactive=False)
+runSelfcal(vis, caltable=caltable, gaintype='T', combine='spw,scan', spw=spw, spwmap=spwmap, refant=refant, calmode='p', solint='30s', outputvis=vis_selfcal)
+makeImage(vis_selfcal, imagename='test_30_r2', mask=mask, niter=10000, robust=0.5, interactive=False)
+stop
 
-*** Running applycal on AS_209_contfinal.ms
-2017-11-12 03:34:28     SEVERE  applycal::::    Exception Reported: Table AS_209_gaincal.p3 does not exist.
-*** Error *** Table AS_209_gaincal.p3 does not exist.
-2017-11-12 03:34:28     SEVERE  applycal::::    Error in applycal: Table AS_209_gaincal.p3 does not exist.
-2017-11-12 03:34:28     SEVERE  applycal::::    An error occurred running task applycal.
-"""
-runSelfcal(vis, caltable=caltable, gaintype='T', combine='spw,scan', spw=spw, spwmap=spwmap, refant=refant, calmode='p', solint='60s', outputvis=vis_selfcal)
+# Second round of selfcal on combined LB+SB image
+print ''
+print '*** Creating images using ',vis
+vis = vis_selfcal
+caltable      = field + '_gaincal.p4'
+vis_selfcal   = field + '_contp4.ms'
+contimage = field + '_combined2_contin'
+makeImage(vis, imagename=contimage, mask=mask, niter=10000, robust=0.5, interactive=False)
+runSelfcal(vis, caltable=caltable, gaintype='T', combine='spw,scan', spw=spw, spwmap=spwmap, refant=refant, calmode='p', outputvis=vis_selfcal, solint='90s')
+
+# Make final image
+vis = vis_selfcal
+contimage = field + '_final'
+makeImage(vis, imagename=contimage, mask=mask, niter=10000, robust=0.0, interactive=False)
