@@ -786,8 +786,9 @@ clean(vis=[SB1_CO_averaged, SB2_CO_cvel],
 
 
 LB1_refant = 'DA64'
-tag = 'EB'
-print "SPLITTING OUT AND AVERAGING CONTINUUM DATA"
+tag = 'LB'
+
+LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X94/group.uid___A001_X8c5_X95/member.uid___A001_X8c5_X96/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
 
 
 # spws 3 and 7 contain the CO 2-1 line, while the others are continuum only
@@ -1097,4 +1098,38 @@ clean(vis=LB1_contms_p4,
 #peak: 8.0 microJy/beam
 
 #marginal improvement over previous round 
+
+LB1_contimage_robust0 = field+'_'+tag+'_continuum_robust0'
+os.system('rm -rf '+LB1_contimage_robust0+'.*')
+clean(vis=LB1_contms_p4, 
+      imagename=LB1_contimage_robust0, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.0,
+      gain = 0.1,
+      imsize=2000,
+      cell='0.005arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      mask='ellipse[[1000pix,1000pix],[2.3arcsec,1.6arcsec],140deg]',
+      imagermode = 'csclean')
+
+#165 cycles of 100 iterations each 
+
+
+###############################################
+######## CO data reduction
+tag = 'LB'
+LB_CO_ms = field+'_'+tag+'_CO21.ms'
+os.system('rm -rf ' + LB_CO_ms + '*')
+split2(vis=LB_vis,
+       field = field,
+       spw='3,7',      
+       outputvis=LB_CO_ms,
+       timebin = '6s',
+       datacolumn='data')
 
