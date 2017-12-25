@@ -790,6 +790,12 @@ tag = 'LB'
 
 LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X94/group.uid___A001_X8c5_X95/member.uid___A001_X8c5_X96/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
 
+#rescaling the flux for the second execution because the fluxes for J1924-2914 are different for the back-to-back executions
+#flux value of J1924-2914 at 232 GHz for the first execution block: 3.4458 Jy
+#flux value of J1924-2914 for the second execution block:  3.13 Jy
+
+gencal(vis = LB_vis, caltable = 'scale.gencal', caltype = 'amp', parameter = [0.953])
+applycal(vis = LB_vis, gaintable = ['scale.gencal'], calwt = T, flagbackup = F, spw = '4~7')
 
 # spws 3 and 7 contain the CO 2-1 line, while the others are continuum only
 contspws = '0~7'
@@ -813,7 +819,7 @@ split2(vis=LB_vis,
        outputvis=LB1_initcont,
        width=[8,8,8,480, 8, 8, 8, 480], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
        timebin = '6s',
-       datacolumn='data')
+       datacolumn='corrected')
 
 # Restore flagged line channels
 flagmanager(vis=LB_vis,mode='restore',
@@ -828,49 +834,7 @@ clean(vis=LB1_initcont,
       observation = '0', 
       imagename=LB1_initcontimage0, 
       mode='mfs', 
-      multiscale = [0, 20, 40, 80], 
-      weighting='briggs', 
-      robust=0.5,
-      gain = 0.1,
-      imsize=2000,
-      cell='0.005arcsec', 
-      niter = 50000,
-      interactive = True, 
-      usescratch = True,
-      psfmode = 'hogbom',
-      cyclefactor = 5, 
-      imagermode = 'csclean')
-
-
-#25 cycles of 100 iterations each 
-
-LB1_initcontimage1 = field+'_'+tag+'_initcontinuum_1'
-os.system('rm -rf '+LB1_initcontimage1+'.*')
-clean(vis=LB1_initcont, 
-      observation = '0', 
-      imagename=LB1_initcontimage0, 
-      mode='mfs', 
-      multiscale = [0, 20, 40, 80], 
-      weighting='briggs', 
-      robust=0.5,
-      gain = 0.1,
-      imsize=2000,
-      cell='0.005arcsec', 
-      niter = 50000,
-      interactive = True, 
-      usescratch = True,
-      psfmode = 'hogbom',
-      cyclefactor = 5, 
-      imagermode = 'csclean')
-
-#32 cycles of 100 iterations each 
-
-LB1_initcontimage_LBonly = field+'_'+tag+'_initcontinuum_LBonly'
-os.system('rm -rf '+LB1_initcontimage_LBonly+'.*')
-clean(vis=LB1_initcont,  
-      imagename=LB1_initcontimage_LBonly, 
-      mode='mfs', 
-      multiscale = [0, 20, 40, 80], 
+      multiscale =[0, 20, 40, 80, 160], 
       weighting='briggs', 
       robust=0.5,
       gain = 0.3,
@@ -883,16 +847,58 @@ clean(vis=LB1_initcont,
       cyclefactor = 5, 
       imagermode = 'csclean')
 
-#20 cycles of 100 iterations each
+
+#20 cycles of 100 iterations each 
+
+LB1_initcontimage1 = field+'_'+tag+'_initcontinuum_1'
+os.system('rm -rf '+LB1_initcontimage1+'.*')
+clean(vis=LB1_initcont, 
+      observation = '1', 
+      imagename=LB1_initcontimage1, 
+      mode='mfs', 
+      multiscale = [0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.3,
+      imsize=2000,
+      cell='0.005arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      imagermode = 'csclean')
+
+#18 cycles of 100 iterations each 
+
+LB1_initcontimage_LBonly = field+'_'+tag+'_initcontinuum_LBonly'
+os.system('rm -rf '+LB1_initcontimage_LBonly+'.*')
+clean(vis=LB1_initcont,  
+      imagename=LB1_initcontimage_LBonly, 
+      mode='mfs', 
+      multiscale =[0, 20, 40, 80, 160], 
+      weighting='briggs', 
+      robust=0.5,
+      gain = 0.3,
+      imsize=2000,
+      cell='0.005arcsec', 
+      niter = 50000,
+      interactive = True, 
+      usescratch = True,
+      psfmode = 'hogbom',
+      cyclefactor = 5, 
+      imagermode = 'csclean')
+
+#25 cycles of 100 iterations each
 
 #there seems to be a rather large offset between the long-baseline and short-baseline images
-#fixvis will be used to mitigate the shift, and self-cal should deal with the remaining offset. 
+#fixvis will be used to align the image centroids, and self-cal should deal with the remaining offset. 
 
 os.system('rm -rf '+LB1_initcont+'.shift')
 fixvis(vis=LB1_initcont, outputvis=LB1_initcont+'.shift',
-       datacolumn='data', phasecenter='J2000 17h56m21.278s -21d57m22.578s')
+       datacolumn='data', phasecenter='J2000 17h56m21.279s -21d57m22.583s')
 
-fixplanets(vis=LB1_initcont+'.shift', field = '0', fixuvw=False, direction='J2000 17h56m21.278s -21d57m22.42s')
+fixplanets(vis=LB1_initcont+'.shift', field = field, fixuvw=False, direction='J2000 17h56m21.278s -21d57m22.421s')
 
 #check that results look reasonable
 LB1_initcontimage_fixvis = field+'_'+tag+'_initcontinuum_fixvis'
@@ -900,7 +906,7 @@ os.system('rm -rf '+LB1_initcontimage_fixvis+'.*')
 clean(vis=LB1_initcont+'.shift',  
       imagename=LB1_initcontimage_fixvis, 
       mode='mfs', 
-      multiscale = [0, 20, 40, 80], 
+      multiscale = [0, 20, 40, 80, 160], 
       weighting='briggs', 
       robust=0.5,
       gain = 0.3,
@@ -913,7 +919,7 @@ clean(vis=LB1_initcont+'.shift',
       cyclefactor = 5, 
       imagermode = 'csclean')
 
-#20 cycles of 100 iterations each
+#27 cycles of 100 iterations each
 
 
 concat(vis = [SB1_contms_final, SB2_contms_final, LB1_initcont+'.shift'], concatvis = 'HD_163296_contcombined.ms', dirtol = '1arcsec', copypointing = False) 
@@ -939,8 +945,8 @@ clean(vis='HD_163296_contcombined.ms',
 
 #70 cycles of 100 iterations each
 
-#rms: 52 microJy/beam
-#peak: 7 microJy/beam
+#rms: 43 microJy/beam
+#peak: 7.4 microJy/beam
 
 
 #delmod(vis=LB1_initcont,field=field,otf=True)
@@ -948,20 +954,22 @@ clean(vis='HD_163296_contcombined.ms',
 #clearcal(vis=LB1_initcont)
 
 # First round of phase-only self-cal
+tag = 'combined'
+
 LB1_p1 = field+'_'+tag+'.p1'
 os.system('rm -rf '+LB1_p1)
 gaincal(vis='HD_163296_contcombined.ms', caltable=LB1_p1, gaintype='T', combine = 'spw,scan', 
-        spw='0~23', refant=LB1_refant, calmode='p', 
-        solint='150s', minsnr=2.0, minblperant=4)
+        spw='0~23', refant='DA64, DA44, DA63, DA48', calmode='p', 
+        solint='120s', minsnr=2.0, minblperant=4)
 
 applycal(vis='HD_163296_contcombined.ms', spw='0~23', spwmap = [0]*24, gaintable=[LB1_p1], applymode = 'calonly', flagbackup=False, interp = 'linearperobs')
 
-tag = 'combined'
+
 
 LB1_contms_p1 = field+'_'+tag+'_contp1.ms'
 os.system('rm -rf '+LB1_contms_p1)
 split2(vis='HD_163296_contcombined.ms', outputvis=LB1_contms_p1, datacolumn='corrected')
-
+"""
 LB1_contimagep1 = field+'_'+tag+'_continuump1'
 os.system('rm -rf '+LB1_contimagep1+'.*')
 clean(vis=LB1_contms_p1, 
@@ -990,7 +998,7 @@ clean(vis=LB1_contms_p1,
 LB1_p2 = field+'_'+tag+'.p2'
 os.system('rm -rf '+LB1_p2)
 gaincal(vis=LB1_contms_p1, caltable=LB1_p2, gaintype='T', combine = 'spw', 
-        spw='0~23', refant=LB1_refant, calmode='p', 
+        spw='0~23', refant='DA64, DA44, DA63, DA48', calmode='p', 
         solint='60s', minsnr=2.0, minblperant=4)
 
 applycal(vis=LB1_contms_p1, spw='0~23', spwmap = [0]*24, gaintable=[LB1_p2], applymode = 'calonly', flagbackup=False, interp = 'linearperobs')
@@ -1132,4 +1140,5 @@ split2(vis=LB_vis,
        outputvis=LB_CO_ms,
        timebin = '6s',
        datacolumn='data')
+"""
 
