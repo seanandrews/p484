@@ -1,0 +1,66 @@
+notes from telecon on 2018 / 01 / 08
+------------------------------------
+
+participants: Andrews, Birnstiel, Carpenter, Dullemond, Guzman, Isella, Perez, 
+              Ricci, Wilner, Zhu
+unavailable:  Bai, Benisty, Huang, Hughes, Oberg
+
+- update on data delivery:
+	- now have 13/20 datasets in hand
+	- update from NAASC on 12/22:
+		- RU Lup, Sz 129 went into pipeline on 12/20
+		- IM Lup had some problem in pipeline; now manual
+		- HD 143006, Sz 114, AS 205, DoAr 25 need JAO to "time out":
+			- HD 143006 has 2x EBs, but only 1.78 rate
+			- John says this hasn't quite been done, but should be 
+			  settled this week; we're unclear on timescale for 
+			  delivery after that (quick, or back in pipeline?)
+		- DoAr 25 has a semipass EB too; will be delivered raw, but we 
+		  might want to do a manual calibration
+	 
+- update on data calibration:
+	- preliminary combined calibrations for ~9 targets
+	- some pitfalls identified, but generally data are in good shape
+		- check flux cal, look out for subtle astrometric shifts 
+		  (especially in cases where there's a large distance to phase
+		  calibrator; Oph disks generally in good shape)
+	- I have updated calibration wiki:
+		- check that your roles are up to date
+		- Andrea, Laura will get new data staged later this week
+		  (Jane on vacation, and we're running into space issues)
+		- if you can, feel free to volunteer as a 2nd reducer (just 
+	 	  replace one with my name on it)
+	- We will have a more detailed telecon discussion on calibration issues
+	  sometime in January; exact date / time TBD 
+	- goals:
+		- >60% of sample with analysis-ready products by next telecon
+		- 100% of sample with analysis-ready products by end of Feb
+		- if you can't meet goals you've signed up (and please be 
+		  realistic), let me know ASAP: its fine, but we need to be on 
+		  top of it sooner rather than later
+
+- science / preparation:
+	- Zhaohuan planet-disk interaction simulations
+		- FARGO + particle; various masses (Earths to Jupiters), alpha
+		- large alpha --> ring structure gets wider (gap depth and ring
+		  width correlated, tells you about diffusion); if alpha < 1e-3
+		  rings are unresolved
+		- lots of vortices: polygon features (m = 5, 6 mode) from RWI 
+		  in linear stage, but they don't last long
+	- Kees / Til thoughts on their meeting last month
+		- setup made; ready to investigate dust evolution in rings
+		- simple procedure, but ~10s per setup (gas pressure profile + 
+		  alpha), so can fit and study general behavior without a fixed
+		  reason for perturbations (i.e., planets in mind, but can be 
+		  generalized for other cases)
+		- some discussion of details: Zhaohuan should be in the loop!
+		- looking at AS 209: FWHM of outer rings is 2-3 beams, means 
+		  there is hope for degenerate limit on alpha, grain sizes
+	- Viviana playing with Gaussian ring models for AS 209 (by eye):
+		- getting hexagonal shape in simulations (PSF artifact)
+		- Kees: wouldn't expect "aligned" hexagons, since they should 
+		  move at different rates at different distances from star
+
+- misc:
+	- Andrea: AS 205 hydro simulations (Shangfei Liu); will update in Feb
+	- start preparing for proposals (first discussions in Feb)
