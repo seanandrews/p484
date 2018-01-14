@@ -1006,6 +1006,98 @@ clean(vis= LB1_contms_p2,
       imagermode = 'csclean')
 #111 cycles of 100 iterations each 
 
+#CO data reduction
+
+LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X60/group.uid___A001_X8c5_X61/member.uid___A001_X8c5_X62/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
+field = 'AS_209' 
+
+split2(vis=LB_vis,
+       field = field,
+       spw='3,7',      
+       outputvis='AS_209_LB_CO.ms',
+       timebin = '6s',
+       datacolumn='data')
 
 
+applycal(vis='AS_209_LB_CO.ms',  spw='0~1', spwmap = [[0,0],[0,0]], gaintable=[LB1_p1, LB1_p2], applymode = 'calonly', flagbackup=False)
 
+fitspw = '0:0~1870;1970~3839, 1:0~1870;1970~3839' # channels for fitting continuum
+uvcontsub(vis='AS_209_LB_CO.ms',
+          spw='0~1', 
+          fitspw=fitspw, 
+          excludechans=False, 
+          solint='int',
+          fitorder=1,
+          want_cont=False) 
+
+#switch to CASA 5.0
+
+
+SB2_CO_cvel = SB2_CO_mscontsub+'.cvel'
+
+os.system('rm -rf '+ CO_cvel)
+mstransform(vis = SB1_CO_mscontsub, outputvis = CO_cvel,  keepflags = False,datacolumn = 'data', regridms = True,mode='velocity',start='-4km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
+
+os.system('rm -rf '+ SB2_CO_cvel)
+mstransform(vis = SB2_CO_mscontsub, outputvis = SB2_CO_cvel,  keepflags = False,datacolumn = 'data', regridms = True,mode='velocity',start='-4km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
+mstransform(vis = 'AS_209_LB_CO.ms.contsub', outputvis = 'AS_209_LB_CO21.ms.contsub.cvel',  keepflags = False,datacolumn = 'data', regridms = True,mode='velocity',start='-4km/s',width='0.35km/s',nchan=60, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+
+os.system('rm -rf AS_209_CO21test1.*')
+tclean(vis=['AS_209_SB1_CO21.ms.contsub.cvel', 'as_209_SB2_CO21.ms.contsub.cvel', 'AS_209_LB_CO21.ms.contsub.cvel'], 
+      imagename='AS_209_CO21test1',
+      specmode = 'cube',
+      imsize=1500, 
+      deconvolver = 'multiscale',  
+      start='-4km/s',
+      width='0.35km/s',
+      nchan=60, 
+      cycleniter = 100, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      cell='0.01arcsec', 
+      scales=[0,10,25,75,150,250], 
+      gain=0.1,
+      weighting='briggs', 
+      robust=1.0,
+      cyclefactor = 5, 
+      niter = 100000,
+      interactive=True, 
+      nterms = 1, 
+      threshold = '3mJy',
+      restoringbeam = 'common') 
+
+immoments(axis = "spec",imagename='AS_209_CO21test1.image',moments=[0],outfile ='AS_209_CO21test1.mom0.clipped', includepix = [.002,10])
+
+immoments(axis = "spec",imagename='AS_209_CO21test1.image',moments=[8],outfile ='AS_209_CO21test1.mom8')
+
+os.system('rm -rf AS_209_CO21test2.*')
+tclean(vis=['AS_209_SB1_CO21.ms.contsub.cvel', 'AS_209_LB_CO21.ms.contsub.cvel'], 
+      imagename='AS_209_CO21test2',
+      specmode = 'cube',
+      imsize=1500, 
+      deconvolver = 'multiscale',  
+      start='-4km/s',
+      width='0.35km/s',
+      nchan=60, 
+      cycleniter = 100, 
+      outframe='LSRK', 
+      veltype='radio', 
+      restfreq='230.53800GHz',
+      cell='0.01arcsec', 
+      scales=[0,10,25,75,150,250], 
+      gain=0.1,
+      weighting='briggs', 
+      robust=1.0,
+      cyclefactor = 5, 
+      niter = 100000,
+      interactive=True, 
+      nterms = 1, 
+      threshold = '3mJy',
+      restoringbeam = 'common') 
+
+immoments(axis = "spec",imagename='AS_209_CO21test2.image',moments=[0],outfile ='AS_209_CO21test2.mom0.clipped', includepix = [.002,10])
+
+immoments(axis = "spec",imagename='AS_209_CO21test2.image',moments=[8],outfile ='AS_209_CO21test2.mom8')
