@@ -969,7 +969,7 @@ applycal(vis='HD_163296_contcombined.ms', spw='0~23', spwmap = [0]*24, gaintable
 LB1_contms_p1 = field+'_'+tag+'_contp1.ms'
 os.system('rm -rf '+LB1_contms_p1)
 split2(vis='HD_163296_contcombined.ms', outputvis=LB1_contms_p1, datacolumn='corrected')
-"""
+
 LB1_contimagep1 = field+'_'+tag+'_continuump1'
 os.system('rm -rf '+LB1_contimagep1+'.*')
 clean(vis=LB1_contms_p1, 
@@ -991,8 +991,8 @@ clean(vis=LB1_contms_p1,
 
 #120 cycles of 100 iterations each
 
-#rms: 26 microJy/beam
-#peak: 7.5 microJy/beam
+#rms: 23 microJy/beam
+#peak: 80 microJy/beam
 
 # Second round of phase-only self-cal
 LB1_p2 = field+'_'+tag+'.p2'
@@ -1023,20 +1023,21 @@ clean(vis=LB1_contms_p2,
       usescratch = True,
       psfmode = 'hogbom',
       cyclefactor = 5, 
-      mask='ellipse[[1000pix,1000pix],[2.3arcsec,1.6arcsec],140deg]',
+      mask='ellipse[[1000pix,1000pix],[2.4arcsec,1.7arcsec],140deg]',
       imagermode = 'csclean')
+
 
 #130 cycles of 100 iterations each
 
-#rms: 24 microJy/beam
-#peak: 7.8 microJy/beam
+#rms: 22 microJy/beam
+#peak: 8.2 microJy/beam
 
 
 # third round of phase-only self-cal
 LB1_p3 = field+'_'+tag+'.p3'
 os.system('rm -rf '+LB1_p3)
 gaincal(vis=LB1_contms_p2, caltable=LB1_p3, gaintype='T', combine = 'spw', 
-        spw='0~23', refant=LB1_refant, calmode='p', 
+        spw='0~23', refant='DA64, DA44, DA63, DA48', calmode='p', 
         solint='30s', minsnr=2.0, minblperant=4)
 
 applycal(vis=LB1_contms_p2, spw='0~23', spwmap = [0]*24, gaintable=[LB1_p3], applymode = 'calonly', flagbackup=False, interp = 'linearperobs')
@@ -1061,55 +1062,17 @@ clean(vis=LB1_contms_p3,
       usescratch = True,
       psfmode = 'hogbom',
       cyclefactor = 5, 
-      mask='ellipse[[1000pix,1000pix],[2.3arcsec,1.6arcsec],140deg]',
+      mask='ellipse[[1000pix,1000pix],[2.4arcsec,1.7arcsec],140deg]',
       imagermode = 'csclean')
 
 #135 cycles of 100 iterations each 
-#rms: 21 microJy/beam
-#peak: 8.0 microJy/beam
+#rms: 19 microJy/beam
+#peak: 8.4 microJy/beam
 
-# fourth round of phase-only self-cal
-LB1_p4 = field+'_'+tag+'.p4'
-os.system('rm -rf '+LB1_p4)
-gaincal(vis=LB1_contms_p3, caltable=LB1_p4, gaintype='T', combine = 'spw', 
-        spw='0~23', refant=LB1_refant, calmode='p', 
-        solint='15s', minsnr=2.0, minblperant=4)
-
-applycal(vis=LB1_contms_p3, spw='0~23', spwmap = [0]*24, gaintable=[LB1_p4], applymode = 'calonly', flagbackup=False, interp = 'linearperobs')
-
-
-LB1_contms_p4 = field+'_'+tag+'_contp4.ms'
-os.system('rm -rf '+LB1_contms_p4)
-split2(vis=LB1_contms_p3, outputvis=LB1_contms_p4, datacolumn='corrected')
-
-LB1_contimagep4 = field+'_'+tag+'_continuump4'
-os.system('rm -rf '+LB1_contimagep4+'.*')
-clean(vis=LB1_contms_p4, 
-      imagename=LB1_contimagep4, 
-      mode='mfs', 
-      multiscale = [0, 20, 40, 80, 160], 
-      weighting='briggs', 
-      robust=0.5,
-      gain = 0.1,
-      imsize=2000,
-      cell='0.005arcsec', 
-      niter = 50000,
-      interactive = True, 
-      usescratch = True,
-      psfmode = 'hogbom',
-      cyclefactor = 5, 
-      mask='ellipse[[1000pix,1000pix],[2.3arcsec,1.6arcsec],140deg]',
-      imagermode = 'csclean')
-
-#136 cycles of 100 iterations each 
-#rms: 21 microJy/beam
-#peak: 8.0 microJy/beam
-
-#marginal improvement over previous round 
 
 LB1_contimage_robust0 = field+'_'+tag+'_continuum_robust0'
 os.system('rm -rf '+LB1_contimage_robust0+'.*')
-clean(vis=LB1_contms_p4, 
+clean(vis=LB1_contms_p3, 
       imagename=LB1_contimage_robust0, 
       mode='mfs', 
       multiscale = [0, 20, 40, 80, 160], 
@@ -1123,7 +1086,7 @@ clean(vis=LB1_contms_p4,
       usescratch = True,
       psfmode = 'hogbom',
       cyclefactor = 5, 
-      mask='ellipse[[1000pix,1000pix],[2.3arcsec,1.6arcsec],140deg]',
+      mask='ellipse[[1000pix,1000pix],[2.4arcsec,1.7arcsec],140deg]',
       imagermode = 'csclean')
 
 #165 cycles of 100 iterations each 
@@ -1131,6 +1094,7 @@ clean(vis=LB1_contms_p4,
 
 ###############################################
 ######## CO data reduction
+"""
 tag = 'LB'
 LB_CO_ms = field+'_'+tag+'_CO21.ms'
 os.system('rm -rf ' + LB_CO_ms + '*')
