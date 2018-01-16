@@ -4,7 +4,7 @@ Note that the imaging algorithms were rewritten significantly between
 CASA 4.5.3 and CASA 4.7.2 
 """
 
-field = 'Elias_20'
+field = 'SR_4'
 
 ##################################################################
 ##################################################################
@@ -40,7 +40,7 @@ contspws = '0~11'
 flagmanager(vis=SB1_field,mode='save', versionname='before_cont_flags')
 
 # Flag the CO 2-1 line
-flagchannels='0:1880~2250, 4:1880~2250, 8:1880~2250' #1880 to 1950 would have been adequate
+flagchannels='0:1800~2100, 4:1800~2100, 8:1800~2100'  
 
 flagdata(vis=SB1_field,mode='manual', spw=flagchannels, flagbackup=False, field = field)
 
@@ -72,6 +72,10 @@ plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'phase', field = field,
        ydatacolumn = 'data',avgchannel = '16', observation = '1',
        coloraxis = 'spw', iteraxis = 'antenna')
 
+plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'phase', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '2',
+       coloraxis = 'spw', iteraxis = 'antenna')
+
 plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
        ydatacolumn = 'data',avgchannel = '16', observation = '0', 
        coloraxis = 'spw', iteraxis = 'antenna') 
@@ -80,6 +84,10 @@ plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field,
        ydatacolumn = 'data',avgchannel = '16', observation = '1', 
        coloraxis = 'spw', iteraxis = 'antenna') 
 
+
+plotms(vis = SB1_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '2', 
+       coloraxis = 'spw', iteraxis = 'antenna') 
 # check individual execution blocks
 SB1_EB1_initcontimage_dirty = field+'_'+tag+'_EB1_initcontinuum_dirty'
 os.system('rm -rf '+SB1_EB1_initcontimage_dirty+'.*')
@@ -141,12 +149,12 @@ clean(vis=SB1_initcont,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[252pix,233pix],1.0arcsec]',
+      mask='circle[[252pix,233pix],0.8arcsec]',
       interactive=True)
 
-# cleaned for 1 cycles (100 iterations)
-# peak: 34.3 mJy/beam
-# rms: 83 microJy/beam
+# cleaned for 2 cycles (200 iterations)
+# peak: 25.6 mJy/beam
+# rms: 63.9 microJy/beam
 
 # First phase-self-cal
 SB1_p1 = field+'_'+tag+'.p1'
@@ -182,12 +190,12 @@ clean(vis=SB1_contms_p1,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[252pix,233pix],1.0arcsec]',
+      mask='circle[[252pix,233pix],0.8arcsec]',
       interactive=True)
 
 # cleaned for 2 cycles with 100 iterations each
-# peak: 37.2 mJy/beam
-# rms: 40.9 microJy/beam
+# peak: 27.2 mJy/beam
+# rms: 35.0 microJy/beam
 
 
 # Second round of phase cal didn't result in any noticeable improvement, so we move on to amplitude self-cal
@@ -225,12 +233,12 @@ clean(vis=SB1_contms_ap1,
       gain = 0.3,
       imsize=500,
       cell='0.03arcsec', 
-      mask='circle[[252pix,233pix],1.0arcsec]',
+      mask='circle[[252pix,233pix],0.8arcsec]',
       interactive=True)
 
-# cleaned for 3 cycles of 100 iterations each
-# peak: 37.2 mJy/beam
-# rms: 40.3 microJy/beam
+# cleaned for 2 cycles of 100 iterations each
+# peak: 27.2 mJy/beam
+# rms: 35.0 microJy/beam
 
 ### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
 SB1_contms_final = field+'_'+tag+'_contfinal.ms'
@@ -258,7 +266,6 @@ clean(vis=SB1_contms_ap1,
 # Reduction of CO data in SB1
 #############################
 
-
 applycal(SB1_field, gaintable=[SB1_p1, SB1_ap1], calwt=T, flagbackup=F)
 
 #split out the CO 2-1 spectral window
@@ -276,7 +283,7 @@ plotms(vis = SB1_CO_ms, xaxis = 'channel', yaxis = 'amp', field = field,
 
 SB1_CO_mscontsub = SB1_CO_ms+'.contsub'
 os.system('rm -rf '+SB1_CO_mscontsub) 
-fitspw = '0:0~1880;1950~3839, 1:0~1880;1950~3839, 2:0~1880; 1950~3839' # channels for fitting continuum
+fitspw = '0:0~1800;2100~3839, 1:0~1800;2100~3839, 2:0~1800; 2100~3839' # channels for fitting continuum
 uvcontsub(vis=SB1_CO_ms,
           spw='0~2', 
           fitspw=fitspw, 
@@ -292,7 +299,7 @@ plotms(vis = SB1_CO_mscontsub, xaxis = 'channel', yaxis = 'amp', field = field,
 CO_cvel = SB1_CO_mscontsub+'.cvel'
 
 os.system('rm -rf '+ CO_cvel)
-mstransform(vis = SB1_CO_mscontsub, outputvis = CO_cvel,  keepflags = False,datacolumn = 'data', regridms = True,mode='velocity',start='-10km/s',width='0.35km/s',nchan=90, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
+mstransform(vis = SB1_CO_mscontsub, outputvis = CO_cvel,  keepflags = False,datacolumn = 'data', regridms = True,mode='velocity',start='-8km/s',width='0.35km/s',nchan=80, outframe='LSRK', veltype='radio', restfreq='230.53800GHz')
 
 SB1_CO_image = field+'_'+tag+'_CO21cube'
 os.system('rm -rf '+SB1_CO_image+'.*')
@@ -307,7 +314,7 @@ clean(vis=CO_cvel,
       gain = 0.3, 
       imsize = 500,
       cell = '0.03arcsec',
-      start='-10km/s',
+      start='-8km/s',
       width='0.35km/s',
       nchan=70, 
       outframe='LSRK', 
@@ -318,34 +325,51 @@ clean(vis=CO_cvel,
       threshold = '10mJy',
       interactive=True) 
 
-
 ##################################################################
 ##################################################################
 ## long baseline data
 ##################################################################
 ##################################################################
 
-
-#rescaling the flux for the 9/23/17 execution because the calibrator catalog was updated after the original pipeline calibration
-#Old flux value of J1517-2422 at 232 GHz: 2.457 Jy
-#New flux value at 232.583 GHz:  2.17 Jy
-
-LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X58/group.uid___A001_X8c5_X59/member.uid___A001_X8c5_X5a/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
-
-LB1_refant = 'DA61'
+LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X5c/group.uid___A001_X8c5_X5d/member.uid___A001_X8c5_X5e/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
+LB1_refant = 'DA61, DA50'
 tag = 'LB'
 
-gencal(vis = LB_vis, caltable = 'scale.gencal', caltype = 'amp', parameter = [1.064])
-applycal(vis = LB_vis, gaintable = ['scale.gencal'], calwt = T, flagbackup = F, spw = '0~3') #rescale observation for 9/23/2017
+#need to initialize the weight_spectrum column because the short baselines data have an initialized weight_spectrum column 
 
-# spws 3 and 7 contain the CO 2-1 line, while the others are continuum only
-contspws = '0~7'
+initweights(vis = LB_vis, wtmode = 'weight', dowtsp = True)
+"""
+Double-check flux calibration
+au.getALMAFlux('J1517-2422', frequency = '232.582GHz', date = '2017/09/06')
+Closest Band 3 measurement: 3.690 +- 0.070 (age=+2 days) 91.5 GHz
+Closest Band 7 measurement: 2.370 +- 0.050 (age=+1 days) 343.5 GHz
+getALMAFluxCSV(): Fitting for spectral index with 1 measurement pair of age 17 days from 2017/09/06, with age separation of 0 days
+  2017/08/20: freqs=[91.46, 343.48], fluxes=[3.78, 2.71]
+Median Monte-Carlo result for 232.582000 = 2.988214 +- 0.254621 (scaled MAD = 0.249093)
+Result using spectral index of -0.251488 for 232.582 GHz from 3.690 Jy at 91.460 GHz = 2.918012 +- 0.254621 Jy
+
+Consistent with pipeline log 
+
+au.getALMAFlux('J1733-1304', frequency = '232.582GHz', date = '2017/10/17')
+Closest Band 3 measurement: 3.230 +- 0.060 (age=+2 days) 91.5 GHz
+Closest Band 7 measurement: 1.370 +- 0.060 (age=-3 days) 337.5 GHz
+getALMAFluxCSV(): Fitting for spectral index with 1 measurement pair of age 15 days from 2017/10/17, with age separation of 0 days
+  2017/10/02: freqs=[91.46, 103.49, 343.48], fluxes=[3.25, 3.07, 1.49]
+Median Monte-Carlo result for 232.582000 = 1.883770 +- 0.163664 (scaled MAD = 0.163917)
+Result using spectral index of -0.593201 for 232.582 GHz from 3.230 Jy at 91.460 GHz = 1.856741 +- 0.163664 Jy
+
+Consistent with pipeline log 
+"""
+
+# spws 24 and 98 contain the CO 2-1 line, while the others are continuum only
+contspws = '19,21,23,25,92,94,96,98' #spw numbering is weird for this MS 
 
 flagmanager(vis=LB_vis,mode='save', versionname='before_cont_flags')
 
 # Flag the CO 2-1 line
 # velocity range selected for flagging based on compact configuration data
-flagchannels='3:1880~1970, 7:1880~1970'
+flagchannels='25:1880~1970, 98:1880~1970' 
+
 
 flagdata(vis=LB_vis,mode='manual', spw=flagchannels, flagbackup=False, field = field)
 
@@ -358,7 +382,7 @@ split2(vis=LB_vis,
        outputvis=LB1_initcont,
        width=[8,8,8,480, 8, 8, 8, 480], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
        timebin = '6s',
-       datacolumn='corrected')
+       datacolumn='data')
 
 # Restore flagged line channels
 flagmanager(vis=LB_vis,mode='restore',
@@ -373,7 +397,7 @@ clean(vis=LB1_initcont,
       observation = '0', 
       imagename=LB1_initcontimage0, 
       mode='mfs', 
-      multiscale = [0, 10, 25, 50, 100], 
+      multiscale = [0, 10, 25, 50, 75], 
       weighting='briggs', 
       robust=0.5,
       gain = 0.3,
@@ -387,7 +411,7 @@ clean(vis=LB1_initcont,
       imagermode = 'csclean')
 
 
-#4 cycles of 100 iterations each 
+#5 cycles of 100 iterations each 
 
 LB1_initcontimage1 = field+'_'+tag+'_initcontinuum_1'
 os.system('rm -rf '+LB1_initcontimage1+'.*')
@@ -395,7 +419,7 @@ clean(vis=LB1_initcont,
       observation = '1', 
       imagename=LB1_initcontimage1, 
       mode='mfs', 
-      multiscale = [0, 10, 25, 50, 100], 
+      multiscale = [0, 10, 25, 50, 75], 
       weighting='briggs', 
       robust=0.5,
       gain = 0.3,
@@ -409,14 +433,14 @@ clean(vis=LB1_initcont,
       imagermode = 'csclean')
 
 
-#4 cycles of 100 iterations each 
+#3 cycles of 100 iterations each 
 
 LB1_initcontimage_LBonly = field+'_'+tag+'_initcontinuum_LBonly'
 os.system('rm -rf '+LB1_initcontimage_LBonly+'.*')
 clean(vis=LB1_initcont, 
       imagename=LB1_initcontimage_LBonly, 
       mode='mfs', 
-      multiscale = [0, 10, 25, 50, 100], 
+      multiscale = [0, 10, 25, 50], 
       weighting='briggs', 
       robust=0.5,
       gain = 0.3,
@@ -429,23 +453,16 @@ clean(vis=LB1_initcont,
       cyclefactor = 5, 
       imagermode = 'csclean')
 
-#6 cycles of 100 iterations each 
-
-
+#5 cycles of 100 iterations each 
 
 #looks aligned with short baseline data 
 
-delmod(vis=LB1_initcont,field=field,otf=True)
-
-clearcal(vis=LB1_initcont)
-
-delmod(vis=SB1_contms_final,field=field,otf=True)
-
-clearcal(vis=SB1_contms_final)
-
 #do this in CASA 5.1.1
-os.system('rm -rf Elias_20_contcombined.ms')
-concat(vis = [SB1_contms_final, LB1_initcont], concatvis = 'Elias_20_contcombined.ms', dirtol = '1arcsec', copypointing = False) 
+os.system('rm -rf SR_4_contcombined.ms')
+concat(vis = [SB1_contms_final, LB1_initcont], concatvis = 'SR_4_contcombined.ms', dirtol = '1arcsec', copypointing = False) 
+
+plotms(vis='SR_4_contcombined.ms',xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '30')
+
 
 #Go back to CASA 4.5.3 here 
 
@@ -453,11 +470,11 @@ tag = 'combined'
 
 LB1_initcontimage = field+'_'+tag+'_initcontinuum'
 os.system('rm -rf '+LB1_initcontimage+'.*')
-clean(vis='Elias_20_contcombined.ms', 
+clean(vis='SR_4_contcombined.ms', 
       imagename=LB1_initcontimage, 
       field = field, 
       mode='mfs', 
-      multiscale = [0, 10, 25, 50, 100], 
+      multiscale = [0, 10, 25, 50], 
       weighting='briggs', 
       robust=0.5,
       gain = 0.1,
@@ -468,24 +485,25 @@ clean(vis='Elias_20_contcombined.ms',
       usescratch = True,
       psfmode = 'hogbom',
       cyclefactor = 5, 
-      mask='ellipse[[917pix,736pix],[0.8arcsec,0.5arcsec],150deg]',
+      mask='circle[[920pix,727pix],0.5arcsec]',
       imagermode = 'csclean')
 
-#19 cycles of 100 iterations each
-#rms: 13 microJy/beam
-#peak: 3.3 mJy/beam
+#15 cycles of 100 iterations each
+#rms: 15 microJy/beam
+#peak: 3.9 mJy/beam
+
 
 LB1_p1 = field+'_'+tag+'.p1'
-gaincal(vis='Elias_20_contcombined.ms', field = field, caltable=LB1_p1, gaintype='T', combine = 'spw,scan', 
-        spw='0~19', refant='DA46, DA61', calmode='p', 
-        solint='150s', minsnr=2.0, minblperant=4)
+gaincal(vis='SR_4_contcombined.ms', field = field, caltable=LB1_p1, gaintype='T', combine = 'spw,scan', 
+        spw='0~19', refant='DA46, DA61, DA50', calmode='p', 
+        solint='300s', minsnr=2.0, minblperant=4)
 
-applycal(vis='Elias_20_contcombined.ms', field =field, spw='0~19', spwmap = [0]*20, gaintable=[LB1_p1], applymode = 'calonly', flagbackup=False)
+applycal(vis='SR_4_contcombined.ms', field =field, spw='0~19', spwmap = [0]*20, gaintable=[LB1_p1], applymode = 'calonly', flagbackup=False)
 
 
 LB1_contms_p1 = field+'_'+tag+'_contp1.ms'
 os.system('rm -rf '+LB1_contms_p1)
-split2(vis='Elias_20_contcombined.ms', outputvis=LB1_contms_p1, datacolumn='corrected')
+split2(vis='SR_4_contcombined.ms', outputvis=LB1_contms_p1, datacolumn='corrected')
 
 LB1_contimagep1 = field+'_'+tag+'_continuump1'
 os.system('rm -rf '+LB1_contimagep1+'.*')
@@ -493,7 +511,7 @@ clean(vis=LB1_contms_p1,
       imagename=LB1_contimagep1, 
       field = field, 
       mode='mfs', 
-      multiscale = [0, 10, 25, 50, 100], 
+      multiscale = [0, 10, 25, 50], 
       weighting='briggs', 
       robust=0.5,
       gain = 0.1,
@@ -504,21 +522,19 @@ clean(vis=LB1_contms_p1,
       usescratch = True,
       psfmode = 'hogbom',
       cyclefactor = 5, 
-      mask='ellipse[[917pix,736pix],[0.8arcsec,0.5arcsec],150deg]',
+      mask='circle[[920pix,727pix],0.5arcsec]',
       imagermode = 'csclean')
 
-
-#20 cycles of 100 iterations each
-#rms: 12.7 microJy/beam
-#peak: 3.3 mJy/beam
-
+#18 cycles of 100 iterations each
+#rms: 14 microJy/beam
+#peak: 4.0 mJy/beam
 
 # Second round of phase-only self-cal
 LB1_p2 = field+'_'+tag+'.p2'
 os.system('rm -rf '+LB1_p2)
 gaincal(vis=LB1_contms_p1, caltable=LB1_p2, gaintype='T', combine = 'spw,scan', 
-        spw='0~20', refant='DA46, DA61', calmode='p', 
-        solint='90s', minsnr=2.0, minblperant=4)
+        spw='0~20', refant='DA46, DA61, DA50', calmode='p', 
+        solint='150s', minsnr=2.0, minblperant=4)
 
 applycal(vis=LB1_contms_p1,  spw='0~19', spwmap = [0]*20, gaintable=[LB1_p2], applymode = 'calonly', flagbackup=False)
 
@@ -533,7 +549,7 @@ clean(vis= LB1_contms_p2,
       imagename=LB1_contimagep2, 
       field = field, 
       mode='mfs', 
-      multiscale = [0, 10, 25, 50, 100], 
+      multiscale = [0, 10, 25, 50], 
       weighting='briggs', 
       robust=0.5,
       gain = 0.1,
@@ -544,14 +560,14 @@ clean(vis= LB1_contms_p2,
       usescratch = True,
       psfmode = 'hogbom',
       cyclefactor = 5, 
-      mask='ellipse[[917pix,736pix],[0.8arcsec,0.5arcsec],150deg]',
+      mask='circle[[920pix,727pix],0.5arcsec]',
       imagermode = 'csclean')
 
 
-#20 cycles of 100 iterations each
-#rms: 12.7 microJy/beam
-#peak: 3.3 mJy/beam
-#essentially no difference from first self-cal
+#18 cycles of 100 iterations each
+#rms: 14 microJy/beam
+#peak: 14 mJy/beam
+#marginal difference from first self-cal
 
 LB1_robust0 = field+'_'+tag+'_robust0'
 os.system('rm -rf '+LB1_robust0+'.*')
@@ -559,9 +575,9 @@ clean(vis= LB1_contms_p2,
       imagename=LB1_robust0, 
       field = field, 
       mode='mfs', 
-      multiscale = [0, 10, 25, 50, 100], 
+      multiscale = [0, 10, 25, 50], 
       weighting='briggs', 
-      robust=0.0,
+      robust=0,
       gain = 0.1,
       imsize=1800,
       cell='0.003arcsec', 
@@ -570,6 +586,9 @@ clean(vis= LB1_contms_p2,
       usescratch = True,
       psfmode = 'hogbom',
       cyclefactor = 5, 
-      mask='ellipse[[917pix,736pix],[0.8arcsec,0.5arcsec],150deg]',
+      mask='circle[[920pix,727pix],0.5arcsec]',
       imagermode = 'csclean')
+
+#28 cycles of 100 iterations each 
+
 
