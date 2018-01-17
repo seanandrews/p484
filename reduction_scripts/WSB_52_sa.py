@@ -1,8 +1,8 @@
 """
 This script is written for CASA 4.5.3.  
 
-Note: if you do everything in this script, you'll use up about 260 GB of space.
-The final calibrated continuum MS is 4.3 GB.
+Note: if you do everything in this script, you'll use up about 305 GB of space.
+The final calibrated continuum MS is 5.9 GB.
 
 """
 
