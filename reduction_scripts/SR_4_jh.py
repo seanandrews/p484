@@ -350,15 +350,16 @@ Result using spectral index of -0.251488 for 232.582 GHz from 3.690 Jy at 91.460
 
 Consistent with pipeline log 
 
-au.getALMAFlux('J1733-1304', frequency = '232.582GHz', date = '2017/10/17')
-Closest Band 3 measurement: 3.230 +- 0.060 (age=+2 days) 91.5 GHz
-Closest Band 7 measurement: 1.370 +- 0.060 (age=-3 days) 337.5 GHz
-getALMAFluxCSV(): Fitting for spectral index with 1 measurement pair of age 15 days from 2017/10/17, with age separation of 0 days
-  2017/10/02: freqs=[91.46, 103.49, 343.48], fluxes=[3.25, 3.07, 1.49]
-Median Monte-Carlo result for 232.582000 = 1.883770 +- 0.163664 (scaled MAD = 0.163917)
-Result using spectral index of -0.593201 for 232.582 GHz from 3.230 Jy at 91.460 GHz = 1.856741 +- 0.163664 Jy
+au.getALMAFlux('J1427-4206', frequency = '232.582GHz', date = '2017/11/09')
+Closest Band 3 measurement: 4.010 +- 0.110 (age=+2 days) 103.5 GHz
+Closest Band 3 measurement: 4.290 +- 0.120 (age=+2 days) 91.5 GHz
+Closest Band 7 measurement: 1.960 +- 0.050 (age=-1 days) 343.5 GHz
+getALMAFluxCSV(): Fitting for spectral index with 1 measurement pair of age 8 days from 2017/11/09, with age separation of 0 days
+  2017/11/01: freqs=[91.46, 103.49, 343.48], fluxes=[4.19, 4.05, 1.92]
+Median Monte-Carlo result for 232.582000 = 2.442674 +- 0.141522 (scaled MAD = 0.141623)
+Result using spectral index of -0.595755 for 232.582 GHz from 4.010 Jy at 103.490 GHz = 2.475316 +- 0.141522 Jy
 
-Consistent with pipeline log 
+The fluxcal here needs to be fixed 
 """
 
 # spws 24 and 98 contain the CO 2-1 line, while the others are continuum only
