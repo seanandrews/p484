@@ -535,3 +535,7 @@ clean(vis=[SB1_contms_final, LB1_contms_p3],
 
 ##22 cycles of 100 iterations each
 
+#concatenate short and long baselines
+
+concat(vis = [SB1_contms_final, LB1_contms_p3], concatvis = 'Wa_Oph_6_contcombined_final.ms', dirtol = '1arcsec', copypointing = False) 
+
