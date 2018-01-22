@@ -309,11 +309,6 @@ clean(vis=CO_cvel,
 ##################################################################
 ##################################################################
 
-
-#rescaling the flux for the 9/23/17 execution because the calibrator catalog was updated after the original pipeline calibration
-#Old flux value of J1517-2422 at 232 GHz: 2.457 Jy
-#New flux value at 232.583 GHz:  2.17 Jy
-
 LB_vis = '/data/sandrews/LP/2016.1.00484.L/science_goal.uid___A001_X8c5_X84/group.uid___A001_X8c5_X85/member.uid___A001_X8c5_X86/calibrated/calibrated_final.ms' #this is the long-baseline measurement set being calibrated
 
 field = 'HT_Lupi'
