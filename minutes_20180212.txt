@@ -1,0 +1,66 @@
+notes from telecon on 2018 / 02 / 12
+------------------------------------
+
+participants: Andrews, Birnstiel, Carpenter, Guzman, Huang, Isella, Oberg, 
+              Perez, Ricci, Wilner, Zhu
+
+unavailable: Bai, Benisty, Dullemond
+
+- update on data delivery:
+	- RU Lup, IM Lup, HD 143006, Sz 114 were delivered since last telecon
+	- Sz 129 went into pipeline on 12/20, but NAASC has not delivered it:
+		- they ought to have calibrated MS, but they have only provided
+	  	  me access to the raw ASDM files
+		- maybe this will change once archive re-opens tomorrow?
+	- last two sources, AS 205 and DoAr 25, have had their raw ASDMs made
+	  available to me; I do not know if I can expect the calibrated MS 
+	  files they at one time had, nor if we have access to semipass data
+	- Tony Remijan is apparently no longer responding to my helpdesk 
+	  tickets or emails
+	- Laura's B3 followup program observed IM Lup and HT Lup (+AS 205 with
+	  short baselines only): no data delivered yet
+
+- update on data calibration:
+	- we have preliminary calibrations for pretty much everything, usually 
+	  done by more than 1 person independently
+	- a calibration telecon last week, to discuss lingering concerns and 
+	  identify a few tests that are finished and/or underway
+	- we will release our final calibrated MS files when the data are 
+	  released 
+	- there is a live document hashing out a homogenized (self-)calibration 
+	  strategy; will freeze that on 2/14 and then issue a *proposed*
+	  strategy and time for comment until ~Monday 2-4pm~, next calibration 
+	  telecon.  Then we will vote on amendments / adjustments and solidify 
+	  the path forward.  From there, (self-)calibration ought to follow 
+	  these practices unless there's a concrete reason for deviation and 
+	  logical avenue for adjustments.  
+	- goal is to have everything calibrated and available in a few weeks 
+	  (and then to focus on imaging + **science**)
+
+- update on science projects:
+	- Laura will have a (mostly complete) SED catalog available soon
+	- Vivi: AS 209 modeling; concentric Gaussian rings, did a real fit, the
+	  model is pretty good even if not yet converged; 7 rings, hexagonal 
+	  shape is an artifact; residuals are spatially asymmetric, but might 
+	  want to explore using offset parameters in the inference; a new data
+	  set with intermediate spacings will be available on 2/18
+	- Andrea: Erik Weaver running some preliminary models of nearly edge-on
+	  disks to set up initial model; want to fit for scale height of cont, 
+	  and compare with gas if possible (MY Lup, HD 142666, DoAr 25)
+	- Andrea: HD 163296; weird arc, asymmetry, about 10 au gap (new), 
+          asymmetry possibly due to flaring; the 2nd ring might be eccentric.  
+          on arc-let: is vortex decoupled from pressure bump?  (look at Ricci 
+          paper); Zhu, could it be horseshoe region and not a vortex.
+
+- ALMA Cycle 6 proposal ideas:
+	- continued Band 3 followup (Laura)
+	- John: fainter disks, (but only 8km in B7)
+	- Andrea: solar system analogues
+	- orthogonal sample? (TDs, faint disks, multiples, Class Is?)
+	- spectral lines: CO isotopologues (Jane)
+	- polarization?
+	- look for a new wiki page for you to input ideas / plans
+
+- misc:
+	- early summer science meeting?  
+	- Sean will send out poll for June dates.  Please respond!
