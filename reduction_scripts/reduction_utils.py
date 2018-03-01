@@ -105,26 +105,43 @@ def avg_cont(ms_dict, output_prefix, flagchannels = '', maxchanwidth = 125, data
         timebin = '6s'
     else:
         timebin = '0s' #default in CASA
+
+
     
     #start of CASA commands
-    if os.path.isdir(msfile+'.flagversions/flags.before_cont_flags'):
-        flagmanager(vis = msfile, mode = 'delete', versionname = 'before_cont_flags') # clear out old versions of the flags 
 
-    flagmanager(vis = msfile, mode = 'save', versionname = 'before_cont_flags', comment = 'Flag states before spectral lines are flagged') #save flag state before flagging spectral lines
-    flagdata(vis=msfile, mode='manual', spw=flagchannels, flagbackup=False, field = ms_dict['field']) #flag spectral lines 
+    if len(flagchannels)==0:
+        outputvis = output_prefix+'_'+ms_dict['name']+'_initcont.ms'
+        os.system('rm -rf '+outputvis)
+        split(vis=msfile,
+              field = ms_dict['field'],
+              spw = contspws,      
+              outputvis = outputvis,
+              width = width_array,
+              timebin = timebin,
+              datacolumn=datacolumn,
+              intent = 'OBSERVE_TARGET#ON_SOURCE',
+              keepflags = False)
+    else:
+        if os.path.isdir(msfile+'.flagversions/flags.before_cont_flags'):
+            flagmanager(vis = msfile, mode = 'delete', versionname = 'before_cont_flags') # clear out old versions of the flags 
 
-    outputvis = output_prefix+'_'+ms_dict['name']+'_initcont.ms'
-    os.system('rm -rf '+outputvis)
-    split(vis=msfile,
-          field = ms_dict['field'],
-          spw = contspws,      
-          outputvis = outputvis,
-          width = width_array,
-          timebin = timebin,
-          datacolumn=datacolumn,
-          keepflags = False)
+        flagmanager(vis = msfile, mode = 'save', versionname = 'before_cont_flags', comment = 'Flag states before spectral lines are flagged') #save flag state before flagging spectral lines
+        flagdata(vis=msfile, mode='manual', spw=flagchannels, flagbackup=False, field = ms_dict['field']) #flag spectral lines 
 
-    flagmanager(vis = msfile, mode = 'restore', versionname = 'before_cont_flags') #restore flagged spectral line channels       
+        outputvis = output_prefix+'_'+ms_dict['name']+'_initcont.ms'
+        os.system('rm -rf '+outputvis)
+        split(vis=msfile,
+              field = ms_dict['field'],
+              spw = contspws,      
+              outputvis = outputvis,
+              width = width_array,
+              timebin = timebin,
+              datacolumn=datacolumn,
+              intent = 'OBSERVE_TARGET#ON_SOURCE',
+              keepflags = False)
+
+        flagmanager(vis = msfile, mode = 'restore', versionname = 'before_cont_flags') #restore flagged spectral line channels       
     
     print "#Averaged continuum dataset saved to %s" % outputvis  
 
@@ -257,7 +274,7 @@ def image_each_obs(ms_dict, prefix, scales, smallscalebias = 0.6, mask = '', thr
     print "Each observation saved in the format %sOBSERVATIONNUMBER.image" % (prefix+'_'+ms_dict['name']+'_initcont_exec',)
 
     
-def fit_gaussian(imagename, region):
+def fit_gaussian(imagename, region, dooff = False):
     """
     Wrapper for imfit in CASA to fit a single Gaussian component to a selected region of the image
 
@@ -265,9 +282,10 @@ def fit_gaussian(imagename, region):
     ==========
     imagename: Name of CASA image (ending in .image) (string)
     region: CASA region format, e.g., 'circle[[200pix, 200pix], 3arcsec]' (string)
+    dooff: boolean option to allow for fitting a zero-level offset 
 
     """
-    imfitdict = imfit(imagename = imagename, region = region)
+    imfitdict = imfit(imagename = imagename, region = region, dooff = dooff)
     coordsystem = imfitdict['deconvolved']['component0']['shape']['direction']['refer']
     PA = imfitdict['deconvolved']['component0']['shape']['positionangle']['value']
     majoraxis = imfitdict['deconvolved']['component0']['shape']['majoraxis']['value']
