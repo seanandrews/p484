@@ -641,6 +641,10 @@ peak_all = au.radec2deg('16:25:56.155722, -24.20.48.707339')
 offsets  = au.angularSeparation(peak_all[0], peak_all[1], pc_all[0],
                                 pc_all[1], True)
 
+peak_SB  = au.radec2deg('16:25:56.155430, -24.20.48.703798')
+peak_LB0 = au.radec2deg('16:25:56.155828, -24.20.48.708765')
+peak_LB1 = au.radec2deg('16:25:56.156000, -24.20.48.710920')
+
 A Gaussian image-plane fit finds some updated geometric parameters and offsets:
 	incl = 22.3
 	PA = 17.7

@@ -229,7 +229,7 @@ def image_each_obs(ms_dict, prefix, scales, smallscalebias = 0.6, mask = '', thr
     """
     msfile = prefix+'_'+ms_dict['name']+'_initcont.ms'
     tb.open(msfile+'/OBSERVATION')
-    num_observations = len(tb.getcol('TIME_RANGE')) #picked an arbitrary column to count the number of observations
+    num_observations = (tb.getcol('TIME_RANGE')).shape[1] #picked an arbitrary column to count the number of observations
     tb.close()
 
     if imsize is None:
