@@ -416,7 +416,7 @@ def export_MS(msfile):
     os.system('rm -rf %s' % MS_filename+'_spavg.ms')
     os.system('rm -rf '+MS_filename+'.vis.npz')
     np.savez(MS_filename+'.vis', u=u, v=v, Vis=Vis, Wgt=Wgt)
-    print "Measurement set exported to %s" % (MS_filename+'.vis',)
+    print "#Measurement set exported to %s" % (MS_filename+'.vis.npz',)
 
 
 def deproject_vis(data, bins=np.array([0.]), incl=0., PA=0., offx=0., offy=0., 
@@ -550,7 +550,7 @@ def plot_deprojected(filelist, incl = 0, PA = 0, offx = 0, offy = 0, fluxscale =
 
     ax[0].plot([0, 1000], [0, 0], '--k')
     ax[1].plot([0, 1000], [0, 0], '--k')
-    plt.xlabel('deprojected baseline length [klambda]')
+    plt.xlabel('deprojected baseline length [kilo$\lambda$]')
     ax[0].set_ylabel('average real [Jy]')
     ax[1].set_ylabel('average imag [Jy]')
     ax[0].legend()
@@ -624,7 +624,7 @@ def estimate_flux_scale(reference, comparison, incl = 0, PA = 0, uvbins = None, 
     ratio_avg =  np.sum(w*ratio)/np.sum(w)
     print "#The ratio of the fluxes of %s to %s is %.5f" % (comparison, reference, ratio_avg)
     print "#The scaling factor for gencal is %.3f for your comparison measurement" % (sqrt(ratio_avg))
-    print "#The error on the weighted mean ratio is %.3e, although it's likely that the weights in the measurement sets are too low by a constant factor" % (1/np.sqrt(np.sum(w)),)
+    print "#The error on the weighted mean ratio is %.3e, although it's likely that the weights in the measurement sets are too off by some constant factor" % (1/np.sqrt(np.sum(w)),)
     plt.figure()
     plt.errorbar(1e-3*rho_intersection, ratio, yerr = err, fmt = '.', label = 'Binned ratios')
     plt.plot(1e-3*rho_intersection, np.ones_like(ratio)*ratio_avg, label = 'weighted average')
@@ -675,4 +675,29 @@ def estimate_SNR(imagename, disk_mask, noise_mask):
     SNR = peak_intensity/rms
     print "#Peak SNR: %.2f" % (SNR,)
 
+def get_station_numbers(msfile, antenna_name):
+    """
+    Get the station numbers for all observations in which the given antenna appears
+
+    Parameters
+    ==========
+    msfile: Name of measurement set (string)
+    antenna_name: Name of antenna (e.g. "DA48")
+    """
+    tb.open(msfile+'/ANTENNA')
+    ant_names = tb.getcol('NAME')
+    ant_stations = tb.getcol('STATION')
+    tb.close()
+
+    ant_numbers = np.where(ant_names == antenna_name)[0]
+
+    tb.open(msfile)
+    antenna1 = tb.getcol('ANTENNA1')
+    obsid = tb.getcol('OBSERVATION_ID')
+    tb.close()
+
+    for i in ant_numbers:
+        matching_obs = np.unique(obsid[np.where(antenna1==i)])
+        for j in matching_obs:
+            print "#Observation ID %d: %s@%s" % (j, antenna_name, ant_stations[i])
 
