@@ -488,45 +488,119 @@ estimate_SNR(combined_cont_p2+'.image', disk_mask = common_mask, noise_mask = no
 #Peak intensity of source: 3.96 mJy/beam
 #rms: 1.30e-02 mJy/beam
 #Peak SNR: 305.33
-# no improvement in peak SNR or map quality.  stopping here.
+
+# marginal improvement, but map slightly better.  will try another round.
 
 
-#additional phase self-cal and amp self-cal appears to make things worse for GW Lup
-#uncomment the lines below if you wish to perform amp self-cal for your source specifically
-
-combined_ap = prefix+'_combined.ap'
-os.system('rm -rf '+combined_ap)
-gaincal(vis=combined_cont_p2+'.ms' , caltable=combined_ap, gaintype='T', combine = 'spw,scan', spw=combined_contspws, refant=combined_refant, calmode='ap', solint='900s', minsnr=3.0, minblperant=4, solnorm = False)
+#third round of phase self-cal for long baseline data
+combined_p3 = prefix+'_combined.p3'
+os.system('rm -rf '+combined_p3)
+gaincal(vis=combined_cont_p2+'.ms' , caltable=combined_p3, gaintype='T', combine = 'spw, scan', spw=combined_contspws, refant=combined_refant, calmode='p', solint='180s', minsnr=1.5, minblperant=4)
 
 if not skip_plots:
-    plotcal(caltable=combined_ap, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,0,2]) 
-    plotcal(caltable=combined_ap, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = LB1_obs1_timerange, plotrange=[0,0,0,2])
+    plotcal(caltable=combined_p3, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180])
+    plotcal(caltable=combined_p3, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,-180,180])
 
-applycal(vis=combined_cont_p2+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_ap], interp = 'linearPD', calwt = True, applymode = 'calonly')
+applycal(vis=combined_cont_p2+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_p3], interp = 'linearPD', calwt = True, applymode = 'calonly')
 
-combined_cont_ap = prefix+'_combined_contap'
-os.system('rm -rf %s*' % combined_cont_ap)
-split(vis=combined_cont_p2+'.ms', outputvis=combined_cont_ap+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = combined_cont_ap+'.ms' , imagename = combined_cont_ap, mask = common_mask, scales = LB_scales, threshold = '0.03mJy', savemodel = 'modelcolumn')
-estimate_SNR(combined_cont_ap+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
+combined_cont_p3 = prefix+'_combined_contp3'
+os.system('rm -rf %s*' % combined_cont_p3)
+split(vis=combined_cont_p2+'.ms', outputvis=combined_cont_p3+'.ms', datacolumn='corrected')
 
-# with solnorm = False
-#SR4_combined_contap.image
-#Beam 0.055 arcsec x 0.034 arcsec (-88.52 deg)
-#Flux inside disk mask: 68.96 mJy
-#Peak intensity of source: 3.69 mJy/beam
+tclean_wrapper(vis = combined_cont_p3+'.ms' , imagename = combined_cont_p3, mask = common_mask, scales = LB_scales, threshold = '0.03mJy', savemodel = 'modelcolumn')
+estimate_SNR(combined_cont_p3+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
+#SR4_combined_contp3.image
+#Beam 0.055 arcsec x 0.035 arcsec (-87.22 deg)
+#Flux inside disk mask: 69.83 mJy
+#Peak intensity of source: 4.09 mJy/beam
+#rms: 1.27e-02 mJy/beam
+#Peak SNR: 322.48
+
+# map and peak SNR improved.  near-disk image improved.
+
+
+#fourth round of phase self-cal for long baseline data
+combined_p4 = prefix+'_combined.p4'
+os.system('rm -rf '+combined_p4)
+gaincal(vis=combined_cont_p3+'.ms' , caltable=combined_p4, gaintype='T', combine = 'spw, scan', spw=combined_contspws, refant=combined_refant, calmode='p', solint='60s', minsnr=1.5, minblperant=4)
+
+if not skip_plots:
+    plotcal(caltable=combined_p4, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180])
+    plotcal(caltable=combined_p4, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,-180,180])
+
+applycal(vis=combined_cont_p3+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_p4], interp = 'linearPD', calwt = True, applymode = 'calonly')
+
+
+combined_cont_p4 = prefix+'_combined_contp4'
+os.system('rm -rf %s*' % combined_cont_p4)
+split(vis=combined_cont_p3+'.ms', outputvis=combined_cont_p4+'.ms', datacolumn='corrected')
+
+tclean_wrapper(vis = combined_cont_p4+'.ms' , imagename = combined_cont_p4, mask = common_mask, scales = LB_scales, threshold = '0.03mJy', savemodel = 'modelcolumn')
+estimate_SNR(combined_cont_p4+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
+#SR4_combined_contp4.image
+#Beam 0.055 arcsec x 0.035 arcsec (-87.22 deg)
+#Flux inside disk mask: 69.63 mJy
+#Peak intensity of source: 4.25 mJy/beam
 #rms: 1.25e-02 mJy/beam
-#Peak SNR: 294.57
+#Peak SNR: 340.55
 
-# with solnorm = True
-#SR4_combined_contap_solnormT.image
-#Beam 0.054 arcsec x 0.034 arcsec (-88.25 deg)
-#Flux inside disk mask: 70.58 mJy
-#Peak intensity of source: 3.78 mJy/beam
-#rms: 1.29e-02 mJy/beam
-#Peak SNR: 292.58
+# map and peak SNR improved.  near-disk image improved too.
 
-# both cases improve the RMS, but decrease the peak SNR.  However, the maps look better.  Will do the solnorm = False.
 
-# full directory size is 36 GB.
+#fifth round of phase self-cal for long baseline data
+combined_p5 = prefix+'_combined.p5'
+os.system('rm -rf '+combined_p5)
+gaincal(vis=combined_cont_p4+'.ms' , caltable=combined_p5, gaintype='T', combine = 'spw, scan', spw=combined_contspws, refant=combined_refant, calmode='p', solint='30s', minsnr=1.5, minblperant=4)
+
+if not skip_plots:
+    plotcal(caltable=combined_p5, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180])
+    plotcal(caltable=combined_p5, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,-180,180])
+
+applycal(vis=combined_cont_p4+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_p5], interp = 'linearPD', calwt = True, applymode = 'calonly')
+
+    
+combined_cont_p5 = prefix+'_combined_contp5'
+os.system('rm -rf %s*' % combined_cont_p5)
+split(vis=combined_cont_p4+'.ms', outputvis=combined_cont_p5+'.ms', datacolumn='corrected')
+
+tclean_wrapper(vis = combined_cont_p5+'.ms' , imagename = combined_cont_p5, mask = common_mask, scales = LB_scales, threshold = '0.03mJy', savemodel = 'modelcolumn')
+estimate_SNR(combined_cont_p5+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
+#SR4_combined_contp5.image
+#Beam 0.055 arcsec x 0.035 arcsec (-87.22 deg)
+#Flux inside disk mask: 69.84 mJy
+#Peak intensity of source: 4.31 mJy/beam
+#rms: 1.25e-02 mJy/beam
+#Peak SNR: 346.00
+
+# marginal improvement.  on to amp self-cal.
+
+
+#combined_ap = prefix+'_combined.ap'
+#os.system('rm -rf '+combined_ap)
+#gaincal(vis=combined_cont_p5+'.ms' , caltable=combined_ap, gaintype='T', combine = 'spw,scan', spw=combined_contspws, refant=combined_refant, calmode='ap', solint='900s', minsnr=3.0, minblperant=4, solnorm = False)
+
+#if not skip_plots:
+#    plotcal(caltable=combined_ap, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,0,2]) 
+#    plotcal(caltable=combined_ap, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,0,2])
+
+#applycal(vis=combined_cont_p5+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_ap], interp = 'linearPD', calwt = True, applymode = 'calonly')
+
+#combined_cont_ap = prefix+'_combined_contap'
+#os.system('rm -rf %s*' % combined_cont_ap)
+#split(vis=combined_cont_p5+'.ms', outputvis=combined_cont_ap+'.ms', datacolumn='corrected')
+
+#tclean_wrapper(vis = combined_cont_ap+'.ms' , imagename = combined_cont_ap, mask = common_mask, scales = LB_scales, threshold = '0.03mJy', savemodel = 'modelcolumn')
+#estimate_SNR(combined_cont_ap+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
+
+#SR4_combined_contap.image
+#Beam 0.055 arcsec x 0.034 arcsec (-87.86 deg)
+#Flux inside disk mask: 69.31 mJy
+#Peak intensity of source: 4.14 mJy/beam
+#rms: 1.23e-02 mJy/beam
+#Peak SNR: 335.25
+
+# The map looks marginally better.  RMS goes down, but about in proportion to peak.  
+# I don't know that amplitude self-calibration is worthwhile.  I would advocate not using it.
+
+# full directory size is 45 GB.
