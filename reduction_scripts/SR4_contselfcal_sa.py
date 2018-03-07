@@ -575,6 +575,9 @@ estimate_SNR(combined_cont_p5+'.image', disk_mask = common_mask, noise_mask = no
 
 # marginal improvement.  on to amp self-cal.
 
+# Amp self-cal makes things a bit worse.  so stop here.
+
+os.system('cp -r SR4_combined_contp5.ms SR4_cont_final.ms')
 
 #combined_ap = prefix+'_combined.ap'
 #os.system('rm -rf '+combined_ap)
