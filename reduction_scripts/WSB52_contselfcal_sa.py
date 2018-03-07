@@ -579,4 +579,6 @@ estimate_SNR(combined_cont_ap+'.image', disk_mask = common_mask, noise_mask = no
 
 # no real improvement in peak SNR metric.  But map definitely improved overall.
 
+os.system('cp -r '+combined_cont_ap+'.ms WSB52_cont_final.ms')
+
 # full directory size is 37 GB.
