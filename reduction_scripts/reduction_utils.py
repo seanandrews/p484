@@ -666,7 +666,7 @@ def estimate_SNR(imagename, disk_mask, noise_mask):
     beampa = headerlist['beampa']['value']
     print "#%s" % imagename
     print "#Beam %.3f arcsec x %.3f arcsec (%.2f deg)" % (beammajor, beamminor, beampa)
-    disk_stats = imstat(imagename = imagename, region = common_mask)
+    disk_stats = imstat(imagename = imagename, region = disk_mask)
     disk_flux = disk_stats['flux'][0]
     print "#Flux inside disk mask: %.2f mJy" % (disk_flux*1000,)
     peak_intensity = disk_stats['max'][0]
