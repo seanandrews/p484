@@ -14,7 +14,7 @@ LB1: 2016.1.00484.L/GW_Lupi_a_06_TM1
 """
 import os
 
-execfile('/pool/firebolt1/LPscratch/newscripts/reduction_utils.py')
+execfile('/pool/firebolt1/p484/reduction_scripts/reduction_utils.py')
 
 skip_plots = True #if this is true, all of the plotting and inspection steps will be skipped and the script can be executed non-interactively in CASA if all relevant values have been hard-coded already 
 
@@ -76,9 +76,10 @@ for i in data_params.keys():
     If you don't pass in values, all of the SPWs will be split out and the widths will be computed automatically to enforce a maximum channel width of 125 MHz.
     WARNING: Only use the avg_cont function if the total bandwidth is recorded correctly in the original MS. There is sometimes a bug in CASA that records incorrect total bandwidths
     """
-    # Flagchannels input string for SB1: '0:1842~1968, 4:1842~1968'
+
+    # Flagchannels input string for SB1: '0:1890~1937, 4:1890~1937'
     # Averaged continuum dataset saved to GWLup_SB1_initcont.ms
-    # Flagchannels input string for LB1: '3:1842~1968, 7:1842~1968'
+    # Flagchannels input string for LB1: '3:1890~1937, 7:1890~1937'
     # Averaged continuum dataset saved to GWLup_LB1_initcont.ms
     avg_cont(data_params[i], prefix, flagchannels = flagchannels_string)
 
@@ -302,7 +303,7 @@ if not skip_plots:
     estimate_flux_scale(reference = prefix+'_SB1_initcont_exec0_shift.vis.npz', comparison = prefix+'_LB1_initcont_exec1_shift.vis.npz', incl = incl, PA = PA)
     #The ratio of the fluxes of GWLup_LB1_initcont_exec1_shift.vis.npz to GWLup_SB1_initcont_exec0_shift.vis.npz is 0.82095
     #The scaling factor for gencal is 0.906 for your comparison measurement
-    #The error on the weighted mean ratio is 1.781e-03, although it's likely that the weights in the measurement sets are too low by a constant factor
+    #The error on the weighted mean ratio is 1.781e-03, although it's likely that the weights in the measurement sets are off by a constant factor
 
 
     #We replot the deprojected visibilities with rescaled factors to check that the values make sense
@@ -446,7 +447,7 @@ estimate_SNR(SB_cont_ap+'.image', disk_mask = common_mask, noise_mask = noise_an
 combined_cont_p0 = prefix+'_combined_contp0'
 os.system('rm -rf %s*' % combined_cont_p0)
 #pay attention here and make sure you're selecting the shifted (and potentially rescaled) measurement sets
-concat(vis = [SB_cont_ap+'.ms', prefix+'_LB1_initcont_exec0_shift.ms', 'GWLup_LB1_initcont_exec1_shift_rescaled.ms'], concatvis = combined_cont_p0+'.ms' , dirtol = '0.1arcsec', copypointing = False) 
+concat(vis = [SB_cont_ap+'.ms', prefix+'_LB1_initcont_exec0_shift.ms', prefix+'_LB1_initcont_exec1_shift_rescaled.ms'], concatvis = combined_cont_p0+'.ms' , dirtol = '0.1arcsec', copypointing = False) 
 
 tclean_wrapper(vis = combined_cont_p0+'.ms' , imagename = combined_cont_p0, mask = [common_mask, 'circle[[15h46m44.796s, -34d30m33.59s],0.4arcsec]'], scales = LB_scales, threshold = '0.05mJy', savemodel = 'modelcolumn')
 estimate_SNR(combined_cont_p0+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
