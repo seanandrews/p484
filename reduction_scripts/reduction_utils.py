@@ -43,7 +43,7 @@ def LSRKvel_to_chan(msfile, field, spw, restfreq, LSRKvelocity):
     ms.open(msfile)
     lsrkfreqs = ms.cvelfreqs(spwids = [spw], fieldids = np.where(fieldnames==field)[0][0], mode = 'channel', nchan = nchan, obstime = str(obstime)+'s', start = 0, outframe = 'LSRK')
     chanvelocities = (restfreq-lsrkfreqs)/restfreq*cc/1.e3 #converted to LSRK velocities in km/s
-    ms.close(msfile)
+    ms.close()
     if type(LSRKvelocity)==np.ndarray:
         outchans = np.zeros_like(LSRKvelocity)
         for i in range(len(LSRKvelocity)):
