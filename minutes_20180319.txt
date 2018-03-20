@@ -1,0 +1,225 @@
+notes from telecon on 2018 / 03 / 19
+------------------------------------
+
+participants: Andrews, Birnstiel, Carpenter, Dullemond, Huang, Hughes, Isella, 
+              Oberg, Perez, Wilner
+unavailable: Bai, Benisty, Guzman, Ricci, Zhu
+
+- update on data delivery:
+	- as of last Tuesday, all of the data were formally delivered
+
+- update on data calibration:
+	- the group of us doing calibration have had a separate telecon series 
+	  that discussed the findings from preliminary calibrations and settled 
+	  on a homogenized post-processing and self-calibration strategy
+	- Jane has developed template scripts and a suite of auxiliary modules 
+	  that aid in the calibration; you can find these in the 
+	  reduction_scripts directory of the github repo (look for anything 
+	  with the name "TARGET_contselfcal_xx.py" where TARGET is the disk 
+	  name and 'xx' is either 'jh' or 'sa'.  
+	- For anyone doing the calibration, please stick to the format, naming 
+	  scheme, and steps of these template scripts closely: if you do not, 
+	  we will have to re-do the calibration for you (keep in mind that the 
+  	  point of homogenizing this is for delivery to the community)
+	- The 'Calibration' wiki page has been updated and will be kept up to 
+	  date until calibration is completed.  A new table lists the source, 
+	  the person responsible for calibration, the current status, a link to 
+	  the script in the repo, and if the status is FINISHED you will find a 
+	  link (to the staging webpage) for the calibrated continuum MS, a FITS 
+	  image, and a PNG of the image.  Any imaging or analysis for this 
+	  project will subsequently use the MS files linked from here.
+
+
+**Discussion of ALMA Cycle 6 (and other) proposals**
+
+- On the 'Proposals' wiki page, there are effectively two categories of ALMA
+  proposal ideas: (1) "mature" cases (where a PI has committed to at least 
+  investigate the idea further); and (2) "ideas" (where it would be good to 
+  follow through, but the plans are either still very fluid and/or a PI has not
+  been identified or committed to investigate or write things up).
+
+- If you want to be kept in the loop on any proposal, please *ADD YOUR NAME* as 
+  a co-I as soon as possible.
+
+- If you feel conflicted about anything, please contact the PIs.  
+
+- We will arrange another telecon about 2 weeks from now.  The intent there is 
+  that we will know which proposals are going to forward, and for those that 
+  are we will have a concrete sample, technical strategy / requirements.  
+	- Sean will circulate a poll for the time / date.
+
+
+> "Mature" Proposals
+	- high-resolution B3 follow-ups 
+		- Laura will lead
+		- goal is to constrain particle populations (and optical depths)
+		  in and around the substructures
+		- RMS noise target is ~10 uJy/beam; C43-10 = 50 mas beam
+		- aiming for 20 +/- 10 hours total
+		- focus on targets that show high-contrast substructures, for 
+		  feasibility; will look into including HCO+(1-0), CS(2-1), etc.
+		- arguments already fleshed out (pilot filler in Cycle 5)
+		- note: its not possible to actually match the B6 survey 
+	  	  sensitivity (that would require a B3 RMS of ~1.5 uJy/beam).  
+	 	  So target selection must focus on cases with highest surface
+		  brightnesses around substructures (gaps); presuming we want 
+		  5-sigma detections of the emission around gaps, this means 
+		  the sample should consist of targets that have B6 emission 
+		  (around gaps) brighter than ~0.3-0.7 mJy/beam.  That criterion
+		  will really help limit the sample.
+
+	- high-resolution CO isotopologues for HD 143006
+		- Jane will lead
+		- goal is probe vortex kinematics, measure gas substructures, 
+		  and look for evidence of warp implied in scattered light
+		- RMS noise TBD; configurations TBD
+		- aiming for ~5-10 hours
+		- vortex kinematics might be difficult; cs should be of order 
+		  0.5 km/s, but the nearly face-on sky projection would reduce 
+	  	  that by a non-negligible geometric factor
+			- Andrea will send around an advanced paper draft of 
+			  hydro simulations related to this question
+			- Meredith will circulate communication from Richard 
+		 	  Nelson on temperature perturbations in vortex 
+		- we still need to image the CO data we already have (and that 
+		  will take about a week of work by itself, plus simulations)
+
+	- CO isotopologue imaging of large-scale RU Lup spirals
+		- Jane will lead
+		- goal is to map out ~1000 au spirals in various lines:
+			- B6 12CO / 13CO / C18O / DCO+
+		- RMS noise, configurations already worked out from DDT attempt
+			- will add an ACA component now in general proposal
+		- total time is ~2h on 12m (in 2 configurations), aiming for 
+		  ~0.2", and up to ~3h with ACA
+		- team concurred with adding Megan Ansdell (UC Berkeley) to the 
+		  proposal team; Jonathan Williams (Hawaii) already involved
+
+	- chemistry and structure *Large Program*
+		- Karin will lead; Vivi, Ted Bergin (Michigan), Catherine Walsh 
+		  (Leeds) will be co-PIs; might add an EA co-PI as well
+		- goal is to map out a full suite of molecular emission at 
+		  ~0.15" for a sample that has a representative range of dust
+		  structures
+		- B6 (C40-5/6), B3 (C40-7/8), and possible B5 (config TBD)
+		- CO isotopologues, N2H+, DCO+, HCO+, H13CO+, C2H, HCN, HC3N, 
+		  CH3CN; >=2 lines per molecule for excitation
+		- RMS noise level TBD; aiming for 4-5 spectral setups per 
+		  target, total time in the 70-100hr range (~15hr / target)
+		- MWC 480, HD 163296, AS 209, IM Lup, GM Aur (possibly adding
+		  DM Tau, Elias 27, GW Lup if time permits)
+		- big unknown at this point is B3 strategy
+
+	- gas vertical structure
+		- Andrea or Erik will lead
+		- goal is to measure the vertical distribution of gas emitting
+		  layers (+non-thermal linewidths), which can be compared with 
+		  the work being done now with the dust scale height to provide
+		  multiple independent constraints on turbulence
+		- B6 (C40-8/9), 12CO / 13CO / C18O (we already have 12CO)
+		- RMS noise, spectral and spatial resolution TBD
+		- important to figure out what we already have first
+		- focus on more edge-on targets: 
+			- MY Lup, HD 142666 best cases due to low contamination
+				- (but they're relatively small / faint)
+			- DoAr 25 is larger + flared, but stronger cloud
+
+
+> Additional "Ideas"
+	- pilot survey of Class I disk substructures
+		- no leader identified
+		- goal is to see when the substructures originate, and thereby
+		  to help understand the mechanisms responsible
+		- strategy is identical to our LP: aim for ~6-12 targets
+			- B6, C43-5/6 + C43-9/10, ~1.5-2hr / target
+		- key issue is the sample: 
+			- Oph Class Is in Lucas Cieza's survey; Pat Sheehan has
+			  been working with these too; we're all uncertain 
+			  about the Lup Class I population
+			- if someone can conjure a sample, Sean can write this
+				- might consider reaching out to e.g., Pat, and
+				  seeing if a collaboration is worthwhile
+
+	- pilot survey of substructures in fainter disks
+		- John will lead (?)
+		- goal is to find out if the fainter, smaller disks also show
+		  (inner disk) substructures
+		- strategy is identical to our LP
+		- sample size is uncertain; Oph will be followed up by Cieza's
+		  group, but there are also plenty of targets in Lupus
+
+	- pilot survey of transition disk substructures
+		- no leader identified
+		- goal is to see the substructures in transition disks
+		- strategy is identical to our LP
+		- target selection would be made from previously-resolved 
+		  transition disk rings (could be supplemented based on SED)
+		- some political discomfort with van der Marel's efforts, even 
+		  if her focus has been different enough to mitigate technical
+		  duplications
+
+	- pilot survey of structures in "close" binaries
+		- no leader identified (we forgot to discuss this!)
+		- goal is to identify spirals or other perturbations on the 
+		  structures in binaries with projected separations <~100au 
+		  (like HT Lup or AS 205 in our current sample)
+			- it is not clear what spirals tell us...but if it were,
+			  this would be a super easy proposal to write
+		- strategy is identical to our LP
+		- sample can be culled from the literature with a little work
+
+	- polarization and substructures
+		- Chat Hull (NAOJ) wants to lead; Laura is primary LP contact
+		- goal is to figure out how substructures influence the 
+		  polarization signatures (?)
+		- B6 only; ~0.1-0.2" resolution (so bigger structures)
+		- maybe 2 targets: Elias 27, AS 209
+		- RMS / observing time TBD:
+			- at similar resolution, the Elias 27 spirals are 
+			  2-3 mJy/beam: if you want SNR = 10 for 1% PI, that 
+			  means you need an RMS = 2-3 uJy/beam.  The brighter 
+			  core is ~10 mJy/beam, so you need RMS = 10 uJy/beam.
+			- at similar resolution, the AS 209 outer rings are 
+			  basically the same brightness.  
+			- so, this could take a lot of time...
+		- Laura will explore / develop a bit more with Chat
+
+	- high-resolution CO isotopologues for disk substructures / kinematics
+		- Andrea will lead (?)
+		- goal is to find and quantify substructures in the gas disks, 
+		  and to search for evidence of non-Keplerian kinematics that 
+		  would herald real pressure traps
+		- B6 12CO / 13CO / C18O; C43-5/6 + C43-9/10 ?
+		- sensitivity / strategy TBD: need models and a look at the CO
+		  data we already have
+		- AS 209 probably the best target
+		- Andrea working on feasibility estimates
+
+> *Other Stuff*
+	- Keck + vortex coronagraph companion search
+		- Dimitri Mawet (Caltech / JPL) intends to look for (planetary)
+		  companions from among our sample; proposal deadline in April, 
+		  presumably for semester starting in late summer
+		- he has access to northern targets (not really Lupus)
+		- this competes (potentially) with Laura's ond Myriam's ongoing 
+		  VLT/NaCo work, but there is room to do both
+		- I have asked Luca to tell Dimitri there will be some folks
+		  interested in joining this if he proceeds
+
+	- Sean will inquire if Luca is still intending to lead a JWST proposal
+	  to search for HD 163296 companions
+
+	- Rich Teague and Ted Bergin (Michigan) contacted us to feel out a 
+	  potential collaboration to image CO isotopologues at very high 
+	  resolution (about 15hr / target)
+		- their emphasis is looking for kinematic features that can 
+		  reveal information about planetary perturbers
+		- they are debating whether or not to extend their ~40hr idea 
+		  into a LP: to do the latter, they probably need information 
+		  from our LP to write a compelling science / technical case
+		- Sean will talk to them Thursday morning (March 22); we will
+		  not be allowing them data access in any case, but the 
+		  question is whether or not there are useful targets to join 
+		  forces on that do not conflict with either the chemistry LP
+		  idea or Jane/Andrea's own high-resolution line proposal ideas
+		- Sean will report on outcome of that discussion
