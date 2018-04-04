@@ -88,7 +88,7 @@ In this case, we picked our threshold, scales, and mask from previous reductions
 The threshold is ~3-4x the rms, the mask is an ellipse that covers all the emission and has roughly the same geometry, and we choose 4 to 6 scales such that the first scale is 0 (a point), and the largest is ~half the major axis of the mask.
 The mask angle and the semimajor and semiminor axes should be the same for all imaging. The center is not necessarily fixed because of potential misalignments between observations. 
 """
-mask_angle = 170 #position angle of mask in degrees
+mask_angle = 160 #position angle of mask in degrees
 mask_semimajor = 1.0 #semimajor axis of mask in arcsec
 mask_semiminor = 0.6 #semiminor axis of mask in arcsec
 mask_ra = '15h56m40.001s'
@@ -96,9 +96,9 @@ mask_dec = '-22.01.40.38'
 
 SB1_mask = 'ellipse[[%s, %s], [%.1farcsec, %.1farcsec], %.1fdeg]' % (mask_ra, mask_dec, mask_semimajor, mask_semiminor, mask_angle)
 
-LB1_mask = 'ellipse[[%s, %s], [%.1farcsec, %.1farcsec], %.1fdeg]' % (mask_ra, mask_dec, mask_semimajor, mask_semiminor, mask_angle)
+LB1_mask = 'ellipse[[%s, %s], [%.1farcsec, %.1farcsec], %.1fdeg]' % (mask_ra, mask_dec, 0.6, 0.3, mask_angle)
 
-common_mask = LB1_mask
+common_mask = SB1_mask
 
 
 SB_scales = [0, 7, 21, 63]
@@ -110,9 +110,14 @@ In this section, we are imaging every execution block to check spatial alignment
 if not skip_plots:
     #images are saved in the format prefix+'_name_initcont_exec#.ms'
     image_each_obs(data_params['SB1'], prefix, mask = SB1_mask, scales = SB_scales, threshold = '0.15mJy', interactive = False)
+    # FWHM beam size: 0.234''x0.195'', rms=1.4e-4 Jy/beam
     # inspection of images does not reveal additional bright background sources 
 
-    image_each_obs(data_params['LB1'], prefix, mask = LB1_mask, scales = LB_scales, threshold = '0.06mJy', interactive = False)
+    image_each_obs(data_params['LB1'], prefix, mask = LB1_mask, scales = LB_scales, threshold = '0.1mJy', robust=2, interactive = False)
+    # Exec0: FWHM beam size: 0.045''x0.032'', rms= 1.9e-4 Jy/beam
+    # Exec1: FWHM beam size: 0.037''x0.029'', rms= 2.4e-4 Jy/beam
+
+    # Note that the noise on the short baselines is about 10x larger than that on the LB. 
 
     """
     Since the source looks axisymmetric, we will fit a Gaussian to the disk to estimate the location of the peak in each image and record the output.
@@ -121,69 +126,80 @@ if not skip_plots:
     """
 
     fit_gaussian(prefix+'_SB1_initcont_exec0.image', region = SB1_mask)
-   #Peak of Gaussian component identified with imfit: J2000 15h56m40.005495s -22d01m40.38903s
-   #Pixel coordinates of peak: x = 450.900 y = 447.628
-   #PA of Gaussian component: 161.36 deg
-   #Inclination of Gaussian component: 58.70 deg
-
-
+    #Peak of Gaussian component identified with imfit: J2000 15h56m40.005492s -22d01m40.38905s
+    #Pixel coordinates of peak: x = 450.902 y = 447.627
+    #PA of Gaussian component: 161.34 deg
+    #Inclination of Gaussian component: 58.59 deg
 
     fit_gaussian(prefix+'_LB1_initcont_exec0.image', region = LB1_mask)
-    #Peak of Gaussian component identified with imfit: ICRS 15h56m40.004913s -22d01m40.39761s
-    #Peak in J2000 coordinates: 15:56:40.00560, -022:01:40.383238
-    #Pixel coordinates of peak: x = 1515.136 y = 1508.941
-    #PA of Gaussian component: 162.24 deg
-    #Inclination of Gaussian component: 61.55 deg
+    #Peak of Gaussian component identified with imfit: ICRS 15h56m40.004935s -22d01m40.39958s
+    #Peak in J2000 coordinates: 15:56:40.00562, -022:01:40.385208
+    #Pixel coordinates of peak: x = 1515.035 y = 1508.286
+    #PA of Gaussian component: 162.22 deg
+    #Inclination of Gaussian component: 61.59 deg
 
-    
     fit_gaussian(prefix+'_LB1_initcont_exec1.image', region = LB1_mask)
-    #Peak of Gaussian component identified with imfit: ICRS 15h56m40.005235s -22d01m40.39733s
-    #Peak in J2000 coordinates: 15:56:40.00592, -022:01:40.382958
-    #Pixel coordinates of peak: x = 1513.165 y = 1509.981
-    #PA of Gaussian component: 163.27 deg
-    #Inclination of Gaussian component: 61.95 deg
+    #Peak of Gaussian component identified with imfit: ICRS 15h56m40.005230s -22d01m40.39678s
+    #Peak in J2000 coordinates: 15:56:40.00591, -022:01:40.382408
+    #Pixel coordinates of peak: x = 1513.191 y = 1510.165
+    #PA of Gaussian component: 163.04 deg
+    #Inclination of Gaussian component: 62.06 deg
 
 
 """
-SB and LB images are perhaps shifted by about 8mas in dec. This is a small fraction of the beam that 
-should be corrected during selfcal. 
-Now check if the flux scales seem consistent between execution blocks (within ~5%)
+We align the observations by placing the source at phase center and 
+shifting phase centers to the same coordinate frame. 
+
 """
 
 split_all_obs(prefix+'_SB1_initcont.ms', prefix+'_SB1_initcont_exec')
 split_all_obs(prefix+'_LB1_initcont.ms', prefix+'_LB1_initcont_exec')
 
-
-"""
-Phase centers of the three executions:
-SB1, EB0:
-Name                RA               Decl           Epoch   
-HD_142666           15:56:40.007438 -22.01.40.31786 J2000   
-
-LB1, EB0:
- Name                RA               Decl           Epoch  
- HD_142666           15:56:40.008179 -22.01.40.42444 ICRS  
-
-LB1, EB1:
-Name                RA               Decl           Epoch 
-HD_142666           15:56:40.008076 -22.01.40.42728 ICRS  
-
-We need to shift the phase centers to the same coordinates
-
-"""
+# we place the source at the phase center using the coordinates calculated above from the gaussian fit 
 shiftname=prefix+'_SB1_initcont_exec0_shift'
 os.system('rm -rf %s.ms' % shiftname)
-fixvis(vis=prefix+'_SB1_initcont_exec0.ms', outputvis=shiftname+'.ms', datacolumn='data', phasecenter='ICRS 15h56m40.008179s -22d01m40.42444s') 
-tclean_wrapper(vis=shiftname+'.ms', imagename=shiftname, mask=common_mask, scales=SB_scales, threshold='0.25mJy')
+fixvis(vis=prefix+'_SB1_initcont_exec0.ms', outputvis=shiftname+'.ms', datacolumn='data', phasecenter='J2000 15h56m40.005492s -22d01m40.38905s')
+#change the coordinates of the phase center
+fixplanets(vis=shiftname+'.ms', field='HD_142666', direction='J2000 15h56m40.005492s -22d01m40.38905s') 
+#OPTIONAL: check the source position after shifting
+tclean_wrapper(vis=shiftname+'.ms', imagename=shiftname, mask=common_mask, scales=SB_scales, threshold='0.45mJy')
 fit_gaussian(shiftname+'.image', region=common_mask)
-#Peak of Gaussian component identified with imfit: ICRS 15h56m40.004813s -22d01m40.40341s
-#Peak in J2000 coordinates: 15:56:40.00550, -022:01:40.389038
-#Pixel coordinates of peak: x = 451.560 y = 450.701
-#PA of Gaussian component: 161.36 deg
-#Inclination of Gaussian component: 58.71 deg
+#Peak of Gaussian component identified with imfit: J2000 15h56m40.005490s -22d01m40.38913s
+#Pixel coordinates of peak: x = 450.001 y = 449.997
+#PA of Gaussian component: 161.31 deg
+#Inclination of Gaussian component: 58.35 deg
+
+shiftname=prefix+'_LB1_initcont_exec0_shift'
+os.system('rm -rf %s.ms' % shiftname)
+fixvis(vis=prefix+'_LB1_initcont_exec0.ms', outputvis=shiftname+'.ms', datacolumn='data', phasecenter='J2000 15h56m40.004935s -22d01m40.39958s') 
+#change the coordinates of the phase center
+fixplanets(vis=shiftname+'.ms', field='HD_142666', direction='J2000 15h56m40.005492s -22d01m40.38905s')
+#OPTIONAL: check the source position after shifting
+tclean_wrapper(vis=shiftname+'.ms', imagename=shiftname, mask=common_mask, scales=SB_scales, robust=2, threshold='0.10mJy')
+fit_gaussian(shiftname+'.image', region=common_mask)
+#Peak of Gaussian component identified with imfit: J2000 15h56m40.006193s -22d01m40.37447s
+#Pixel coordinates of peak: x = 1496.751 y = 1504.858
+#PA of Gaussian component: 162.14 deg
+#Inclination of Gaussian component: 61.40 deg
+
+
+shiftname=prefix+'_LB1_initcont_exec1_shift'
+os.system('rm -rf %s.ms' % shiftname)
+fixvis(vis=prefix+'_LB1_initcont_exec1.ms', outputvis=shiftname+'.ms', datacolumn='data', phasecenter='J2000 15h56m40.005230s -22d01m40.39678s') 
+#change the coordinates of the phase center
+fixplanets(vis=shiftname+'.ms', field='HD_142666', direction='J2000 15h56m40.005492s -22d01m40.38905s')
+#OPTIONAL: check the source position after shifting
+tclean_wrapper(vis=shiftname+'.ms', imagename=shiftname, mask=common_mask, scales=SB_scales, robust=2, threshold='0.10mJy')
+fit_gaussian(shiftname+'.image', region=common_mask)
+#Peak of Gaussian component identified with imfit: J2000 15h56m40.006186s -22d01m40.37432s
+#Pixel coordinates of peak: x = 1496.782 y = 1504.911
+#PA of Gaussian component: 163.21 deg
+#Inclination of Gaussian component: 61.53 deg
 
 
 """
+Now check if the flux scales seem consistent between execution blocks (within ~5%)
+
 First, check the pipeline outputs (STEP11/12, hif_setjy or hif_setmodels in the TASKS list of the qa products) to check whether the calibrator catalog matches up with the input flux density values for the calibrators.
 (Also check the corresponding plots.)
         SB1, EB0: Titan observed during the track and used to derive the flux scale of J1517-2422 (1.740 Jy at 219.246GHz)
@@ -192,7 +208,6 @@ First, check the pipeline outputs (STEP11/12, hif_setjy or hif_setmodels in the 
 Now can check that these inputs are matching the current calibrator catalog:
 """
 au.getALMAFlux('J1517-2422', frequency = '219.246GHz', date = '2015/07/21')	# SB1, EB0
-
 au.getALMAFlux('J1517-2422', frequency = '232.585GHz', date = '2017/09/25')     # LB1, EB0
 au.getALMAFlux('J1427-4206', frequency = '232.599GHz', date = '2017/11/09')     # LB1, EB1
 
@@ -237,13 +252,10 @@ Here we export averaged visibilities to npz files and then plot the deprojected 
 """
 
 
-
-
-
-PA = 161.0 #these are the rough values pulled from Gaussian fitting and used for initial deprojection. They are NOT the final values used for subsequent data analysis
-incl = 60.0
-phasecenter = au.radec2deg('15:56:40.007438, -22:01:40.31786')
-peakpos = au.radec2deg('15:56:40.005, -022:01:40.387')
+PA = 162.0 #these are the rough values pulled from Gaussian fitting and used for initial deprojection. They are NOT the final values used for subsequent data analysis
+incl = 61.7
+phasecenter = au.radec2deg('15h56m40.005492s -22d01m40.38905s')
+peakpos = au.radec2deg('15h56m40.006193s -22d01m40.37447s')
 offsets = au.angularSeparation(peakpos[0], peakpos[1], phasecenter[0], phasecenter[1], True)
 
 offx = 3600.*offsets[3]
@@ -251,38 +263,33 @@ offy = 3600.*offsets[2]
 
 
 if not skip_plots:
-    for msfile in [prefix+'_SB1_initcont_exec0_shift.ms', prefix+'_LB1_initcont_exec0.ms', prefix+'_LB1_initcont_exec1.ms']:
+    for msfile in [prefix+'_SB1_initcont_exec0_shift.ms', prefix+'_LB1_initcont_exec0_shift.ms', prefix+'_LB1_initcont_exec1_shift.ms']:
         export_MS(msfile)
+    
     #plot deprojected visibility profiles of all the execution blocks. Make sure that the fluxscale parameters are set to 1
-    plot_deprojected([prefix+'_SB1_initcont_exec0_shift.vis.npz', prefix+'_LB1_initcont_exec0.vis.npz', prefix+'_LB1_initcont_exec1.vis.npz'], fluxscale=[1.00,1.00,1.00], offx = offx, offy = offy, PA = PA, incl = incl, show_err=False)
+    plot_deprojected([prefix+'_SB1_initcont_exec0_shift.vis.npz', prefix+'_LB1_initcont_exec0_shift.vis.npz', prefix+'_LB1_initcont_exec1_shift.vis.npz'], fluxscale=[1.00,1.00,1.00], offx = offx, offy = offy, PA = PA, incl = incl, show_err=False)
     
    
-    estimate_flux_scale(reference = prefix+'_SB1_initcont_exec0_shift.vis.npz', comparison = prefix+'_LB1_initcont_exec0.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-    #The ratio of the fluxes of HD142666_LB1_initcont_exec0.vis.npz to HD142666_SB1_initcont_exec0_shift.vis.npz is 1.17725
-    #The scaling factor for gencal is 1.085 for your comparison measurement
-    #The error on the weighted mean ratio is 9.718e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+    estimate_flux_scale(reference = prefix+'_SB1_initcont_exec0_shift.vis.npz', comparison = prefix+'_LB1_initcont_exec0_shift.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
+    #The ratio of the fluxes of HD142666_LB1_initcont_exec0_shift.vis.npz to HD142666_SB1_initcont_exec0_shift.vis.npz is 1.16195
+    #The scaling factor for gencal is 1.078 for your comparison measurement
+    #The error on the weighted mean ratio is 9.025e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
 
-    estimate_flux_scale(reference = prefix+'_SB1_initcont_exec0_shift.vis.npz', comparison = prefix+'_LB1_initcont_exec1.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-    #The ratio of the fluxes of HD142666_LB1_initcont_exec1.vis.npz to HD142666_SB1_initcont_exec0_shift.vis.npz is 0.93345
-    #The scaling factor for gencal is 0.966 for your comparison measurement
-    #The error on the weighted mean ratio is 1.069e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    estimate_flux_scale(reference = prefix+'_SB1_initcont_exec0_shift.vis.npz', comparison = prefix+'_LB1_initcont_exec1_shift.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
+    #The ratio of the fluxes of HD142666_LB1_initcont_exec1_shift.vis.npz to HD142666_SB1_initcont_exec0_shift.vis.npz is 0.92672
+    #The scaling factor for gencal is 0.963 for your comparison measurement
+    #The error on the weighted mean ratio is 9.690e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
 
     #We replot the deprojected visibilities with rescaled factors to check that the values make sense
-    plot_deprojected([prefix+'_SB1_initcont_exec0_shift.vis.npz',prefix+'_LB1_initcont_exec0.vis.npz', prefix+'_LB1_initcont_exec1.vis.npz'],
-                     fluxscale=[1, 1/1.17725, 1/0.93345], offx = offx, offy = offy, PA = PA, incl = incl, show_err=False)
+    plot_deprojected([prefix+'_SB1_initcont_exec0_shift.vis.npz',prefix+'_LB1_initcont_exec0_shift.vis.npz', prefix+'_LB1_initcont_exec1_shift.vis.npz'],
+                     fluxscale=[1, 1/1.16195, 1/0.92672], offx = offx, offy = offy, PA = PA, incl = incl, show_err=False)
 
 #now correct the flux scales
-rescale_flux(prefix+'_LB1_initcont_exec0.ms', [1.085])
-rescale_flux(prefix+'_LB1_initcont_exec1.ms', [0.966])
-#Splitting out rescaled values into new MS: HD142666_LB1_initcont_exec0_rescaled.ms
-#Splitting out rescaled values into new MS: HD142666_LB1_initcont_exec1_rescaled.ms
+rescale_flux(prefix+'_LB1_initcont_exec0_shift.ms', [1.078])
+rescale_flux(prefix+'_LB1_initcont_exec1_shift.ms', [0.963])
+#Splitting out rescaled values into new MS: HD142666_LB1_initcont_exec0_shift_rescaled.ms
+#Splitting out rescaled values into new MS: HD142666_LB1_initcont_exec1_shift_rescaled.ms
 
-
-#OPTIONAL: check that the rescaling was successfull
-export_MS('HD142666_LB1_initcont_exec0_rescaled.ms')
-export_MS('HD142666_LB1_initcont_exec1_rescaled.ms')
-plot_deprojected([prefix+'_SB1_initcont_exec0_shift.vis.npz', prefix+'_LB1_initcont_exec0_rescaled.vis.npz', prefix+'_LB1_initcont_exec1_rescaled.vis.npz'],
-                     fluxscale=[1, 1, 1], offx = offx, offy = offy, PA = PA, incl = incl, show_err=True)
 
 """
 Start of self-calibration of the short-baseline data 
@@ -297,17 +304,16 @@ os.system('cp -r '+prefix+'_SB1_initcont_exec0_shift.ms '+SB_cont_p0+'.ms')
 #make initial image
 # remove preexisting model if necessary: 
 # delmod(vis=SB_cont_p0+'.ms', scr=True)
-tclean_wrapper(vis = SB_cont_p0+'.ms', imagename = SB_cont_p0, mask = common_mask, scales = SB_scales, threshold = '0.10mJy', savemodel = 'modelcolumn')
+tclean_wrapper(vis = SB_cont_p0+'.ms', imagename = SB_cont_p0, mask = common_mask, scales = SB_scales, threshold = '0.5mJy', savemodel = 'modelcolumn')
 
 noise_annulus ="annulus[[%s, %s],['%.2farcsec', '4.25arcsec']]" % (mask_ra, mask_dec, 1.1*mask_semimajor) #annulus over which we measure the noise. The inner radius is slightly larger than the semimajor axis of the mask (to add some buffer space around the mask) and the outer radius is set so that the annulus fits inside the long-baseline image size 
 estimate_SNR(SB_cont_p0+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD142666_SB_contp0.image
 #Beam 0.234 arcsec x 0.195 arcsec (60.13 deg)
-#Flux inside disk mask: 117.57 mJy
-#Peak intensity of source: 34.47 mJy/beam
+#Flux inside disk mask: 117.68 mJy
+#Peak intensity of source: 34.54 mJy/beam
 #rms: 2.19e-01 mJy/beam
-#Peak SNR: 157.69
-
+#Peak SNR: 157.35
 
 
 """
@@ -345,14 +351,15 @@ SB_cont_p1 = prefix+'_SB_contp1'
 os.system('rm -rf %s*' % SB_cont_p1)
 split(vis=SB_cont_p0+'.ms', outputvis=SB_cont_p1+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = SB_cont_p1+'.ms' , imagename = SB_cont_p1, mask = common_mask, scales = SB_scales, threshold = '0.1mJy', savemodel = 'modelcolumn')
+tclean_wrapper(vis = SB_cont_p1+'.ms' , imagename = SB_cont_p1, mask = common_mask, scales = SB_scales, threshold = '0.5mJy', savemodel = 'modelcolumn')
 estimate_SNR(SB_cont_p1+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD142666_SB_contp1.image
 #Beam 0.235 arcsec x 0.196 arcsec (60.21 deg)
-#Flux inside disk mask: 120.24 mJy
-#Peak intensity of source: 37.87 mJy/beam
-#rms: 7.97e-02 mJy/beam
-#Peak SNR: 474.95
+#Flux inside disk mask: 120.31 mJy
+#Peak intensity of source: 37.97 mJy/beam
+#rms: 8.23e-02 mJy/beam
+#Peak SNR: 461.64
+
 
 #second round of phase self-cal for short baseline data
 SB_p2 = prefix+'_SB.p2'
@@ -369,14 +376,14 @@ SB_cont_p2 = prefix+'_SB_contp2'
 os.system('rm -rf %s*' % SB_cont_p2)
 split(vis=SB_cont_p1+'.ms', outputvis=SB_cont_p2+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = SB_cont_p2+'.ms' , imagename = SB_cont_p2, mask = common_mask, scales = SB_scales, threshold = '0.1mJy', savemodel = 'modelcolumn') 
+tclean_wrapper(vis = SB_cont_p2+'.ms' , imagename = SB_cont_p2, mask = common_mask, scales = SB_scales, threshold = '0.4mJy', savemodel = 'modelcolumn') 
 estimate_SNR(SB_cont_p2+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD142666_SB_contp2.image
 #Beam 0.235 arcsec x 0.196 arcsec (60.21 deg)
-#Flux inside disk mask: 120.17 mJy
-#Peak intensity of source: 37.91 mJy/beam
-#rms: 7.81e-02 mJy/beam
-#Peak SNR: 485.28
+#Flux inside disk mask: 120.22 mJy
+#Peak intensity of source: 38.05 mJy/beam
+#rms: 8.01e-02 mJy/beam
+#Peak SNR: 474.71
 
 
 #third round of phase self-cal for short baseline data
@@ -393,220 +400,258 @@ SB_cont_p3 = prefix+'_SB_contp3'
 os.system('rm -rf %s*' % SB_cont_p3)
 split(vis=SB_cont_p2+'.ms', outputvis=SB_cont_p3+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = SB_cont_p3+'.ms' , imagename = SB_cont_p3, mask = common_mask, scales = SB_scales, threshold = '0.1mJy', savemodel = 'modelcolumn') 
+tclean_wrapper(vis = SB_cont_p3+'.ms' , imagename = SB_cont_p3, mask = common_mask, scales = SB_scales, threshold = '0.3mJy', savemodel = 'modelcolumn') 
 estimate_SNR(SB_cont_p3+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD142666_SB_contp3.image
-#Beam 0.237 arcsec x 0.198 arcsec (57.85 deg)
+#Beam 0.236 arcsec x 0.197 arcsec (59.49 deg)
 #Flux inside disk mask: 120.52 mJy
-#Peak intensity of source: 39.24 mJy/beam
-#rms: 7.57e-02 mJy/beam
-#Peak SNR: 518.43
+#Peak intensity of source: 39.14 mJy/beam
+#rms: 7.63e-02 mJy/beam
+#Peak SNR: 512.82
 
 # RMS keeps improving. 
 
 #fourth round of phase self-cal for short baseline data
 SB_p4 = prefix+'_SB.p4'
 os.system('rm -rf '+SB_p4)
-gaincal(vis=SB_cont_p3+'.ms' , caltable=SB_p4, gaintype='T', spw=SB_contspws, refant=SB_refant, combine='spw', calmode='p', solint='12s', minsnr=1.5, minblperant=4)
+gaincal(vis=SB_cont_p3+'.ms' , caltable=SB_p4, gaintype='T', spw=SB_contspws, refant=SB_refant, combine='spw', calmode='p', solint='20s', minsnr=1.5, minblperant=4)
 
 if not skip_plots:
     plotcal(caltable=SB_p3, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', plotrange=[0,0,-180,180])
    
+os.system('cp -r '+SB_cont_p3+'.ms '+SB_cont_p3+'_beforeapplycal.ms')
+
 applycal(vis=SB_cont_p3+'.ms', spw=SB_contspws, gaintable=[SB_p4], spwmap=[0,0,0,0,0,0,0,0], interp = 'linearPD', calwt = True)
 
 SB_cont_p4 = prefix+'_SB_contp4'
 os.system('rm -rf %s*' % SB_cont_p4)
 split(vis=SB_cont_p3+'.ms', outputvis=SB_cont_p4+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = SB_cont_p4+'.ms' , imagename = SB_cont_p4, mask = common_mask, scales = SB_scales, threshold = '0.1mJy', savemodel = 'modelcolumn') 
+tclean_wrapper(vis = SB_cont_p4+'.ms' , imagename = SB_cont_p4, mask = common_mask, scales = SB_scales, threshold = '0.3mJy', savemodel = 'modelcolumn') 
 estimate_SNR(SB_cont_p4+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 
-
 #HD142666_SB_contp4.image
-#Beam 0.244 arcsec x 0.207 arcsec (42.41 deg)
-#Flux inside disk mask: 121.08 mJy
-#Peak intensity of source: 42.45 mJy/beam
-#rms: 7.80e-02 mJy/beam
-#Peak SNR: 544.01
+#Beam 0.239 arcsec x 0.203 arcsec (51.43 deg)
+#Flux inside disk mask: 120.77 mJy
+#Peak intensity of source: 40.95 mJy/beam
+#rms: 7.79e-02 mJy/beam
+#Peak SNR: 525.88
 
-# SNR increases due to the increase in beam size. rms noise is worse. We proceed using the results of the previous iteration. 
-delmod(vis=SB_cont_p3+'.ms')
 
+#rms noise is worse. We proceed using the results of the previous iteration. 
 
 
 SB_ap = prefix+'_SB.ap'
 os.system('rm -rf '+SB_ap)
 #note that the solint and minsnr are larger for amp self-cal
 #try solnorm = False first. If that leads to bad solutions, try solnorm = True. If that still doesn't help, then just skip amp self-cal
-gaincal(vis=SB_cont_p3+'.ms' , caltable=SB_ap, gaintype='T', spw=SB_contspws, refant=SB_refant, combine='spw', calmode='ap', solint='inf', minsnr=3.0, minblperant=4, solnorm = False) 
+gaincal(vis=SB_cont_p3+'_beforeapplycal.ms' , caltable=SB_ap, gaintype='T', spw=SB_contspws, refant=SB_refant, combine='spw', calmode='ap', solint='inf', minsnr=3.0, minblperant=4, solnorm = False) 
 
 if not skip_plots:
     plotcal(caltable=SB_ap, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', plotrange=[0,0,0,2])
     
 
-applycal(vis=SB_cont_p3+'.ms', spw=SB_contspws, gaintable=[SB_ap], spwmap=[0,0,0,0,0,0,0,0], interp = 'linearPD', calwt = True)
+applycal(vis=SB_cont_p3+'_beforeapplycal.ms', spw=SB_contspws, gaintable=[SB_ap], spwmap=[0,0,0,0,0,0,0,0], interp = 'linearPD', calwt = True)
 
 SB_cont_ap = prefix+'_SB_contap'
 os.system('rm -rf %s*' % SB_cont_ap)
-split(vis=SB_cont_p2+'.ms', outputvis=SB_cont_ap+'.ms', datacolumn='corrected')
+split(vis=SB_cont_p3+'_beforeapplycal.ms', outputvis=SB_cont_ap+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = SB_cont_ap+'.ms' , imagename = SB_cont_ap, mask = common_mask, scales = SB_scales, threshold = '0.1mJy', savemodel = 'modelcolumn')
+tclean_wrapper(vis = SB_cont_ap+'.ms' , imagename = SB_cont_ap, mask = common_mask, scales = SB_scales, threshold = '0.3mJy', savemodel = 'modelcolumn')
 estimate_SNR(SB_cont_ap+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD142666_SB_contap.image
-#Beam 0.236 arcsec x 0.198 arcsec (58.00 deg)
-#Flux inside disk mask: 120.65 mJy
-#Peak intensity of source: 39.14 mJy/beam
-#rms: 7.42e-02 mJy/beam
-#Peak SNR: 527.69
+#HD142666_SB_contap.image
+#Beam 0.233 arcsec x 0.196 arcsec (59.85 deg)
+#Flux inside disk mask: 122.10 mJy
+#Peak intensity of source: 38.39 mJy/beam
+#rms: 6.47e-02 mJy/beam
+#Peak SNR: 593.68
+
 
 # the image has improved compared to the phase-only self cal version
 
+"""
 
-#now we concatenate all the data together
+Selfcalibration on the combined SB+LB data does not improve the image. 
 
-combined_cont_p0 = prefix+'_combined_contp0'
-os.system('rm -rf %s*' % combined_cont_p0)
-#pay attention here and make sure you're selecting the shifted (and potentially rescaled) measurement sets
-concat(vis = [SB_cont_ap+'.ms', prefix+'_LB1_initcont_exec0_rescaled.ms', prefix+'_LB1_initcont_exec1_rescaled.ms'], concatvis = combined_cont_p0+'.ms' , dirtol = '0.1arcsec', copypointing = False) 
+We proceed by selfcalibrating the LB data alone
 
-# note that we are slighlty tapering the longest baselines to improve the shape of the PSF
-tclean_wrapper(vis = combined_cont_p0+'.ms' , imagename = combined_cont_p0, mask = common_mask, scales = LB_scales, threshold = '0.08mJy', savemodel = 'modelcolumn', interactive=False)
-estimate_SNR(combined_cont_p0+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
+"""
 
-#HD142666_combined_contp0.image
-#Beam 0.033 arcsec x 0.023 arcsec (64.59 deg)
-#Flux inside disk mask: 119.29 mJy
-#Peak intensity of source: 1.23 mJy/beam
-#rms: 1.28e-02 mJy/beam
-#Peak SNR: 95.94
+# combining LB data
+combined_cont_LB_p0 = prefix+'_combined_cont_LB_p0'
+os.system('rm -rf %s*' % combined_cont_LB_p0)
+concat(vis = [prefix+'_LB1_initcont_exec0_shift_rescaled.ms', prefix+'_LB1_initcont_exec1_shift_rescaled.ms'], concatvis = combined_cont_LB_p0+'.ms' , dirtol = '0.1arcsec', copypointing = False) 
+
+# imaging before selfcal
+tclean_wrapper(vis = combined_cont_LB_p0+'.ms' , imagename = combined_cont_LB_p0, mask = LB1_mask, scales=LB_scales, robust=2.0, threshold = '0.1mJy', savemodel = 'modelcolumn', interactive=False)
+estimate_SNR(combined_cont_LB_p0+'.image', disk_mask = LB1_mask, noise_mask = noise_annulus)
+#HD142666_combined_cont_LB_p0.image
+#Beam 0.041 arcsec x 0.031 arcsec (67.24 deg)
+#Flux inside disk mask: 113.59 mJy
+#Peak intensity of source: 1.78 mJy/beam
+#rms: 2.23e-02 mJy/beam
+#Peak SNR: 80.00
 
 combined_refant = '' #DV09, DV24, DA56'
-combined_contspws = '0~15'
-combined_spwmap =  [0,0,0,0,0,0,0,0,8,8,8,8,12,12,12,12] #note that the tables produced by gaincal in 5.1.1 have spectral windows numbered differently if you use the combine = 'spw' option. Previously, all of the solutions would be written to spectral window 0. Now, they are written to the first window in each execution block. So, the spwmap argument has to correspond to the first window in each execution block you want to calibrate. 
+combined_contspws = '0~7'
+combined_spwmap =  [0,0,0,0,4,4,4,4] #note that the tables produced by gaincal in 5.1.1 have spectral windows numbered differently if you use the combine = 'spw' option. Previously, all of the solutions would be written to spectral window 0. Now, they are written to the first window in each execution block. So, the spwmap argument has to correspond to the first window in each execution block you want to calibrate. 
 
 LB1_obs0_timerange = '2017/09/24/00~2017/09/26/00'
 LB2_obs1_timerange = '2017/11/08/00~2017/11/10/00'
 
 #first round of phase self-cal for long baseline data
-combined_p1 = prefix+'_combined.p1'
-os.system('rm -rf '+combined_p1)
-gaincal(vis=combined_cont_p0+'.ms' , caltable=combined_p1, gaintype='T', combine = 'spw, scan', spw=combined_contspws, field=field, refant=combined_refant, calmode='p', solint='360s', minsnr=1.5, minblperant=4) #choose self-cal intervals from [900s, 360s, 180s, 60s, 30s, 6s]
+LB_combined_p1 = prefix+'_LB_combined.p1'
+os.system('rm -rf '+LB_combined_p1)
+gaincal(vis=combined_cont_LB_p0+'.ms' , caltable=LB_combined_p1, gaintype='T', combine = 'spw, scan', spw=combined_contspws, field=field, refant=combined_refant, calmode='p', solint='900s', minsnr=1.5, minblperant=4) #choose self-cal intervals from [900s, 360s, 180s, 60s, 30s, 6s]
+
+os.system('cp -r '+combined_cont_LB_p0+'.ms '+combined_cont_LB_p0+'_beforeapplycal.ms')
 
 if not skip_plots:
     plotcal(caltable=combined_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180]) 
     plotcal(caltable=combined_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,-180,180])
 
-applycal(vis=combined_cont_p0+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_p1], interp = 'linearPD', calwt = True, applymode = 'calonly')
+applycal(vis=combined_cont_LB_p0+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[LB_combined_p1], interp = 'linearPD', calwt = True, applymode = 'calonly')
 
-combined_cont_p1 = prefix+'_combined_contp1'
-os.system('rm -rf %s*' % combined_cont_p1)
-split(vis=combined_cont_p0+'.ms', outputvis=combined_cont_p1+'.ms', datacolumn='corrected')
+combined_cont_LB_p1 = prefix+'_combined_cont_LB_p1'
+os.system('rm -rf %s*' % combined_cont_LB_p1)
+split(vis=combined_cont_LB_p0+'.ms', outputvis=combined_cont_LB_p1+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = combined_cont_p1+'.ms' , imagename = combined_cont_p1, mask = common_mask, scales = LB_scales, threshold = '0.08mJy', savemodel = 'modelcolumn')
-estimate_SNR(combined_cont_p1+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
-#HD142666_combined_contp1.image
-#Beam 0.033 arcsec x 0.023 arcsec (64.59 deg)
-#Flux inside disk mask: 118.82 mJy
-#Peak intensity of source: 1.19 mJy/beam
-#rms: 1.30e-02 mJy/beam
-#Peak SNR: 91.75
-
-#### ---------------------------
-#### The first run of selfcal always leads to a worse image. 
-#### I tried tapering, chaging robust, changing refant, changing the threashold in cleaning, chaning solint, but that did not work. 
-#### Have you encountered any similar problem with other disks? 
-#### ------------------------------------------------------
-
-
-
+tclean_wrapper(vis = combined_cont_LB_p1+'.ms' , imagename = combined_cont_LB_p1, mask = LB1_mask, scales = LB_scales, robust=2, threshold = '0.1mJy', savemodel = 'modelcolumn')
+estimate_SNR(combined_cont_LB_p1+'.image', disk_mask = LB1_mask, noise_mask = noise_annulus)
+#HD142666_combined_cont_LB_p1.image
+#Beam 0.041 arcsec x 0.031 arcsec (67.24 deg)
+#Flux inside disk mask: 114.95 mJy
+#Peak intensity of source: 1.76 mJy/beam
+#rms: 1.81e-02 mJy/beam
+#Peak SNR: 97.13
 
 #second round of phase self-cal for long baseline data
-combined_p2 = prefix+'_combined.p2'
-os.system('rm -rf '+combined_p2)
-gaincal(vis=combined_cont_p1+'.ms' , caltable=combined_p2, gaintype='T', combine = 'spw, scan', spw=combined_contspws, refant=combined_refant, calmode='p', solint='360s', minsnr=1.5, minblperant=4)
+LB_combined_p2 = prefix+'_LB_combined.p2'
+os.system('rm -rf '+LB_combined_p2)
+gaincal(vis=combined_cont_LB_p1+'.ms' , caltable=LB_combined_p2, gaintype='T', combine = 'spw, scan', spw=combined_contspws, field=field, refant=combined_refant, calmode='p', solint='360s', minsnr=1.5, minblperant=4) #choose self-cal intervals from [900s, 360s, 180s, 60s, 30s, 6s]
+
+os.system('cp -r '+combined_cont_LB_p1+'.ms '+combined_cont_LB_p1+'_beforeapplycal.ms')
 
 if not skip_plots:
-    plotcal(caltable=combined_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180])
-    plotcal(caltable=combined_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,-180,180])
+    plotcal(caltable=LB_combined_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180]) 
+    plotcal(caltable=LB_combined_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,-180,180])
 
-applycal(vis=combined_cont_p1+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_p2], interp = 'linearPD', calwt = True, applymode = 'calonly')
+applycal(vis=combined_cont_LB_p1+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[LB_combined_p2], interp = 'linearPD', calwt = True, applymode = 'calonly')
 
+combined_cont_LB_p2 = prefix+'_combined_cont_LB_p2'
+os.system('rm -rf %s*' % combined_cont_LB_p2)
+split(vis=combined_cont_LB_p1+'.ms', outputvis=combined_cont_LB_p2+'.ms', datacolumn='corrected')
+
+tclean_wrapper(vis = combined_cont_LB_p2+'.ms' , imagename = combined_cont_LB_p2, mask = LB1_mask, scales = LB_scales, robust=2, threshold = '0.1mJy', savemodel = 'modelcolumn')
+estimate_SNR(combined_cont_LB_p2+'.image', disk_mask = LB1_mask, noise_mask = noise_annulus)
+#HD142666_combined_cont_LB_p2.image
+#Beam 0.041 arcsec x 0.031 arcsec (67.24 deg)
+#Flux inside disk mask: 114.11 mJy
+#Peak intensity of source: 1.74 mJy/beam
+#rms: 1.75e-02 mJy/beam
+#Peak SNR: 99.12
+
+# try combining with SB now 
+
+# ##################################################
+# check and correct the SB weigths before concateneting with the LB data
+
+plotms(vis=SB_cont_ap+'.ms',xaxis='time', yaxis='Wt', coloraxis='spw')
+
+#make a backup copy of the SB selfcal data before modifying the weigths
+os.system('cp -r '+SB_cont_ap+'.ms '+SB_cont_ap+'_beforestatwt.ms')
+statwt(vis=SB_cont_ap+'.ms', dorms=True)
+
+#now we concatenate all the data together
 
 combined_cont_p2 = prefix+'_combined_contp2'
 os.system('rm -rf %s*' % combined_cont_p2)
-split(vis=combined_cont_p1+'.ms', outputvis=combined_cont_p2+'.ms', datacolumn='corrected')
+#pay attention here and make sure you're selecting the shifted (and potentially rescaled) measurement sets
+concat(vis = [SB_cont_ap+'.ms', combined_cont_LB_p2+'.ms'], concatvis = combined_cont_p2+'.ms', dirtol = '0.1arcsec', copypointing = False) 
 
-tclean_wrapper(vis = combined_cont_p2+'.ms' , imagename = combined_cont_p2, mask = common_mask, scales = LB_scales, threshold = '0.05mJy', savemodel = 'modelcolumn', uvtaper=['0.04arcsec'])
+tclean_wrapper(vis = combined_cont_p2+'.ms' , imagename = combined_cont_p2, mask = LB1_mask, scales = LB_scales, robust=2.0, threshold = '0.1mJy', savemodel = 'modelcolumn', interactive=False)
 estimate_SNR(combined_cont_p2+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
-#MYLup_combined_contp2.image
-#Beam 0.072 arcsec x 0.057 arcsec (74.79 deg)
-#Flux inside disk mask: 78.11 mJy
-#Peak intensity of source: 3.35 mJy/beam
-#rms: 1.46e-02 mJy/beam
-#Peak SNR: 229.79
 
-# SNR change is small, but map quality improved some.  Will attempt another round
+#HD142666_combined_contp2.image
+#Beam 0.041 arcsec x 0.031 arcsec (67.27 deg)
+#Flux inside disk mask: 113.45 mJy
+#Peak intensity of source: 1.79 mJy/beam
+#rms: 1.75e-02 mJy/beam
+#Peak SNR: 102.04
 
+#rms is very similar, SNR improved a bit. Proceeding with the third round of selfcal
+
+combined_refant = ''
+combined_contspws = '0~15'
+combined_spwmap =  [0,0,0,0,0,0,0,0,8,8,8,8,12,12,12,12] #note that the tables produced by gaincal in 5.1.1 have spectral windows numbered differently if you use the combine = 'spw' option. Previously, all of the solutions would be written to spectral window 0. Now, they are written to the first window in each execution block. So, the spwmap argument has to correspond to the first window in each execution block you want to calibrate. 
 
 #third round of phase self-cal for long baseline data
 combined_p3 = prefix+'_combined.p3'
 os.system('rm -rf '+combined_p3)
-gaincal(vis=combined_cont_p2+'.ms' , caltable=combined_p3, gaintype='T', combine = 'spw, scan', spw=combined_contspws, refant=combined_refant, calmode='p', solint='180s', minsnr=1.5, minblperant=4)
+gaincal(vis=combined_cont_p2+'.ms' , caltable=combined_p3, gaintype='T', combine = 'spw, scan', spw=combined_contspws, field=field, refant=combined_refant, calmode='p', solint='180s', minsnr=1.5, minblperant=4) #choose self-cal intervals from [900s, 360s, 180s, 60s, 30s, 6s]
+
+os.system('cp -r '+combined_cont_p2+'.ms '+combined_cont_p2+'_beforeapplycal.ms')
 
 if not skip_plots:
-    plotcal(caltable=combined_p3, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180])
+    plotcal(caltable=combined_p3, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180]) 
     plotcal(caltable=combined_p3, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,-180,180])
 
 applycal(vis=combined_cont_p2+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_p3], interp = 'linearPD', calwt = True, applymode = 'calonly')
 
-
-combined_cont_p3 = prefix+'_combined_contp3'
+combined_cont_p3 = prefix+'_combined_cont_p3'
 os.system('rm -rf %s*' % combined_cont_p3)
 split(vis=combined_cont_p2+'.ms', outputvis=combined_cont_p3+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = combined_cont_p3+'.ms' , imagename = combined_cont_p3, mask = common_mask, scales = LB_scales, threshold = '0.05mJy', savemodel = 'modelcolumn', uvtaper=['0.04arcsec'])
-estimate_SNR(combined_cont_p3+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
-#MYLup_combined_contp3.image
-#Beam 0.072 arcsec x 0.057 arcsec (74.79 deg)
-#Flux inside disk mask: 78.09 mJy
-#Peak intensity of source: 3.42 mJy/beam
-#rms: 1.39e-02 mJy/beam
-#Peak SNR: 246.18
+tclean_wrapper(vis = combined_cont_p3+'.ms' , imagename = combined_cont_p3, mask = LB1_mask, scales = LB_scales, robust=2, threshold = '0.1mJy', savemodel = 'modelcolumn')
+estimate_SNR(combined_cont_p3+'.image', disk_mask = LB1_mask, noise_mask = noise_annulus)
 
- 
-# continued improvement (in both map quality and SNR)
-
+#HD142666_combined_cont_p3.image
+#Beam 0.041 arcsec x 0.031 arcsec (67.27 deg)
+#Flux inside disk mask: 115.23 mJy
+#Peak intensity of source: 1.78 mJy/beam
+#rms: 1.59e-02 mJy/beam
+#Peak SNR: 112.12
 
 #fourth round of phase self-cal for long baseline data
 combined_p4 = prefix+'_combined.p4'
 os.system('rm -rf '+combined_p4)
-gaincal(vis=combined_cont_p3+'.ms' , caltable=combined_p4, gaintype='T', combine = 'spw, scan', spw=combined_contspws, refant=combined_refant, calmode='p', solint='60s', minsnr=1.5, minblperant=4)
+gaincal(vis=combined_cont_p3+'.ms' , caltable=combined_p4, gaintype='T', combine = 'spw, scan', spw=combined_contspws, field=field, refant=combined_refant, calmode='p', solint='60s', minsnr=1.5, minblperant=4) #choose self-cal intervals from [900s, 360s, 180s, 60s, 30s, 6s]
+
+os.system('cp -r '+combined_cont_p3+'.ms '+combined_cont_p3+'_beforeapplycal.ms')
 
 if not skip_plots:
-    plotcal(caltable=combined_p4, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180])
+    plotcal(caltable=combined_p4, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,-180,180]) 
     plotcal(caltable=combined_p4, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = LB2_obs1_timerange, plotrange=[0,0,-180,180])
 
 applycal(vis=combined_cont_p3+'.ms', spw=combined_contspws, spwmap = combined_spwmap, gaintable=[combined_p4], interp = 'linearPD', calwt = True, applymode = 'calonly')
 
-combined_cont_p4 = prefix+'_combined_contp4'
+combined_cont_p4 = prefix+'_combined_cont_p4'
 os.system('rm -rf %s*' % combined_cont_p4)
 split(vis=combined_cont_p3+'.ms', outputvis=combined_cont_p4+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = combined_cont_p4+'.ms' , imagename = combined_cont_p4, mask = common_mask, scales = LB_scales, threshold = '0.05mJy', savemodel = 'modelcolumn', uvtaper=['0.04arcsec'])
-estimate_SNR(combined_cont_p4+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
-#MYLup_combined_contp4.image
-#Beam 0.072 arcsec x 0.057 arcsec (74.79 deg)
-#Flux inside disk mask: 78.05 mJy
-#Peak intensity of source: 3.54 mJy/beam
-#rms: 1.37e-02 mJy/beam
-#Peak SNR: 259.09
+tclean_wrapper(vis = combined_cont_p4+'.ms' , imagename = combined_cont_p4, mask = LB1_mask, scales = LB_scales, robust=2, threshold = '0.04mJy', savemodel = 'modelcolumn')
+estimate_SNR(combined_cont_p4+'.image', disk_mask = LB1_mask, noise_mask = noise_annulus)
 
-# marginal improvement (in both map quality and SNR, and not just peak SNR). Proceeding with amplitude self-cal
+os.system('cp -r '+combined_cont_p4+'.ms '+combined_cont_p4+'_final.ms')
 
-# Note that the use of solint interval longer than the scan length does not lead to any improvement in the image quality.
+#HD142666_combined_cont_p4.image
+#Beam 0.041 arcsec x 0.031 arcsec (67.27 deg)
+#Flux inside disk mask: 115.31 mJy
+#Peak intensity of source: 1.92 mJy/beam
+#rms: 1.49e-02 mJy/beam
+#Peak SNR: 129.16
+
+
+
+# We stop phase-only selfcal here: Shorter interval solutions lead to higher rms noise and lower peak SNR
+
+
+# amplitude-phase selfcal
+
 combined_ap = prefix+'_combined.ap'
 os.system('rm -rf '+combined_ap)
-gaincal(vis=combined_cont_p4+'.ms' , caltable=combined_ap, gaintype='T', combine = 'spw', spw=combined_contspws, refant=combined_refant, calmode='ap', solint='inf', minsnr=3.0, minblperant=4, solnorm = False)
+gaincal(vis=combined_cont_p4+'.ms' , caltable=combined_ap, gaintype='T', combine = 'spw,scan', spw=combined_contspws, refant=combined_refant, calmode='ap', solint='inf', minsnr=3.0, minblperant=4, solnorm = False)
 
 if not skip_plots:
     plotcal(caltable=combined_ap, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = LB1_obs0_timerange, plotrange=[0,0,0,2]) 
@@ -618,15 +663,21 @@ combined_cont_ap = prefix+'_combined_contap'
 os.system('rm -rf %s*' % combined_cont_ap)
 split(vis=combined_cont_p4+'.ms', outputvis=combined_cont_ap+'.ms', datacolumn='corrected')
 
-tclean_wrapper(vis = combined_cont_ap+'.ms' , imagename = combined_cont_ap, mask = common_mask, scales = LB_scales, threshold = '0.05mJy', savemodel = 'modelcolumn', uvtaper=['0.04arcsec'])
-estimate_SNR(combined_cont_ap+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
+tclean_wrapper(vis = combined_cont_ap+'.ms' , imagename = combined_cont_ap, mask = LB1_mask, scales = LB_scales, threshold = '0.04mJy', savemodel = 'modelcolumn', robust=2)
+estimate_SNR(combined_cont_ap+'.image', disk_mask = LB1_mask, noise_mask = noise_annulus)
 
-#MYLup_combined_contap.image
-#Beam 0.071 arcsec x 0.057 arcsec (74.85 deg)
-#Flux inside disk mask: 78.83 mJy
-#Peak intensity of source: 3.37 mJy/beam
-#rms: 1.30e-02 mJy/beam
-#Peak SNR: 258.93
+# amp-phase selfcal attempts: 
+# ----------------------------
+#> solint=inf, solnorm=True
+#HD142666_combined_contap.image
+#Beam 0.040 arcsec x 0.029 arcsec (62.60 deg)
+#Flux inside disk mask: 118.97 mJy
+#Peak intensity of source: 1.85 mJy/beam
+#rms: 1.78e-02 mJy/beam
+#Peak SNR: 103.94
+
+
+
 
 # no real improvement in peak SNR metric.  But map is slightly improved. 
 
