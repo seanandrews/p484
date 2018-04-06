@@ -161,7 +161,7 @@ mask_semiminor = 1.75 #semiminor axis of mask in arcsec
 
 SB1_mask = 'ellipse[[%s, %s], [%.1farcsec, %.1farcsec], %.1fdeg]' % ('15h56m09.20s', '-37.56.06.42', mask_semimajor, mask_semiminor, mask_angle)
 
-LB1_mask = 'ellipse[[%s, %s], [%.1farcsec, %.1farcsec], %.1fdeg]' % ('15h46m44.71s', '-34.30.36.09', mask_semimajor, mask_semiminor, mask_angle)
+LB1_mask = 'ellipse[[%s, %s], [%.1farcsec, %.1farcsec], %.1fdeg]' % ('15h56m09.20s', '-37.56.06.42', mask_semimajor, mask_semiminor, mask_angle)
 
 SB_scales = [0, 15, 30, 45,75]
 LB_scales = [0, 10, 50, 150, 300, 450]
