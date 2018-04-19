@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# ../../../lperez/casa_5.1.1/casa-release-5.1.1-5.el7/bin/casa
-# ../../../almadata02/lperez/casa_5.1.1/casa-release-5.1.1-5.el7/bin/casa
+# /almadata02/lperez/casa_5.1.1/casa-release-5.1.1-5.el7/bin/casa
 
 #######################################################################
-#              HT Lup Self-Calibration: Short Baselines               #
+#                        AS 205 Self-Calibration                      #
 #######################################################################
 
 '''
@@ -23,7 +22,7 @@ self-calibrate the short and long baselines of AS205 datasets. This includes:
 We are naming this datasets by short-long plus a chronological number.
 '''
 
-# Execute the functions
+# Execute the reduction functions
 execfile('reduction_utils.py')
 
 # Append the au functions from other directory.
@@ -102,9 +101,8 @@ LB1: 4 spws, CO line in spw3, observed in september 2017.
 To flag the CO line, we proceed inspecting by eye the location in
 channels and spw. Flag ~50 km/s around 12CO 2-1 line. Each channel in
 these spectral windows has 0.635 km/s, so we need to
-flag ~320 channels in total. (each channel is half that
+flag ~160 channels in total. (each channel is half that
 speed to take the mean)
-The center of the peak is around -6km/s.
 '''
 
 # rest_freq_13CO21 = 2.20399e11 # Hz
@@ -164,9 +162,13 @@ the two disks has different radial velocity, so the mid
 velocity observed should be something like 36km/s.
 In SB2, the central position is aproximately in -25km/s.
 In SB3, the central position is aproximately in -11km/s.
+
+This issue is only observable in the plotms, cause the get_flagchannels needs
+the real velocity (~4km/s) to flag the correct channels. We continue by
+flagging the known lines.
 '''
 
-# Find the channels that will be flagged in the SB datasets.
+# Find the channels that will be flagged in the datasets.
 # Delete previous runs.
 os.system('rm -rf '+path_SB1+'.flagversions*')
 os.system('rm -rf '+path_SB2+'.flagversions*')
@@ -202,7 +204,6 @@ avg_cont(data_params['SB1'], prefix, flagchannels=SB1_flagchannels)
 avg_cont(data_params['SB2'], prefix, flagchannels=SB2_flagchannels)
 avg_cont(data_params['SB3'], prefix, flagchannels=SB3_flagchannels)
 avg_cont(data_params['LB1'], prefix, flagchannels=LB1_flagchannels)
-
 
 
 #######################################################################
@@ -547,7 +548,7 @@ fixplanets(vis=shiftname_SB30+'.ms', \
 # SB3 exec1
 fixvis(vis=prefix+'_SB3_initcont_exec1.ms', outputvis=shiftname_SB31+'.ms', \
        field=data_params['SB3']['field'], \
-       phasecenter='J2000 16h11m31.35272s -18d38m26.215186')
+       phasecenter='J2000 16h11m31.35272s -18d38m26.215186s')
 fixplanets(vis=shiftname_SB31+'.ms', \
            field=data_params['SB3']['field'], direction=common_dir)
 
@@ -833,8 +834,10 @@ concat(vis=[shift_scaled_SB1+'.ms', shift_scaled_SB2+'.ms', shift_scaled_SB30+'.
 
 # Robust level
 robust = 0.5
-# In SB the source is not well resolved. We are not using different scales.
-scales_SB = [0]
+# In SB the source is not well resolved. We are going to use few short
+# scales. Apparently, the tclean choose to use only puntual sources, 
+# but we let the freedom of choosing 1beam sources anyway.
+scales_SB = [0, 9]
 
 # We'll search for a reference antenna by inspection in plotants or
 # calibration files.
@@ -843,14 +846,15 @@ scales_SB = [0]
 #ref_SB3 = 'DA46'  # Highest recommended reference antenna present in all SB3
 get_station_numbers(shift_scaled_SB1+'.ms', 'DV09')
 get_station_numbers(shift_scaled_SB2+'.ms', 'DV09')
-get_station_numbers(shift_scaled_SB3+'.ms', 'DA46')
+get_station_numbers(shift_scaled_SB30+'.ms', 'DA46')
+get_station_numbers(shift_scaled_SB31+'.ms', 'DA46')
+get_station_numbers(shift_scaled_SB32+'.ms', 'DA46')
 #Observation ID 0: DV09@A046
 #Observation ID 0: DV09@A046
 #Observation ID 0: DA46@A034
 #Observation ID 1: DA46@A034
 #Observation ID 2: DA46@A034
-ref_SB = 'DV09@A046, DV09@A046, DA46@A034'
-ref_LB = 'DV09, DA61' # Visually selected
+ref_SB = 'DV09@A046, DA46@A034'
 
 SB_contspws = '0~15'
 
@@ -861,6 +865,7 @@ SB30_timerange = '2017/05/14/00:00:01~2017/05/14/23:59:59'
 SB31_timerange = '2017/05/17/00:00:01~2017/05/17/23:59:59'
 SB32_timerange = '2017/05/19/00:00:01~2017/05/19/23:59:59'
 LB1_timerange  = '2017/09/29/00:00:01~2017/09/29/23:59:59'
+
 
 #######################################################################
 #                     PHASE SELF-CALIBRATION 0                        #
@@ -875,7 +880,7 @@ split(vis=shift_scaled_SB+'.ms',
       outputvis=SB_p0+'.ms',
       datacolumn='data')
 
-# First Clean for selfcalibration
+# Clean for selfcalibration
 tclean_wrapper(vis=SB_p0+'.ms', \
                imagename=SB_p0, \
                mask=mask_SB, \
@@ -899,7 +904,7 @@ estimate_SNR(SB_p0+'.image', \
 # RMS in mJy
 rms_SB_p0 = imstat(imagename=SB_p0+'.image', region=res_mask_SB)['rms'][0]*10**3
 
-# First self-calibration
+# Gaincal for self-calibration
 os.system('rm -rf '+SB_p0+'.cal')
 gaincal(vis=SB_p0+'.ms',
         caltable=SB_p0+'.cal',
@@ -947,7 +952,7 @@ applycal(vis=SB_p0+'.ms', spw=SB_contspws,
 #                     PHASE SELF-CALIBRATION 1                        #
 #######################################################################
 
-# Name of the first data.
+# Name of the data.
 SB_p1 = prefix+'_SB_p1'
 
 # Split the data to continue with the calibrations
@@ -956,13 +961,14 @@ split(vis=SB_p0+'.ms',
       outputvis=SB_p1+'.ms',
       datacolumn='corrected')
 
-# First Clean for selfcalibration
+# Clean for selfcalibration. 2*rms_SB_p0>0.2mJy, so we keep 
+# the 0.2 as threshold
 tclean_wrapper(vis=SB_p1+'.ms', \
                imagename=SB_p1, \
                mask=mask_SB, \
                scales=scales_SB, \
                robust=robust, \
-               threshold=str(2*rms_SB_p0)+'mJy', \
+               threshold='0.2mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
@@ -972,17 +978,15 @@ estimate_SNR(SB_p1+'.image', \
              noise_mask = res_mask_SB)
 #AS205_SB_p1.image
 #Beam 0.270 arcsec x 0.228 arcsec (84.95 deg)
-#Flux inside disk mask: 352.28 mJy
-#Peak intensity of source: 103.12 mJy/beam
-#rms: 5.93e-02 mJy/beam
-#Peak SNR: 1739.90
-
-# Increase SNR: 3.017359485285192
+#Flux inside disk mask: 352.65 mJy
+#Peak intensity of source: 103.14 mJy/beam
+#rms: 5.90e-02 mJy/beam
+#Peak SNR: 1749.40
 
 # RMS in mJy
 rms_SB_p1 = imstat(imagename=SB_p1+'.image', region=res_mask_SB)['rms'][0]*10**3
 
-# First self-calibration
+# Gaincal self-calibration
 os.system('rm -rf '+SB_p1+'.cal')
 gaincal(vis=SB_p1+'.ms',
         caltable=SB_p1+'.cal',
@@ -999,7 +1003,7 @@ None solutions were flagged
 '''
 
 if not skip_plots:
-    # Plot the first phase calibration
+    # Plot phase calibration
     plotcal(caltable=SB_p1+'.cal', \
             xaxis='time', yaxis='phase', subplot=221, iteration='antenna', \
             plotrange=[0, 0, -180, 180], timerange=SB1_timerange,
@@ -1030,7 +1034,7 @@ applycal(vis=SB_p1+'.ms', spw=SB_contspws,
 #                        AMP SELF-CALIBRATION 0                       #
 #######################################################################
 
-# Name of the first data.
+# Name of the data.
 SB_a0 = prefix+'_SB_a0'
 
 # Split the data to continue with the calibrations
@@ -1039,13 +1043,14 @@ split(vis=SB_p1+'.ms',
       outputvis=SB_a0+'.ms',
       datacolumn='corrected')
 
-# First Clean for selfcalibration
+# Clean for selfcalibration.  The high signal to noise encourage us
+# to push the limit to the 1.5rms level.
 tclean_wrapper(vis=SB_a0+'.ms', \
                imagename=SB_a0, \
                mask=mask_SB, \
                scales=scales_SB, \
                robust=robust, \
-               threshold=str(2*rms_SB_p1)+'mJy', \
+               threshold=str(1.5*rms_SB_p1)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
@@ -1055,17 +1060,25 @@ estimate_SNR(SB_a0+'.image', \
              noise_mask = res_mask_SB)
 #AS205_SB_a0.image
 #Beam 0.270 arcsec x 0.228 arcsec (84.79 deg)
-#Flux inside disk mask: 352.90 mJy
-#Peak intensity of source: 103.20 mJy/beam
-#rms: 5.84e-02 mJy/beam
-#Peak SNR: 1768.13
+#Flux inside disk mask: 352.93 mJy
+#Peak intensity of source: 103.18 mJy/beam
+#rms: 5.83e-02 mJy/beam
+#Peak SNR: 1770.71
 
-# Increase SNR: 1.0162250704063451
 
 '''
-The decrease is almost 1%. It was tried another round of phase self-cal
+The decrease is almost 2%. It was tried another round of phase self-cal
 with a gaincal of 30s, but the results got worse.
 There were a decrease in SNR because of an increase in rms.
+It was tried with 1*rms and 2*rms threshold, but the 30s gaincal always
+decreased the snr.
+
+#AS205_SB_a0.image
+#Beam 0.270 arcsec x 0.228 arcsec (83.98 deg)
+#Flux inside disk mask: 353.41 mJy
+#Peak intensity of source: 104.39 mJy/beam
+#rms: 5.92e-02 mJy/beam
+#Peak SNR: 1762.12
 
 We stop the phase cal here, and start the amp calibration.
 '''
@@ -1131,13 +1144,13 @@ split(vis=SB_a0+'.ms',
       outputvis=SB_ap+'.ms',
       datacolumn='corrected')
 
-# First Clean for selfcalibration
+# Clean for imaging
 tclean_wrapper(vis=SB_ap+'.ms', \
                imagename=SB_ap, \
                mask=mask_SB, \
                scales=scales_SB, \
                robust=robust, \
-               threshold=str(2*rms_SB_a0)+'mJy', \
+               threshold=str(1.*rms_SB_a0)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
@@ -1146,17 +1159,14 @@ estimate_SNR(SB_ap+'.image', \
              disk_mask = mask_SB_main, \
              noise_mask = res_mask_SB)
 #AS205_SB_ap.image
-#Beam 0.270 arcsec x 0.227 arcsec (84.87 deg)
-#Flux inside disk mask: 353.68 mJy
-#Peak intensity of source: 102.57 mJy/beam
-#rms: 3.14e-02 mJy/beam
-#Peak SNR: 3265.77
-
-# Increase SNR: 1.8470191671426874
+#Beam 0.270 arcsec x 0.227 arcsec (84.89 deg)
+#Flux inside disk mask: 353.81 mJy
+#Peak intensity of source: 102.50 mJy/beam
+#rms: 3.10e-02 mJy/beam
+#Peak SNR: 3310.36
 
 # RMS in mJy
-rms_ap = imstat(imagename=SB_ap+'.image', region=res_mask_SB)['rms'][0]*10**3
-
+rms_SB_ap = imstat(imagename=SB_ap+'.image', region=res_mask_SB)['rms'][0]*10**3
 
 
 #######################################################################
@@ -1214,10 +1224,10 @@ estimate_SNR(combined_p0+'.image', \
              disk_mask=mask_LB_main, noise_mask=res_mask_LB)
 #AS205_combined_p0.image
 #Beam 0.039 arcsec x 0.025 arcsec (-81.58 deg)
-#Flux inside disk mask: 373.60 mJy
-#Peak intensity of source: 4.92 mJy/beam
+#Flux inside disk mask: 374.69 mJy
+#Peak intensity of source: 4.89 mJy/beam
 #rms: 2.90e-02 mJy/beam
-#Peak SNR: 169.41
+#Peak SNR: 168.75
 
 # RMS in mJy
 rms_LB_p0 = imstat(imagename=combined_p0+'.image', \
@@ -1238,15 +1248,14 @@ gaincal(vis=combined_p0+'.ms',
 
 '''
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:44:08.8
-4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:48:01.7
-4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:54:51.2
+3 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:48:01.7
+3 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:54:51.2
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:58:15.9
 4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:01:38.6
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:08:28.0
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:12:39.4
+2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:08:28.0
 4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:22:10.5
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:27:23.4
-3 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:31:56.7
+2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:31:56.7
 '''
 
 if not skip_plots:
@@ -1311,12 +1320,10 @@ estimate_SNR(combined_p1+'.image', \
              disk_mask=mask_LB_main, noise_mask=res_mask_LB)
 #AS205_combined_p1.image
 #Beam 0.039 arcsec x 0.025 arcsec (-81.58 deg)
-#Flux inside disk mask: 364.04 mJy
-#Peak intensity of source: 5.74 mJy/beam
-#rms: 1.95e-02 mJy/beam
-#Peak SNR: 293.87
-
-# Increase in SNR: 1.7346673750073787
+#Flux inside disk mask: 363.44 mJy
+#Peak intensity of source: 5.71 mJy/beam
+#rms: 1.96e-02 mJy/beam
+#Peak SNR: 291.45
 
 # RMS in mJy
 rms_LB_p1 = imstat(imagename=combined_p1+'.image', \
@@ -1336,22 +1343,21 @@ gaincal(vis=combined_p1+'.ms',
         minblperant=4)
 
 '''
-5 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:38:30.4
+4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:38:30.4
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:40:30.1
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:42:27.0
+2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:42:27.0
 4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:50:45.5
-2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:54:42.1
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:56:42.1
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:54:42.1
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:01:19.9
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:03:00.5
-2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:06:57.1
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:08:57.1
-4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:15:14.0
+2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:03:00.5
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:06:57.1
+3 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:15:14.0
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:17:13.2
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:19:10.6
-2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:21:10.7
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:21:10.7
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:25:48.2
-4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:27:28.4
+3 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:27:28.4
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:29:28.3
 4 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:31:24.9
 2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:32:37.8
 '''
@@ -1416,12 +1422,10 @@ estimate_SNR(combined_p2+'.image', \
              disk_mask=mask_LB_main, noise_mask=res_mask_LB)
 #AS205_combined_p2.image
 #Beam 0.039 arcsec x 0.025 arcsec (-81.58 deg)
-#Flux inside disk mask: 358.52 mJy
-#Peak intensity of source: 6.10 mJy/beam
+#Flux inside disk mask: 358.54 mJy
+#Peak intensity of source: 6.13 mJy/beam
 #rms: 1.80e-02 mJy/beam
-#Peak SNR: 338.89
-
-# Increase in SNR: 1.153196991867152
+#Peak SNR: 341.17
 
 # RMS in mJy
 rms_LB_p2 = imstat(imagename=combined_p2+'.image', \
@@ -1441,28 +1445,28 @@ gaincal(vis=combined_p2+'.ms',
         minblperant=4)
 
 '''
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:35:37.5
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:36:50.4
+2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:38:12.2
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:39:34.1
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:42:17.9
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:43:39.8
-3 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:47:52.6
-2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:50:27.3
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:45:15.1
+2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:47:52.6
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:50:27.3
 2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:55:54.9
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/22:57:29.6
 2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:00:07.6
-2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:01:20.4
-2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:08:09.8
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:09:45.2
-2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:12:21.2
+3 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:01:20.4
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:05:26.0
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:08:09.8
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:12:21.2
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:16:17.7
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:19:01.6
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:21:58.4
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:24:35.5
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:25:48.3
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:27:10.2
 2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:28:32.1
-1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:29:54.0
+2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:29:54.0
 1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:31:15.9
-2 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:32:37.8
+1 of 43 solutions flagged due to SNR < 1.5 in spw=16 at 2017/09/29/23:32:37.8
 '''
 
 if not skip_plots:
@@ -1509,14 +1513,14 @@ split(vis=combined_p2+'.ms',
       outputvis=combined_p3+'.ms',
       datacolumn='corrected')
 
-# Clean for selfcalibration
+# Clean for selfcalibration. We push it to 1.5rms level
 tclean_wrapper(vis=combined_p3+'.ms', \
                imagename=combined_p3, \
                imsize=combined_imsize, \
                mask=mask_LB, \
                scales=combined_scales, \
                robust=robust, \
-               threshold=str(2*rms_LB_p2)+'mJy', \
+               threshold=str(1.5*rms_LB_p2)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
@@ -1525,12 +1529,10 @@ estimate_SNR(combined_p3+'.image', \
              disk_mask=mask_LB_main, noise_mask=res_mask_LB)
 #AS205_combined_p3.image
 #Beam 0.039 arcsec x 0.025 arcsec (-81.58 deg)
-#Flux inside disk mask: 357.26 mJy
-#Peak intensity of source: 6.47 mJy/beam
-#rms: 1.80e-02 mJy/beam
-#Peak SNR: 359.49
-
-# Increase in SNR: 1.0607866859452921
+#Flux inside disk mask: 356.45 mJy
+#Peak intensity of source: 6.45 mJy/beam
+#rms: 1.78e-02 mJy/beam
+#Peak SNR: 362.7
 
 # RMS in mJy
 rms_LB_p3 = imstat(imagename=combined_p3+'.image', \
@@ -1597,14 +1599,14 @@ split(vis=combined_p3+'.ms',
       outputvis=combined_a0+'.ms',
       datacolumn='corrected')
 
-# Clean for selfcalibration
+# Clean for selfcalibration. we push to 1.5rms level.
 tclean_wrapper(vis=combined_a0+'.ms', \
                imagename=combined_a0, \
                imsize=combined_imsize, \
                mask=mask_LB, \
                scales=combined_scales, \
                robust=robust, \
-               threshold=str(2*rms_LB_p3)+'mJy', \
+               threshold=str(1.5*rms_LB_p3)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
@@ -1613,12 +1615,10 @@ estimate_SNR(combined_a0+'.image', \
              disk_mask=mask_LB_main, noise_mask=res_mask_LB)
 #AS205_combined_a0.image
 #Beam 0.039 arcsec x 0.025 arcsec (-81.58 deg)
-#Flux inside disk mask: 357.68 mJy
-#Peak intensity of source: 6.60 mJy/beam
-#rms: 1.80e-02 mJy/beam
-#Peak SNR: 366.16
-
-# Increase in SNR: 1.018554062699936
+#Flux inside disk mask: 356.56 mJy
+#Peak intensity of source: 6.61 mJy/beam
+#rms: 1.78e-02 mJy/beam
+#Peak SNR: 371.72
 
 # RMS in mJy
 rms_LB_a0 = imstat(imagename=combined_a0+'.image', \
@@ -1643,15 +1643,12 @@ gaincal(vis=combined_a0+'.ms',
         solnorm=False)
 
 '''
-1 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/22:38:24.8
-1 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/22:44:08.8
-6 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/22:48:01.7
+7 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/22:48:01.7
 4 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/22:54:51.2
 1 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/22:58:16.0
-5 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/23:01:38.6
-7 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/23:08:28.0
+7 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/23:01:38.6
+6 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/23:08:28.0
 3 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/23:22:10.5
-1 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/23:27:23.5
 2 of 43 solutions flagged due to SNR < 3 in spw=16 at 2017/09/29/23:31:56.7
 '''
 
@@ -1706,7 +1703,7 @@ tclean_wrapper(vis=combined_a1+'.ms', \
                mask=mask_LB, \
                scales=combined_scales, \
                robust=robust, \
-               threshold=str(2*rms_LB_a0)+'mJy', \
+               threshold=str(1.5*rms_LB_a0)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
@@ -1714,13 +1711,11 @@ tclean_wrapper(vis=combined_a1+'.ms', \
 estimate_SNR(combined_a1+'.image', \
              disk_mask=mask_LB_main, noise_mask=res_mask_LB)
 #AS205_combined_a1.image
-#Beam 0.038 arcsec x 0.025 arcsec (-83.63 deg)
-#Flux inside disk mask: 358.40 mJy
-#Peak intensity of source: 6.30 mJy/beam
-#rms: 1.67e-02 mJy/beam
-#Peak SNR: 376.56
-
-# Increase in SNR: 1.0284028839851431
+#Beam 0.039 arcsec x 0.025 arcsec (-83.55 deg)
+#Flux inside disk mask: 357.24 mJy
+#Peak intensity of source: 6.32 mJy/beam
+#rms: 1.64e-02 mJy/beam
+#Peak SNR: 384.05
 
 # RMS in mJy
 rms_LB_a1 = imstat(imagename=combined_a1+'.image', \
@@ -1803,39 +1798,57 @@ applycal(vis=combined_a1+'.ms',
 #                         COMBINED FINAL IMAGE                        #
 #######################################################################
 
+im_robust = -0.5
+
 # Name of the first data.
 combined_ap = prefix+'_combined_ap'
 
 # Split the data to continue with the calibrations
-os.system('rm -rf '+combined_ap+'.*')
+os.system('rm -rf '+combined_ap+'_'+str(im_robust)+'.*')
 split(vis=combined_a1+'.ms',
-      outputvis=combined_ap+'.ms',
+      outputvis=combined_ap+'_'+str(im_robust)+'.ms',
       datacolumn='corrected')
 
 # Clean for selfcalibration
 tclean_wrapper(vis=combined_ap+'.ms', \
-               imagename=combined_ap, \
+               imagename=combined_ap+'_'+str(im_robust), \
                imsize=combined_imsize, \
                mask=mask_LB, \
                scales=combined_scales, \
-               robust=robust, \
+               robust=im_robust, \
                threshold=str(2*rms_LB_a1)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(combined_ap+'.image', \
+estimate_SNR(combined_ap+'_'+str(im_robust)+'.image', \
              disk_mask = mask_LB_main, \
              noise_mask = res_mask_LB)
 
-#AS205_combined_ap.image
+# ROBUST 0.5
+#AS205_combined_ap_0.5.image
 #Beam 0.038 arcsec x 0.025 arcsec (-84.63 deg)
-#Flux inside disk mask: 358.33 mJy
+#Flux inside disk mask: 358.01 mJy
 #Peak intensity of source: 6.15 mJy/beam
 #rms: 1.61e-02 mJy/beam
-#Peak SNR: 380.88
+#Peak SNR: 381.28
 
-# Increase in SNR: 1.011472275334608
+# ROBUST 0.0
+#AS205_combined_ap_0.0.image
+#Beam 0.031 arcsec x 0.019 arcsec (89.18 deg)
+#Flux inside disk mask: 357.03 mJy
+#Peak intensity of source: 4.45 mJy/beam
+#rms: 1.93e-02 mJy/beam
+#Peak SNR: 230.53
 
-# RMS in mJy
-rms_LB_ap = imstat(imagename=combined_ap+'.image', region=res_mask_LB)['rms'][0]*10**3
+# ROBUST -0.5
+#AS205_combined_ap_-0.5.image
+#Beam 0.029 arcsec x 0.016 arcsec (84.51 deg)
+#Flux inside disk mask: 356.11 mJy
+#Peak intensity of source: 3.60 mJy/beam
+#rms: 2.64e-02 mJy/beam
+#Peak SNR: 136.41
+
+exportfits(imagename=combined_ap+'_0.5.image', \
+           fitsimage=prefix+'_combined_selfcal_ap.fits', \
+           history=False, overwrite=True)
