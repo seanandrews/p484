@@ -4,7 +4,7 @@
 # ../../../almadata02/lperez/casa_5.1.1/casa-release-5.1.1-5.el7/bin/casa
 
 #######################################################################
-#              HT Lup Self-Calibration: Short Baselines               #
+#                       HT Lup Self-Calibration                       #
 #######################################################################
 
 '''
@@ -16,14 +16,11 @@ Nicolas Troncoso Kurtovic
 mail: nicokurtovic at gmail.com
 
 This script was written for CASA 5.1.1 to
-self-calibrate the short baselines HTLup dataset
+self-calibrate the short and long baselines from HTLup datasets
 '''
 
-import numpy as np
-import matplotlib.pyplot as plt
 execfile('reduction_utils.py')
 
-import sys
 sys.path.append('/umi_01/nkurtovic/HTLup/analysis_scripts/')
 #sys.path.append('/almadata02/nkurtovic/HTLup/analysis_scripts/')
 import analysisUtils as au
@@ -88,13 +85,13 @@ if not skip_plots:
            yaxis='amplitude', \
            avgtime='1e8', \
            ydatacolumn='data', \
-           field=field, \
+           field=data_params['SB']['field'], \
            avgscan=True, \
            avgbaseline=True, \
            iteraxis='spw', \
            restfreq=str(rest_freq))
 
-# Numbers of the spectral windows.
+# Numbers of the spectral windows with continuum.
 cont_spws = '0~7'
 
 '''
@@ -106,29 +103,24 @@ channel ~1920 in spw 0 and 4. This correspond to a velocity of ~-6km/s
 os.system('rm -rf '+path_SB+'.flagversions*')
 SB_flagchannels = get_flagchannels(data_params['SB'], \
                                    prefix, \
-                                   velocity_range=np.array([-56., 44.]))
-# Flagged channels in SB: 0:1729~2044
-#                         4:1729~2044
+                                   velocity_range=np.array([-21., 29.]))
+# Flagchannels input string for SB: '0:1840~1997, 4:1840~1997'
 
 # Average continuum. This will generate the file 'prefix+_SB_initcont.ms'
 os.system('rm -rf '+prefix+'_SB_initcont.ms')
-avg_cont(data_params['SB'], \
-         prefix, \
-         flagchannels=SB_flagchannels)
+avg_cont(data_params['SB'], prefix, flagchannels=SB_flagchannels)
 
 
 # Find the channels that will be flagged in the LB data.
 os.system('rm -rf '+path_LB+'.flagversions*')
 LB_flagchannels = get_flagchannels(data_params['LB'], \
                                    prefix, \
-                                   velocity_range=np.array([-56., 44.]))
-# Flagchannels input string for LB: '3:1729~2044, 7:1729~2044'
+                                   velocity_range=np.array([-21., 29.]))
+# Flagchannels input string for LB: '3:1839~1997, 7:1839~1997'
 
 # Average continuum. This will generate the file 'prefix+_LB_initcont.ms'
 os.system('rm -rf '+prefix+'_LB_initcont.ms')
-avg_cont(data_params['LB'], \
-         prefix, \
-         flagchannels = LB_flagchannels)
+avg_cont(data_params['LB'], prefix, flagchannels = LB_flagchannels)
 
 
 #######################################################################
@@ -156,72 +148,77 @@ if not skip_plots:
 # the imfit could not find the best parameters, because it is unresolved.
 
 # Define the center of the main disk mask in SB data
-center_ra = '15h45m12.847703s'
-center_dec = '-34d17m31.04081s'
-center_SB = center_ra + ' ' + center_dec
+center_ra_SB_main = '15h45m12.847703s'
+center_dec_SB_main = '-34d17m31.04081s'
+center_SB_main = center_ra_SB_main + ' ' + center_dec_SB_main
 # Define the center of the secondary disk mask in SB data
-center_ra_second = '15h45m12.645242s'
-center_dec_second = '-34d17m29.74827s'
-center_SB_second = center_ra_second + ' ' + center_dec_second
+center_ra_SB_sec = '15h45m12.645242s'
+center_dec_SB_sec = '-34d17m29.74827s'
+center_SB_sec = center_ra_SB_sec + ' ' + center_dec_SB_sec
 # Second disk center in LB data
-center_ra_LB_second = '15h45m12.644498s'
-center_dec_LB_second = '-34d17m29.73879s'
-center_LB_second = center_ra_LB_second + ' ' + center_dec_LB_second
+center_ra_LB_sec = '15h45m12.644498s'
+center_dec_LB_sec = '-34d17m29.73879s'
+center_LB_sec = center_ra_LB_sec + ' ' + center_dec_LB_sec
 
 
 '''
 Here we define the mask for SB data
 '''
 # First disk semiaxis
-mask_semimajor_SB = '0.42arcsec'
-mask_semiminor_SB = '0.48arcsec'
+mask_major_SB_main = '0.42arcsec'
+mask_minor_SB_main = '0.48arcsec'
 # Second disk semiaxis
-mask_semimajor_SB_second = '0.30arcsec'
-mask_semiminor_SB_second = '0.45arcsec'
+mask_major_SB_sec = '0.30arcsec'
+mask_minor_SB_sec = '0.45arcsec'
 # First object Mask
-mask1_SB = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra, center_dec, \
-                                                  mask_semimajor_SB, \
-                                                  mask_semiminor_SB)
+mask_SB_main = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra_SB_main, \
+                                                      center_dec_SB_main, \
+                                                      mask_major_SB_main, \
+                                                      mask_minor_SB_main)
 # Second object Mask
-mask2_SB = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra_second, \
-                                                  center_dec_second, \
-                                                  mask_semimajor_SB_second, \
-                                                  mask_semiminor_SB_second)
+mask_SB_sec = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra_SB_sec, \
+                                                     center_dec_SB_sec, \
+                                                     mask_major_SB_sec, \
+                                                     mask_minor_SB_sec)
 
 # Create a residual mask
-res_mask_SB = 'annulus[[%s, %s], [%s, %s]]' % (center_ra, center_dec, \
+res_mask_SB = 'annulus[[%s, %s], [%s, %s]]' % (center_ra_SB_main, \
+                                               center_dec_SB_main, \
                                                '4arcsec', '9arcsec')
-mask_SB = [mask1_SB, mask2_SB]
+mask_SB = [mask_SB_main, mask_SB_sec]
 
 
 '''
 Here we define the mask for LB and combined data
 '''
 # First disk semiaxis
-mask_semimajor_LB = '0.26arcsec'
-mask_semiminor_LB = '0.23arcsec'
+mask_major_LB_main = '0.26arcsec'
+mask_minor_LB_main = '0.23arcsec'
 # Second disk center in LB data
-center_ra_LB_second = '15h45m12.644498s'
-center_dec_LB_second = '-34d17m29.73879s'
-center_LB_second = center_ra_LB_second + ' ' + center_dec_LB_second
+center_ra_LB_sec = '15h45m12.644498s'
+center_dec_LB_sec = '-34d17m29.73879s'
+center_LB_sec = center_ra_LB_sec + ' ' + center_dec_LB_sec
 # Second disk semiaxis
-mask_semimajor_LB_second = '0.12arcsec'
-mask_semiminor_LB_second = '0.15arcsec'
+mask_major_LB_sec = '0.12arcsec'
+mask_minor_LB_sec = '0.15arcsec'
 
 # First object Mask
-mask1_LB = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra, center_dec, \
-                                                  mask_semimajor_LB, \
-                                                  mask_semiminor_LB)
+mask_LB_main = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra_SB_main, \
+                                                      center_dec_SB_main, \
+                                                      mask_major_LB_main, \
+                                                      mask_minor_LB_main)
 # Second object Mask
-mask2_LB = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra_LB_second, \
-                                                  center_dec_LB_second, \
-                                                  mask_semimajor_LB_second, \
-                                                  mask_semiminor_LB_second)
+mask_LB_sec = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra_LB_sec, \
+                                                     center_dec_LB_sec, \
+                                                     mask_major_LB_sec, \
+                                                     mask_minor_LB_sec)
 
 # Create a residual mask
-res_mask_LB = 'annulus[[%s, %s], [%s, %s]]' % (center_ra, center_dec, \
+res_mask_LB = 'annulus[[%s, %s], [%s, %s]]' % (center_ra_SB_main, \
+                                               center_dec_SB_main, \
                                                '4arcsec', '7arcsec')
-mask_LB = [mask1_LB, mask2_LB]
+mask_LB = [mask_LB_main, mask_LB_sec]
+scales_LB = [0, 10, 30]
 
 
 # Image non interactively
@@ -230,7 +227,7 @@ tclean_wrapper(vis=prefix+'_SB_initcont.ms', \
                scales=[0], \
                mask=mask_SB, \
                savemodel='modelcolumn', \
-               threshold='1.5mJy', \
+               threshold='1.0mJy', \
                interactive=False)
 
 # Image non interactively
@@ -239,56 +236,15 @@ tclean_wrapper(vis=prefix+'_LB_initcont.ms', \
                scales=[0], \
                mask=mask_SB, \
                savemodel='modelcolumn', \
-               threshold='1.5mJy', \
+               threshold='0.1mJy', \
                interactive=False)
-
-
-# Create files of the masks for future inspection
-os.system('rm -rf '+prefix+'_mask1_SB.mask')
-os.system('rm -rf '+prefix+'_mask2_SB.mask')
-os.system('rm -rf '+prefix+'_res_mask_SB.mask')
-os.system('rm -rf '+prefix+'_mask1_LB.mask')
-os.system('rm -rf '+prefix+'_mask2_LB.mask')
-os.system('rm -rf '+prefix+'_res_mask_LB.mask')
-# SB masks
-makemask(mode='copy', \
-         inpimage=prefix+'_SB_initcont.mask', \
-         inpmask=mask1_SB, \
-         output=prefix+'_mask1_SB.mask', \
-         overwrite=False)
-makemask(mode='copy', \
-         inpimage=prefix+'_SB_initcont.mask', \
-         inpmask=mask2_SB, \
-         output=prefix+'_mask2_SB.mask', \
-         overwrite=False)
-makemask(mode='copy', \
-         inpimage=prefix+'_SB_initcont.mask', \
-         inpmask=res_mask_SB, \
-         output=prefix+'_res_mask_SB.mask', \
-         overwrite=False)
-# LB masks
-makemask(mode='copy', \
-         inpimage=prefix+'_LB_initcont.mask', \
-         inpmask=mask1_LB, \
-         output=prefix+'_mask1_LB.mask', \
-         overwrite=False)
-makemask(mode='copy', \
-         inpimage=prefix+'_LB_initcont.mask', \
-         inpmask=mask2_LB, \
-         output=prefix+'_mask2_LB.mask', \
-         overwrite=False)
-makemask(mode='copy', \
-         inpimage=prefix+'_LB_initcont.mask', \
-         inpmask=res_mask_LB, \
-         output=prefix+'_res_mask_LB.mask', \
-         overwrite=False)
 
 
 '''
 In the SB data we have just two sources, both of them are unresolved. but
 in the LB data we see three sources, and we can realize that the main one
 in SB are in reality two disks. In order to find the centroid positions of
-them we need to mask this disks separetely.
+them we need to mask this disks sepparately.
 
 The masks already defined will be used in the clean processes, but to find
 gaussian parameters (inclination, PA, centroiding) we need to mask
@@ -303,43 +259,27 @@ center_ra_main = '15h45m12.846778s'
 center_dec_main = '-34d17m31.03065s'
 center_LB_main = center_ra_main + ' ' + center_dec_main
 # Main disk semiaxis
-mask_semimajor_main_LB = '0.18arcsec'
-mask_semiminor_main_LB = '0.12arcsec'
-mask_PA_LB = str(162*np.pi/180.)+'rad'
+mask_major_main_LB = '0.18arcsec'
+mask_minor_main_LB = '0.12arcsec'
+mask_PA_main_LB = str(162*np.pi/180.)+'rad'
 # Third disk position
 center_ra_third = '15h45m12.835023s'
 center_dec_third = '-34d17m31.09386s'
 center_LB_third = center_ra_third + ' ' + center_dec_third
 # Third disk semiaxis
-mask_semimajor_LB_third = '0.04arcsec'
-mask_semiminor_LB_third = '0.04arcsec'
+mask_major_third_LB = '0.04arcsec'
+mask_minor_third_LB = '0.04arcsec'
 # First object Mask
 mask_main_LB = 'ellipse[[%s, %s], [%s, %s], %s]' % (center_ra_main, \
                                                     center_dec_main, \
-                                                    mask_semimajor_main_LB, \
-                                                    mask_semiminor_main_LB, \
-                                                    mask_PA_LB)
+                                                    mask_major_main_LB, \
+                                                    mask_minor_main_LB, \
+                                                    mask_PA_main_LB)
 # Second object Mask
 mask_third_LB = 'ellipse[[%s, %s], [%s, %s], 0rad]' % (center_ra_third, \
-                                                  center_dec_third, \
-                                                  mask_semimajor_LB_third, \
-                                                  mask_semiminor_LB_third)
-
-# Create files of the masks for visualization
-os.system('rm -rf '+prefix+'_mask_third_LB.mask')
-os.system('rm -rf '+prefix+'_mask_main_LB.mask')
-makemask(mode='copy', \
-         inpimage=prefix+'_LB_initcont.mask', \
-         inpmask=mask_main_LB, \
-         output=prefix+'_mask_main_LB.mask', \
-         overwrite=False)
-makemask(mode='copy', \
-         inpimage=prefix+'_LB_initcont.mask', \
-         inpmask=mask_third_LB, \
-         output=prefix+'_mask_third_LB.mask', \
-         overwrite=False)
-
-
+                                                       center_dec_third, \
+                                                       mask_major_third_LB, \
+                                                       mask_minor_third_LB)
 
 
 '''
@@ -353,39 +293,37 @@ image_each_obs(data_params['SB'], prefix, scales=[0], mask=mask_SB)
 # The mask must be a string, not the mask file.
 
 fit_gaussian(prefix+'_SB_initcont_exec0.image', \
-             region=mask1_SB)
-#15h45m12.847767s -34d17m31.03288s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.847767s -34d17m31.03288s
-#15:45:12.847767 -34:17:31.03288
-#Separation: radian = 7.85067e-08, degrees = 0.000004, arcsec = 0.016193
-#Peak in J2000 coordinates: 15:45:12.84828, -034:17:31.017987
-#Pixel coordinates of peak: x = 451.472 y = 445.392
-#PA of Gaussian component: 169.21 deg
+             region=mask_SB_main)
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.847769s -34d17m31.03291s
+#15:45:12.847769 -34:17:31.03291
+#Separation: radian = 7.86966e-08, degrees = 0.000005, arcsec = 0.016232
+#Peak in J2000 coordinates: 15:45:12.84829, -034:17:31.018017
+#PA of Gaussian component: 169.14 deg
 #Inclination of Gaussian component: 40.39 deg
-
+#Pixel coordinates of peak: x = 451.471 y = 445.391
 
 fit_gaussian(prefix+'_SB_initcont_exec1.image', \
-             region=mask1_SB)
-#15h45m12.847682s -34d17m31.04497s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.847682s -34d17m31.04497s
-#15:45:12.847682 -34:17:31.04497
-#Separation: radian = 7.86251e-08, degrees = 0.000005, arcsec = 0.016218
-#Peak in J2000 coordinates: 15:45:12.84820, -034:17:31.030077
-#Pixel coordinates of peak: x = 451.507 y = 444.989
-#PA of Gaussian component: 150.15 deg
-#Inclination of Gaussian component: 38.76 deg
+             region=mask_SB_main)
+#15h45m12.847681s -34d17m31.04498s
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.847681s -34d17m31.04498s
+#15:45:12.847681 -34:17:31.04498
+#Separation: radian = 7.86444e-08, degrees = 0.000005, arcsec = 0.016222
+#Peak in J2000 coordinates: 15:45:12.84820, -034:17:31.030088
+#PA of Gaussian component: 150.18 deg
+#Inclination of Gaussian component: 38.75 deg
+#Pixel coordinates of peak: x = 451.508 y = 444.988
+
 
 fit_gaussian(prefix+'_SB_initcont.image', \
-             region=mask1_SB)
-#15h45m12.847702s -34d17m31.04080s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.847702s -34d17m31.04080s
-#15:45:12.847702 -34:17:31.04080
-#Separation: radian = 7.86251e-08, degrees = 0.000005, arcsec = 0.016218
-#Peak in J2000 coordinates: 15:45:12.84822, -034:17:31.025907
-#Pixel coordinates of peak: x = 451.499 y = 445.128
-#PA of Gaussian component: 157.47 deg
-#Inclination of Gaussian component: 38.95 deg
-
+             region=mask_SB_main)
+#15h45m12.847715s -34d17m31.04075s
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.847715s -34d17m31.04075s
+#15:45:12.847715 -34:17:31.04075
+#Separation: radian = 7.85539e-08, degrees = 0.000005, arcsec = 0.016203
+#Peak in J2000 coordinates: 15:45:12.84823, -034:17:31.025857
+#PA of Gaussian component: 157.70 deg
+#Inclination of Gaussian component: 39.08 deg
+#Pixel coordinates of peak: x = 451.494 y = 445.130
 
 # Difference between peaks is negligible in SB. We are going
 # to choose the central peak of them together as the
@@ -393,13 +331,13 @@ fit_gaussian(prefix+'_SB_initcont.image', \
 
 # Fit to the second source.
 fit_gaussian(prefix+'_SB_initcont.image', \
-             region=mask2_SB)
-#15h45m12.645242s -34d17m29.74827s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.645242s -34d17m29.74827s
-#15:45:12.645242 -34:17:29.74827
-#Separation: radian = 7.86251e-08, degrees = 0.000005, arcsec = 0.016218
-#Peak in J2000 coordinates: 15:45:12.64576, -034:17:29.733377
-#Pixel coordinates of peak: x = 535.133 y = 488.212
+             region=mask_SB_sec)
+#15h45m12.645265s -34d17m29.74878s
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.645265s -34d17m29.74878s
+#15:45:12.645265 -34:17:29.74878
+#Separation: radian = 7.8554e-08, degrees = 0.000005, arcsec = 0.016203
+#Peak in J2000 coordinates: 15:45:12.64578, -034:17:29.733887
+#Pixel coordinates of peak: x = 535.123 y = 488.195
 
 '''
 LONG BASELINES gaussian fit
@@ -410,64 +348,61 @@ image_each_obs(data_params['LB'], prefix, scales=[0], mask=mask_LB)
 
 fit_gaussian(prefix+'_LB_initcont_exec0.image', \
              region=mask_main_LB)
-#15h45m12.846760s -34d17m31.03123s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.846760s -34d17m31.03123s
-#15:45:12.846760 -34:17:31.03123
-#Separation: radian = 7.86683e-08, degrees = 0.000005, arcsec = 0.016226
-#Peak in J2000 coordinates: 15:45:12.84728, -034:17:31.016338
-#Pixel coordinates of peak: x = 451.515 y = 445.518
-#PA of Gaussian component: 166.53 deg
-#Inclination of Gaussian component: 46.19 deg
-
+#15h45m12.846759s -34d17m31.03121s
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.846759s -34d17m31.03121s
+#15:45:12.846759 -34:17:31.03121
+#Separation: radian = 7.86966e-08, degrees = 0.000005, arcsec = 0.016232
+#Peak in J2000 coordinates: 15:45:12.84728, -034:17:31.016317
+#PA of Gaussian component: 166.46 deg
+#Inclination of Gaussian component: 46.24 deg
+#Pixel coordinates of peak: x = 451.515 y = 445.519
 
 fit_gaussian(prefix+'_LB_initcont_exec1.image', \
              region=mask_main_LB)
-#15h45m12.846791s -34d17m31.02980s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.846791s -34d17m31.02980s
-#15:45:12.846791 -34:17:31.02980
-#Separation: radian = 7.86489e-08, degrees = 0.000005, arcsec = 0.016222
-#Peak in J2000 coordinates: 15:45:12.84731, -034:17:31.014907
-#Pixel coordinates of peak: x = 451.503 y = 445.566
-#PA of Gaussian component: 167.27 deg
-#Inclination of Gaussian component: 45.75 deg
-
+#15h45m12.846793s -34d17m31.02979s
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.846793s -34d17m31.02979s
+#15:45:12.846793 -34:17:31.02979
+#Separation: radian = 7.86013e-08, degrees = 0.000005, arcsec = 0.016213
+#Peak in J2000 coordinates: 15:45:12.84731, -034:17:31.014897
+#PA of Gaussian component: 167.18 deg
+#Inclination of Gaussian component: 45.82 deg
+#Pixel coordinates of peak: x = 451.502 y = 445.566
 
 # Gaussian fit to the main disk
 fit_gaussian(prefix+'_LB_initcont.image', \
              region=mask_main_LB)
-#15h45m12.846777s -34d17m31.03063s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.846777s -34d17m31.03063s
-#15:45:12.846777 -34:17:31.03063
-#Separation: radian = 7.85067e-08, degrees = 0.000004, arcsec = 0.016193
-#Peak in J2000 coordinates: 15:45:12.84729, -034:17:31.015737
-#PA of Gaussian component: 166.12 deg
-#Inclination of Gaussian component: 47.13 deg
-#Pixel coordinates of peak: x = 1515.082 y = 1455.381
-
+#15h45m12.846796s -34d17m31.03108s
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.846796s -34d17m31.03108s
+#15:45:12.846796 -34:17:31.03108
+#Separation: radian = 7.85303e-08, degrees = 0.000004, arcsec = 0.016198
+#Peak in J2000 coordinates: 15:45:12.84731, -034:17:31.016187
+#PA of Gaussian component: 166.85 deg
+#Inclination of Gaussian component: 48.80 deg
+#Pixel coordinates of peak: x = 1515.002 y = 1455.231
 
 # Gaussian fit to the second disk (the one that is far away)
 fit_gaussian(prefix+'_LB_initcont.image', \
-             region=mask2_LB)
-#15h45m12.644498s -34d17m29.73879s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.644498s -34d17m29.73879s
-#15:45:12.644498 -34:17:29.73879
-#Separation: radian = 7.84831e-08, degrees = 0.000004, arcsec = 0.016188
-#Peak in J2000 coordinates: 15:45:12.64501, -034:17:29.723897
-#Pixel coordinates of peak: x = 2350.673 y = 1885.993
-#PA of Gaussian component: 80.86 deg
-#Inclination of Gaussian component: 64.10 deg
+             region=mask_LB_sec)
+#15h45m12.644503s -34d17m29.73807s
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.644503s -34d17m29.73807s
+#15:45:12.644503 -34:17:29.73807
+#Separation: radian = 7.86014e-08, degrees = 0.000005, arcsec = 0.016213
+#Peak in J2000 coordinates: 15:45:12.64502, -034:17:29.723177
+#PA of Gaussian component: 69.13 deg
+#Inclination of Gaussian component: 57.63 deg
+#Pixel coordinates of peak: x = 2350.652 y = 1886.232
 
 # Gaussian fit to the smallest (and closer to the main disk) disk
 fit_gaussian(prefix+'_LB_initcont.image', \
              region=mask_third_LB)
-#15h45m12.835026s -34d17m31.09381s
-#Peak of Gaussian component identified with imfit: ICRS 15h45m12.835026s -34d17m31.09381s
-#15:45:12.835026 -34:17:31.09381
-#Separation: radian = 7.85303e-08, degrees = 0.000004, arcsec = 0.016198
-#Peak in J2000 coordinates: 15:45:12.83554, -034:17:31.078917
-#PA of Gaussian component: 25.98 deg
-#Inclination of Gaussian component: 42.30 deg
-#Pixel coordinates of peak: x = 1563.626 y = 1434.320
+#15h45m12.835149s -34d17m31.09333s
+#Peak of Gaussian component identified with imfit: ICRS 15h45m12.835149s -34d17m31.09333s
+#15:45:12.835149 -34:17:31.09333
+#Separation: radian = 7.86966e-08, degrees = 0.000005, arcsec = 0.016232
+#Peak in J2000 coordinates: 15:45:12.83567, -034:17:31.078437
+#PA of Gaussian component: 51.66 deg
+#Inclination of Gaussian component: 65.19 deg
+#Pixel coordinates of peak: x = 1563.116 y = 1434.478
 
 
 #######################################################################
@@ -479,11 +414,10 @@ Two main disk, in SB and LB data, show the same position with negligible
 difference in the same datasets, meaning that each observation can
 be treated as just one.
 By measuring the position of the second component, we can see an offset
-between SB and LB. In J2000:
-SB data: 15h 45m 12.64576s  -34d 17m 29.733377s
-LB data: 15h 45m 12.64501s  -34d 17m 29.723897s
-diff:     0h  0m  0.00075s,   0d  0m  0.009480s
-
+between SB and LB of 10mas. In J2000:
+SB data:  15  45  12.64578 ,  -34  17  29.733887
+LB data:  15  45  12.64502 ,  -34  17  29.723177
+diff:     0h  0m   0.00076s,   0d  0m   0.010710s
 
 We can't compare the centroid of the main disks in SB and LB data,
 because in SB the source is unresolved and the third source moves
@@ -493,8 +427,13 @@ Because of this, we choose to align the second source centroid,
 using the LB data as the best solution, because here this source is
 resolved and we have better quality in resolution.
 
-In J2000, the main disk peak in the LB data is
-15h45m12.84729s, -34d17m31.015757s
+In J2000, for LB data:
+main: 15h45m12.84731s -34d17m31.016187s
+sec:  15h45m12.64502s -34d17m29.723177s
+
+In J2000,for SB data:
+main: 15h45m12.84823s -34d17m31.025857s
+sec:  15h45m12.64578s -34d17m29.733887s
 '''
 
 # Change the phase center to coincide both datasets
@@ -502,8 +441,7 @@ In J2000, the main disk peak in the LB data is
 # difference in dec. Even if the combination is not
 # perfect, we'll let selfcalibration solved the small
 # remaining differences
-#common_dir = 'J2000 15h45m12.84410s -34d17m31.006277s'
-common_dir = 'J2000 15h45m12.84729s -34d17m31.006277s'
+common_dir = 'J2000 15h45m12.84731s -34d17m31.016187s'
 
 # Create the shifted ms file of LB
 shiftname_SB = prefix+'_SB_initcont_shift'
@@ -511,10 +449,15 @@ os.system('rm -rf %s.*' % shiftname_SB)
 fixvis(vis=prefix+'_SB_initcont.ms', \
        outputvis=shiftname_SB+'.ms', \
        field=data_params['SB']['field'], \
-       phasecenter='J2000 15h45m12.84729s -34d17m31.015757s')
+       phasecenter='J2000 15h45m12.64578s -34d17m29.733887s')
 fixplanets(vis=shiftname_SB+'.ms', \
            field=data_params['SB']['field'], \
-           direction=common_dir)
+           direction='J2000 15h45m12.64502s -34d17m29.723177s')
+fixvis(vis=shiftname_SB+'.ms', \
+       outputvis=shiftname_SB+'.ms', \
+       field=data_params['SB']['field'], \
+       phasecenter='J2000 15h45m12.84731s -34d17m31.016187s')
+
 # Image
 tclean_wrapper(vis=shiftname_SB+'.ms', \
                imagename=shiftname_SB, \
@@ -522,10 +465,11 @@ tclean_wrapper(vis=shiftname_SB+'.ms', \
                scales=[0], \
                threshold='1.5mJy')
 #Gaussian fit to the second source
-fit_gaussian(shiftname_SB+'.image', region=mask2_SB)
-#15h45m12.645737s -34d17m29.72429s
-#Peak of Gaussian component identified with imfit: J2000 15h45m12.645737s -34d17m29.72429s
-#Pixel coordinates of peak: x = 533.259 y = 492.733
+fit_gaussian(shiftname_SB+'.image', region=mask_SB_sec)
+# Target: 15:45:12.64502, -034:17:29.723177
+# Result: 15h45m12.645024s -34d17m29.72309s
+#Peak of Gaussian component identified with imfit: J2000 15h45m12.645024s -34d17m29.72309s
+#Pixel coordinates of peak: x = 533.562 y = 493.103
 
 # Create the shifted ms file of LB
 shiftname_LB = prefix+'_LB_initcont_shift'
@@ -533,29 +477,26 @@ os.system('rm -rf %s.*' % shiftname_LB)
 fixvis(vis=prefix+'_LB_initcont.ms', \
        outputvis=shiftname_LB+'.ms', \
        field=data_params['LB']['field'], \
-       phasecenter='J2000 15h45m12.84729s -34d17m31.015757s')
-#fixplanets(vis=shiftname_LB+'.ms', \
-#           field=data_params['LB']['field'], \
-#           direction=common_dir)
+       phasecenter=common_dir)
 # Image
 tclean_wrapper(vis=shiftname_LB+'.ms', \
                imagename=shiftname_LB, \
                mask=mask_LB, \
                scales=[0], \
-               threshold='1.5mJy')
+               threshold='0.2mJy')
 #Gaussian fit to the second source
-fit_gaussian(shiftname_LB+'.image', region=mask2_LB)
-#15h45m12.645018s -34d17m29.72319s
-#Peak of Gaussian component identified with imfit: J2000 15h45m12.645018s -34d17m29.72319s
-#PA of Gaussian component: 69.33 deg
-#Inclination of Gaussian component: 57.63 deg
-#Pixel coordinates of peak: x = 2335.564 y = 1930.854
+fit_gaussian(shiftname_LB+'.image', region=mask_LB_sec)
+#15h45m12.645019s -34d17m29.72320s
+#Peak of Gaussian component identified with imfit: J2000 15h45m12.645019s -34d17m29.72320s
+#PA of Gaussian component: 69.27 deg
+#Inclination of Gaussian component: 57.41 deg
+#Pixel coordinates of peak: x = 2335.641 y = 1930.996
 
 # THE DIFFERENCE NOW IS ~1mas. We will proceed with this difference.
 
 # Split observations
 split_all_obs(shiftname_LB+'.ms', shiftname_LB+'_exec')
-split_all_obs(shiftname_MB+'.ms', shiftname_MB+'_exec')
+split_all_obs(shiftname_SB+'.ms', shiftname_SB+'_exec')
 
 #######################################################################
 #                           FLUX CORRECTION                           #
@@ -613,7 +554,8 @@ Median Monte-Carlo result for 232.589000 = 2.373690 +- 0.116957 (scaled MAD = 0.
 Result using spectral index of -0.467361 for 232.589 GHz from 3.210 Jy at 91.460 GHz = 2.075183 +- 0.116957 Jy
 '''
 
-# The rough values from gaussian fitting of LB will be used for deprojection.
+# The rough values from gaussian fitting of LB main disk will be 
+# used for deprojection.
 PA = 166.
 incl = 47.
 
@@ -653,23 +595,23 @@ if not skip_plots:
     estimate_flux_scale(reference=shiftname_SB+'.vis.npz', \
                         comparison=shiftname_LB+'_exec0.vis.npz', \
                         incl=incl, PA=PA, uvbins=100+10*np.arange(100))
-    #The ratio of the fluxes of HTLup_LB_initcont_shift_exec0.vis.npz to HTLup_SB_initcont_shift.vis.npz is 0.95659
-    #The scaling factor for gencal is 0.978 for your comparison measurement
-    #The error on the weighted mean ratio is 5.939e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
-
+#The ratio of the fluxes of HTLup_LB_initcont_shift_exec0.vis.npz to HTLup_SB_initcont_shift.vis.npz is 0.95028
+#The scaling factor for gencal is 0.975 for your comparison measurement
+#The error on the weighted mean ratio is 5.863e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
 
     # There is a difference between executions.
     estimate_flux_scale(reference=shiftname_SB+'.vis.npz', \
                         comparison=shiftname_LB+'_exec1.vis.npz', \
                         incl=incl, PA=PA, uvbins=100+10*np.arange(100))
-    #The ratio of the fluxes of HTLup_LB_initcont_shift_exec1.vis.npz to HTLup_SB_initcont_shift.vis.npz is 0.87403
-    #The scaling factor for gencal is 0.935 for your comparison measurement
-    #The error on the weighted mean ratio is 5.756e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+#The ratio of the fluxes of HTLup_LB_initcont_shift_exec1.vis.npz to HTLup_SB_initcont_shift.vis.npz is 0.86829
+#The scaling factor for gencal is 0.932 for your comparison measurement
+#The error on the weighted mean ratio is 5.683e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+
 
 # The discrepant dataset is LB_exec1. Correct discrepant dataset
 os.system('rm -rf *rescaled.*')
-rescale_flux(shiftname_LB+'_exec0.ms', [0.978])
-rescale_flux(shiftname_LB+'_exec1.ms', [0.935])
+rescale_flux(shiftname_LB+'_exec0.ms', [0.975])
+rescale_flux(shiftname_LB+'_exec1.ms', [0.932])
 export_MS(shiftname_LB+'_exec0_rescaled.ms')
 export_MS(shiftname_LB+'_exec1_rescaled.ms')
 
@@ -688,7 +630,8 @@ if skip_plots:
 
 # Robust level
 robust = 0.5
-SB_refant = 'DA49'
+# This reference antenna will be used for SB and combined data.
+SB_refant = 'DA61'
 # In SB the source is not well resolved. We are not using different scales.
 scales_SB = [0]
 
@@ -725,21 +668,21 @@ tclean_wrapper(vis=SB_cont_p0+'.ms', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(SB_cont_p0+'.image', disk_mask = mask1_SB, noise_mask = res_mask_SB)
+estimate_SNR(SB_cont_p0+'.image', disk_mask = mask_SB_main, noise_mask = res_mask_SB)
 #HTLup_SB_contp0.image
-#Beam 0.273 arcsec x 0.229 arcsec (-83.71 deg)
-#Flux inside disk mask: 73.79 mJy
-#Peak intensity of source: 50.68 mJy/beam
+#Beam 0.273 arcsec x 0.229 arcsec (-83.72 deg)
+#Flux inside disk mask: 73.70 mJy
+#Peak intensity of source: 51.03 mJy/beam
 #rms: 1.28e-01 mJy/beam
-#Peak SNR: 396.11
+#Peak SNR: 399.70
 
 # RMS in mJy
-rms_0 = imstat(imagename=SB_cont_p0+'.image', region=res_mask_SB)['rms'][0]*10**3
+rms_SB_p0 = imstat(imagename=SB_cont_p0+'.image', region=res_mask_SB)['rms'][0]*10**3
 
 # First self-calibration
-os.system('rm -rf '+prefix+'_p0.cal')
+os.system('rm -rf '+SB_cont_p0+'_p0.cal')
 gaincal(vis=SB_cont_p0+'.ms',
-        caltable=prefix+'_p0.cal',
+        caltable=SB_cont_p0+'.cal',
         gaintype='T',
         spw=cont_spws,
         refant = SB_refant,
@@ -754,7 +697,7 @@ None solutions were flagged
 
 if not skip_plots:
     # Plot the first phase calibration
-    plotcal(caltable=prefix+'_p0.cal',
+    plotcal(caltable=SB_cont_p0+'.cal',
             xaxis='time',
             yaxis='phase',
             subplot=221,
@@ -763,10 +706,10 @@ if not skip_plots:
             timerange='2017/05/14/00~2017/05/15/00',
             markersize=5,
             fontsize=10.0,
-            figfile=prefix+'_phase_0a.png',
+            figfile=SB_cont_p0+'_cal_0.png',
             showgui=True)
 
-    plotcal(caltable=prefix+'_p0.cal',
+    plotcal(caltable=SB_cont_p0+'.cal',
             xaxis='time',
             yaxis='phase',
             subplot=221,
@@ -775,13 +718,13 @@ if not skip_plots:
             timerange='2017/05/16/00~2017/05/18/00',
             markersize=5,
             fontsize=10.0,
-            figfile=prefix+'_phase_0b.png',
+            figfile=SB_cont_p0+'_cal_1.png',
             showgui=True)
 
 # Apply calibration
 applycal(vis=SB_cont_p0+'.ms',
          spw=cont_spws, 
-         gaintable=[prefix+'_p0.cal'],
+         gaintable=[SB_cont_p0+'.cal'],
          interp='linearPD',
          calwt=True)
 
@@ -790,7 +733,7 @@ applycal(vis=SB_cont_p0+'.ms',
 #                     PHASE SELF-CALIBRATION 1                        #
 #######################################################################
 
-# Name of the first data.
+# Name of the data.
 SB_cont_p1 = prefix+'_SB_contp1'
 
 # Split the data to continue with the calibrations
@@ -799,33 +742,33 @@ split(vis=SB_cont_p0+'.ms',
       outputvis=SB_cont_p1+'.ms',
       datacolumn='corrected')
 
-# First Clean for selfcalibration
+# Clean for selfcalibration. 0.2 is lower than 2*rms_SB_p0.
 tclean_wrapper(vis=SB_cont_p1+'.ms', \
                imagename=SB_cont_p1, \
                mask=mask_SB, \
                scales=scales_SB, \
                robust=robust, \
-               threshold=str(2*rms_0)+'mJy', \
+               threshold='0.2mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(SB_cont_p1+'.image', disk_mask = mask1_SB, noise_mask = res_mask_SB)
+estimate_SNR(SB_cont_p1+'.image', disk_mask = mask_SB_main, noise_mask = res_mask_SB)
 #HTLup_SB_contp1.image
-#Beam 0.273 arcsec x 0.229 arcsec (-83.70 deg)
-#Flux inside disk mask: 76.09 mJy
-#Peak intensity of source: 55.73 mJy/beam
-#rms: 3.89e-02 mJy/beam
-#Peak SNR: 1432.03
+#Beam 0.273 arcsec x 0.229 arcsec (-83.72 deg)
+#Flux inside disk mask: 76.04 mJy
+#Peak intensity of source: 56.12 mJy/beam
+#rms: 3.86e-02 mJy/beam
+#Peak SNR: 1453.15
 
 # RMS in mJy
-rms_1 = imstat(imagename=SB_cont_p1+'.image', region=res_mask_SB)['rms'][0]*10**3
+rms_SB_p1 = imstat(imagename=SB_cont_p1+'.image', region=res_mask_SB)['rms'][0]*10**3
 
 
-# First self-calibration
-os.system('rm -rf '+prefix+'_p1.cal')
+# Gaincal - self-calibration
+os.system('rm -rf '+SB_cont_p1+'.cal')
 gaincal(vis=SB_cont_p1+'.ms',
-        caltable=prefix+'_p1.cal',
+        caltable=SB_cont_p1+'.cal',
         gaintype='T',
         spw=cont_spws,
         refant = SB_refant,
@@ -840,7 +783,7 @@ None solutions were flagged
 
 if not skip_plots:
     # Plot the first phase calibration
-    plotcal(caltable=prefix+'_p1.cal',
+    plotcal(caltable=SB_cont_p1+'_p1.cal',
             xaxis='time',
             yaxis='phase',
             subplot=221,
@@ -849,10 +792,10 @@ if not skip_plots:
             timerange='2017/05/14/00~2017/05/15/00',
             markersize=5,
             fontsize=10.0,
-            figfile=prefix+'_phase_1a.png',
+            figfile=SB_cont_p1+'_cal_0.png',
             showgui=True)
 
-    plotcal(caltable=prefix+'_p1.cal',
+    plotcal(caltable=SB_cont_p1+'.cal',
             xaxis='time',
             yaxis='phase',
             subplot=221,
@@ -861,13 +804,13 @@ if not skip_plots:
             timerange='2017/05/16/00~2017/05/18/00',
             markersize=5,
             fontsize=10.0,
-            figfile=prefix+'_phase_1b.png',
+            figfile=SB_cont_p1+'_cal_1.png',
             showgui=True)
 
 # Apply calibration
 applycal(vis=SB_cont_p1+'.ms',
          spw=cont_spws, 
-         gaintable=[prefix+'_p1.cal'],
+         gaintable=[SB_cont_p1+'.cal'],
          interp='linearPD',
          calwt=True)
 
@@ -876,7 +819,7 @@ applycal(vis=SB_cont_p1+'.ms',
 #                       PHASE SELF-CALIBRATION 2                      #
 #######################################################################
 
-# Name of the first data.
+# Name of the data.
 SB_cont_p2 = prefix+'_SB_contp2'
 
 # Split the data to continue with the calibrations
@@ -885,32 +828,32 @@ split(vis=SB_cont_p1+'.ms',
       outputvis=SB_cont_p2+'.ms',
       datacolumn='corrected')
 
-# First Clean for selfcalibration
+# Clean for selfcalibration
 tclean_wrapper(vis=SB_cont_p2+'.ms', \
                imagename=SB_cont_p2, \
                mask=mask_SB, \
                scales=scales_SB, \
                robust=robust, \
-               threshold=str(2*rms_1)+'mJy', \
+               threshold=str(2*rms_SB_p1)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(SB_cont_p2+'.image', disk_mask = mask1_SB, noise_mask = res_mask_SB)
+estimate_SNR(SB_cont_p2+'.image', disk_mask = mask_SB_main, noise_mask = res_mask_SB)
 #HTLup_SB_contp2.image
-#Beam 0.273 arcsec x 0.229 arcsec (-83.70 deg)
-#Flux inside disk mask: 76.17 mJy
-#Peak intensity of source: 56.51 mJy/beam
-#rms: 3.73e-02 mJy/beam
-#Peak SNR: 1513.86
+#Beam 0.273 arcsec x 0.229 arcsec (-83.72 deg)
+#Flux inside disk mask: 76.14 mJy
+#Peak intensity of source: 56.91 mJy/beam
+#rms: 3.72e-02 mJy/beam
+#Peak SNR: 1529.13
 
 # RMS in mJy
-rms_2 = imstat(imagename=SB_cont_p2+'.image', region=res_mask_SB)['rms'][0]*10**3
+rms_SB_p2 = imstat(imagename=SB_cont_p2+'.image', region=res_mask_SB)['rms'][0]*10**3
 
 # Third self-calibration
-os.system('rm -rf '+prefix+'_p2.cal')
+os.system('rm -rf '+SB_cont_p2+'.cal')
 gaincal(vis=SB_cont_p2+'.ms',
-        caltable=prefix+'_p2.cal',
+        caltable=SB_cont_p2+'.cal',
         gaintype='T',
         spw=cont_spws,
         refant = SB_refant,
@@ -925,7 +868,7 @@ None solutions were flagged
 
 if not skip_plots:
     # Plot the first phase calibration
-    plotcal(caltable=prefix+'_p2.cal',
+    plotcal(caltable=SB_cont_p2+'.cal',
             xaxis='time',
             yaxis='phase',
             subplot=221,
@@ -934,10 +877,10 @@ if not skip_plots:
             timerange='2017/05/14/00~2017/05/15/00',
             markersize=5,
             fontsize=10.0,
-            figfile=prefix+'_phase_2a.png',
+            figfile=SB_cont_p2+'_cal_0.png',
             showgui=True)
 
-    plotcal(caltable=prefix+'_p2.cal',
+    plotcal(caltable=SB_cont_p2+'.cal',
             xaxis='time',
             yaxis='phase',
             subplot=221,
@@ -946,58 +889,62 @@ if not skip_plots:
             timerange='2017/05/16/00~2017/05/18/00',
             markersize=5,
             fontsize=10.0,
-            figfile=prefix+'_phase_2b.png',
+            figfile=SB_cont_p2+'_cal_1.png',
             showgui=True)
 
 # Apply calibration
 applycal(vis=SB_cont_p2+'.ms',
          spw=cont_spws, 
-         gaintable=[prefix+'_p2.cal'],
+         gaintable=[SB_cont_p2+'.cal'],
          interp='linearPD',
          calwt=True)
 
 
-
-
 #######################################################################
-#                       AMP SELF-CALIBRATION 3                        #
+#                       AMP SELF-CALIBRATION 0                        #
 #######################################################################
 
-# Name of the first data.
-SB_cont_p3 = prefix+'_SB_contp3'
+# As you will see, the phase calibration shows no more improvement.
+# Here we start the amp calibration
+# Name of the data.
+SB_cont_a0 = prefix+'_SB_conta0'
 
 # Split the data to continue with the calibrations
-os.system('rm -rf '+SB_cont_p3+'.*')
+os.system('rm -rf '+SB_cont_a0+'.*')
 split(vis=SB_cont_p2+'.ms',
-      outputvis=SB_cont_p3+'.ms',
+      outputvis=SB_cont_a0+'.ms',
       datacolumn='corrected')
 
-# Clean for selfcalibration
-tclean_wrapper(vis=SB_cont_p3+'.ms', \
-               imagename=SB_cont_p3, \
+# Clean for selfcalibration. We push to 1.5rms
+tclean_wrapper(vis=SB_cont_a0+'.ms', \
+               imagename=SB_cont_a0, \
                mask=mask_SB, \
                scales=scales_SB, \
                robust=robust, \
-               threshold=str(2*rms_2)+'mJy', \
+               threshold=str(1.5*rms_SB_p2)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(SB_cont_p3+'.image', disk_mask = mask1_SB, noise_mask = res_mask_SB)
-#HTLup_SB_contp3.image
-#Beam 0.273 arcsec x 0.229 arcsec (-83.70 deg)
-#Flux inside disk mask: 76.26 mJy
-#Peak intensity of source: 56.86 mJy/beam
-#rms: 3.76e-02 mJy/beam
-#Peak SNR: 1513.69
+estimate_SNR(SB_cont_a0+'.image', disk_mask = mask_SB_main, noise_mask = res_mask_SB)
+#HTLup_SB_conta0.image
+#Beam 0.273 arcsec x 0.229 arcsec (-83.72 deg)
+#Flux inside disk mask: 76.24 mJy
+#Peak intensity of source: 57.24 mJy/beam
+#rms: 3.74e-02 mJy/beam
+#Peak SNR: 1531.67
+
+# RMS in mJy
+rms_SB_a0 = imstat(imagename=SB_cont_a0+'.image', region=res_mask_SB)['rms'][0]*10**3
+
 
 # I stopped here the phase cal. Improvement of snr
 # is marginal. We start the amp calibration.
 
 # First amp-calibration
-os.system('rm -rf '+prefix+'_a1.cal')
-gaincal(vis=SB_cont_p3+'.ms',
-        caltable=prefix+'_a1.cal',
+os.system('rm -rf '+SB_cont_a0+'.cal')
+gaincal(vis=SB_cont_a0+'.ms',
+        caltable=SB_cont_a0+'.cal',
         refant=SB_refant,
         solint='inf',
         calmode='ap',
@@ -1010,13 +957,13 @@ gaincal(vis=SB_cont_p3+'.ms',
 
 if not skip_plots:
     # Plot the first phase calibration
-    plotcal(caltable=prefix+'_a1.cal',
+    plotcal(caltable=SB_cont_a0+'.cal',
             xaxis='time',
             yaxis='phase',
             subplot=221,
             iteration='antenna',
             timerange='2017/05/14/00~2017/05/15/00',
-            figfile=prefix+'_a1a.png',
+            figfile=SB_cont_a0+'_cal_0.png',
             showgui=True)
 
     plotcal(caltable=prefix+'_a1.cal',
@@ -1026,12 +973,12 @@ if not skip_plots:
             plotrange=[0, 0, 0, 0],
             iteration='antenna',
             timerange='2017/05/16/00~2017/05/18/00',
-            figfile=prefix+'_a1b.png',
+            figfile=SB_cont_a0+'_cal_1.png',
             showgui=True)
 
 # Apply calibration
-applycal(vis=SB_cont_p3+'.ms',
-         gaintable=[prefix+'_a1.cal'],
+applycal(vis=SB_cont_a0+'.ms',
+         gaintable=[SB_cont_a0+'.cal'],
          spw=cont_spws, 
          interp='linearPD',
          calwt=True)
@@ -1039,7 +986,7 @@ applycal(vis=SB_cont_p3+'.ms',
 
 # Split the data to continue with the calibrations
 os.system('rm -rf '+prefix+'_SB_selfcal_ap.ms')
-split(vis=SB_cont_p3+'.ms',
+split(vis=SB_cont_a0+'.ms',
       outputvis=prefix+'_SB_selfcal_ap.ms',
       datacolumn='corrected')
 
@@ -1054,19 +1001,18 @@ tclean_wrapper(vis=prefix+'_SB_selfcal_ap.ms', \
                mask=mask_SB, \
                scales=scales_SB, \
                robust=robust, \
-               threshold=str(2.*rms_2)+'mJy', \
+               threshold=str(1.5*rms_SB_a0)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(prefix+'_SB_contap.image', disk_mask = mask1_SB, noise_mask = res_mask_SB)
+estimate_SNR(prefix+'_SB_contap.image', disk_mask = mask_SB_main, noise_mask = res_mask_SB)
 #HTLup_SB_contap.image
-#Beam 0.273 arcsec x 0.228 arcsec (-83.55 deg)
-#Flux inside disk mask: 76.23 mJy
-#Peak intensity of source: 56.80 mJy/beam
-#rms: 2.96e-02 mJy/beam
-#Peak SNR: 1915.78
-
+#Beam 0.273 arcsec x 0.228 arcsec (-83.56 deg)
+#Flux inside disk mask: 76.25 mJy
+#Peak intensity of source: 57.17 mJy/beam
+#rms: 2.94e-02 mJy/beam
+#Peak SNR: 1944.31
 
 
 #######################################################################
@@ -1091,8 +1037,10 @@ robust = 0.5
 # Combined parameters
 combined_contspw = '0~15'
 combined_spwmap = [0, 0, 0, 0, 4, 4, 4, 4, 8, 8, 8, 8, 12, 12, 12, 12]
+# The beam is roughly 11 pixels.
 combined_scales = [0, 11, 33, 55]
-# I had to use imsize4000 in order to get the calculation of rms.
+# I had to use imsize=4000 in order to get the calculation of rms,
+# because of the secondary source.
 combined_imsize = 4000
 # Reference antenna. By visual inspection, DA61 seems like a good candidate
 # for SB and LB. We check if it is in all executions and in the same station.
@@ -1115,18 +1063,18 @@ tclean_wrapper(vis=combined_cont_p0+'.ms', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(combined_cont_p0+'.image', disk_mask = mask1_LB, noise_mask = res_mask_LB)
+estimate_SNR(combined_cont_p0+'.image', disk_mask = mask_LB_main, noise_mask = res_mask_LB)
 #HTLup_combined_p0.image
-#Beam 0.038 arcsec x 0.033 arcsec (69.46 deg)
-#Flux inside disk mask: 76.67 mJy
-#Peak intensity of source: 6.96 mJy/beam
-#rms: 1.70e-02 mJy/beam
-#Peak SNR: 409.52
+#Beam 0.038 arcsec x 0.033 arcsec (69.45 deg)
+#Flux inside disk mask: 77.26 mJy
+#Peak intensity of source: 7.01 mJy/beam
+#rms: 1.69e-02 mJy/beam
+#Peak SNR: 415.83
 
 # RMS in mJy
-rms_com0 = imstat(imagename=combined_cont_p0+'.image', region=res_mask_LB)['rms'][0]*10**3
+rms_com_p0 = imstat(imagename=combined_cont_p0+'.image', region=res_mask_LB)['rms'][0]*10**3
 
-# Third self-calibration
+# Phase self-calibration
 os.system('rm -rf '+combined_cont_p0+'.cal')
 gaincal(vis=combined_cont_p0+'.ms',
         caltable=combined_cont_p0+'.cal',
@@ -1140,21 +1088,20 @@ gaincal(vis=combined_cont_p0+'.ms',
         minblperant=4)
 
 '''
-1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:03:05.3
+2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:03:05.3
 3 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:09:42.7
 1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:12:38.8
+1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:19:14.0
 3 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:22:23.9
-5 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:33:25.5
+4 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:33:25.5
 2 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:40:01.6
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:43:31.6
 2 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:46:48.0
-1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:50:10.8
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:53:41.0
-1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:00:34.9
-1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:05:00.3
+2 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:00:34.9
+1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:05:00.1
 3 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:07:29.9
-1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:11:02.4
-1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:24:42.7
+1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:11:02.2
 '''
 
 if not skip_plots:
@@ -1226,25 +1173,23 @@ tclean_wrapper(vis=combined_cont_p1+'.ms', \
                mask=mask_LB, \
                scales=combined_scales, \
                robust=robust, \
-               threshold=str(2*rms_com0)+'mJy', \
+               threshold=str(2*rms_com_p0)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(combined_cont_p1+'.image', disk_mask = mask1_LB, noise_mask = res_mask_LB)
+estimate_SNR(combined_cont_p1+'.image', disk_mask = mask_LB_main, noise_mask = res_mask_LB)
 #HTLup_combined_p1.image
-#Beam 0.038 arcsec x 0.033 arcsec (69.46 deg)
-#Flux inside disk mask: 76.56 mJy
-#Peak intensity of source: 7.19 mJy/beam
+#Beam 0.038 arcsec x 0.033 arcsec (69.45 deg)
+#Flux inside disk mask: 76.59 mJy
+#Peak intensity of source: 7.24 mJy/beam
 #rms: 1.60e-02 mJy/beam
-#Peak SNR: 449.25
-
-# Increase in SNR: 1.0970160187536628
+#Peak SNR: 454.10
 
 # RMS in mJy
-rms_com1 = imstat(imagename=combined_cont_p1+'.image', region=res_mask_LB)['rms'][0]*10**3
+rms_com_p1 = imstat(imagename=combined_cont_p1+'.image', region=res_mask_LB)['rms'][0]*10**3
 
-# Third self-calibration
+# Phase self-calibration
 os.system('rm -rf '+combined_cont_p1+'.cal')
 gaincal(vis=combined_cont_p1+'.ms',
         caltable=combined_cont_p1+'.cal',
@@ -1258,28 +1203,29 @@ gaincal(vis=combined_cont_p1+'.ms',
         minblperant=4)
 
 '''
-2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/17:52:10.4
-1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/17:53:48.1
-1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/17:57:38.4
+1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/17:52:10.4
+2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/17:53:48.1
+2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/17:57:38.4
 2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:11:29.4
 2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:16:59.6
 2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:20:53.8
 1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:31:11.8
 1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:33:06.4
-2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:35:14.1
+1 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:35:14.1
 2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:36:55.5
-2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:47:59.6
+3 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:47:59.6
 2 of 39 solutions flagged due to SNR < 1.5 in spw=8 at 2017/09/24/18:52:07.7
-3 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:30:33.3
+2 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:30:33.3
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:34:30.4
-1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:41:27.4
 6 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:42:51.2
+1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:44:41.6
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:46:39.9
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/19:55:07.3
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:01:07.2
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:05:42.2
-1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:09:21.5
-1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:11:17.8
+1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:07:21.8
+1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:09:21.4
+2 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:11:17.8
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:19:31.8
 1 of 39 solutions flagged due to SNR < 1.5 in spw=12 at 2017/09/24/20:23:25.8
 '''
@@ -1354,23 +1300,21 @@ tclean_wrapper(vis=combined_cont_p2+'.ms', \
                mask=mask_LB, \
                scales=combined_scales, \
                robust=robust, \
-               threshold=str(2*rms_com1)+'mJy', \
+               threshold=str(2*rms_com_p1)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(combined_cont_p2+'.image', disk_mask = mask1_LB, noise_mask = res_mask_LB)
+estimate_SNR(combined_cont_p2+'.image', disk_mask = mask_LB_main, noise_mask = res_mask_LB)
 #HTLup_combined_p2.image
-#Beam 0.038 arcsec x 0.033 arcsec (69.46 deg)
-#Flux inside disk mask: 76.63 mJy
-#Peak intensity of source: 7.44 mJy/beam
+#Beam 0.038 arcsec x 0.033 arcsec (69.45 deg)
+#Flux inside disk mask: 76.62 mJy
+#Peak intensity of source: 7.49 mJy/beam
 #rms: 1.52e-02 mJy/beam
-#Peak SNR: 488.7
-
-# Increase in SNR: 1.0878130217028381
+#Peak SNR: 493.23
 
 # RMS in mJy
-rms_com2 = imstat(imagename=combined_cont_p2+'.image', region=res_mask_LB)['rms'][0]*10**3
+rms_com_p2 = imstat(imagename=combined_cont_p2+'.image', region=res_mask_LB)['rms'][0]*10**3
 
 # Third self-calibration
 os.system('rm -rf '+combined_cont_p2+'.cal')
@@ -1386,7 +1330,7 @@ gaincal(vis=combined_cont_p2+'.ms',
         minblperant=4)
 
 '''
-Too many flags to write them here. They are mainly in spw8 and spw12
+Too much flags
 '''
 
 if not skip_plots:
@@ -1451,32 +1395,30 @@ split(vis=combined_cont_p2+'.ms',
       datacolumn='corrected')
 
 
-# First Clean for selfcalibration
+# Clean for selfcalibration
 tclean_wrapper(vis=combined_cont_p3+'.ms', \
                imagename=combined_cont_p3, \
                imsize=combined_imsize, \
                mask=mask_LB, \
                scales=combined_scales, \
                robust=robust, \
-               threshold=str(2*rms_com2)+'mJy', \
+               threshold=str(2*rms_com_p2)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(combined_cont_p3+'.image', disk_mask = mask1_LB, noise_mask = res_mask_LB)
+estimate_SNR(combined_cont_p3+'.image', disk_mask = mask_LB_main, noise_mask = res_mask_LB)
 #HTLup_combined_p3.image
-#Beam 0.038 arcsec x 0.033 arcsec (69.46 deg)
-#Flux inside disk mask: 76.38 mJy
-#Peak intensity of source: 7.93 mJy/beam
+#Beam 0.038 arcsec x 0.033 arcsec (69.45 deg)
+#Flux inside disk mask: 76.31 mJy
+#Peak intensity of source: 8.00 mJy/beam
 #rms: 1.41e-02 mJy/beam
-#Peak SNR: 561.53
-
-# Increase in SNR: 1.1490280335584202
+#Peak SNR: 568.22
 
 # RMS in mJy
-rms_com3 = imstat(imagename=combined_cont_p3+'.image', region=res_mask_LB)['rms'][0]*10**3
+rms_com_p3 = imstat(imagename=combined_cont_p3+'.image', region=res_mask_LB)['rms'][0]*10**3
 
-# Third self-calibration
+# Phase self-calibration
 os.system('rm -rf '+combined_cont_p3+'.cal')
 gaincal(vis=combined_cont_p3+'.ms',
         caltable=combined_cont_p3+'.cal',
@@ -1490,7 +1432,7 @@ gaincal(vis=combined_cont_p3+'.ms',
         minblperant=4)
 
 '''
-Too many (A LOT) flags to write them here. They are in spw8 and spw12
+Too many flags to write them here. They are in spw8 and spw12
 '''
 
 if not skip_plots:
@@ -1540,44 +1482,42 @@ applycal(vis=combined_cont_p3+'.ms',
          calwt=True, 
          applymode='calonly')
 
-
 #######################################################################
-#                      COMBINED AMP-SELFCAL 4                         #
+#                        COMBINED AMP-SELFCAL 0                       #
 #######################################################################
 
 # Name
 combined_cont_a0 = prefix+'_combined_a0'
 
 # Split the data to continue with the calibrations
-os.system('rm -rf '+combined_cont_a0+'.*')
+os.system('rm -rf '+combined_cont_a0+'.ms')
 split(vis=combined_cont_p3+'.ms',
       outputvis=combined_cont_a0+'.ms',
       datacolumn='corrected')
 
 
-# First Clean for selfcalibration
+# Clean for selfcalibration. We push for 1.5rms.
 tclean_wrapper(vis=combined_cont_a0+'.ms', \
                imagename=combined_cont_a0, \
                imsize=combined_imsize, \
                mask=mask_LB, \
                scales=combined_scales, \
                robust=robust, \
-               threshold=str(2*rms_com3)+'mJy', \
+               threshold=str(1.5*rms_com_p3)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(combined_cont_a0+'.image', disk_mask = mask1_LB, noise_mask = res_mask_LB)
+estimate_SNR(combined_cont_a0+'.image', disk_mask = mask_LB_main, noise_mask = res_mask_LB)
 #HTLup_combined_a0.image
-#Beam 0.038 arcsec x 0.033 arcsec (69.46 deg)
-#Flux inside disk mask: 76.40 mJy
-#Peak intensity of source: 8.19 mJy/beam
+#Beam 0.038 arcsec x 0.033 arcsec (69.45 deg)
+#Flux inside disk mask: 76.44 mJy
+#Peak intensity of source: 8.27 mJy/beam
 #rms: 1.41e-02 mJy/beam
-#Peak SNR: 581.33
-# Increase in SNR: 1.035260805299806
+#Peak SNR: 587.77
 
 # The increase is only 3 percent, and we are getting a lot of flags
-# The decrease in the rms is 0, and only the peak is increasing
+# The decrease in the rms is very low, and only the peak is increasing
 # its intensity.
 # We stopped the phase calibration here.
 
@@ -1598,6 +1538,25 @@ gaincal(vis=combined_cont_a0+'.ms',
         minsnr=3.0,
         minblperant=4, 
         solnorm=False)
+
+'''
+2 of 39 solutions flagged due to SNR < 3 in spw=8 at 2017/09/24/18:03:05.3
+2 of 39 solutions flagged due to SNR < 3 in spw=8 at 2017/09/24/18:09:42.7
+1 of 39 solutions flagged due to SNR < 3 in spw=8 at 2017/09/24/18:12:38.6
+2 of 39 solutions flagged due to SNR < 3 in spw=8 at 2017/09/24/18:22:23.9
+1 of 39 solutions flagged due to SNR < 3 in spw=8 at 2017/09/24/18:29:10.7
+7 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/19:33:25.5
+1 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/19:36:01.5
+4 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/19:40:01.6
+1 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/19:43:31.6
+2 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/19:46:48.0
+2 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/19:53:41.1
+2 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/20:00:34.9
+1 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/20:04:46.6
+10 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/20:07:29.9
+1 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/20:14:16.2
+1 of 39 solutions flagged due to SNR < 3 in spw=12 at 2017/09/24/20:19:24.4
+'''
 
 
 if not skip_plots:
@@ -1641,40 +1600,190 @@ applycal(vis=combined_cont_a0+'.ms',
          calwt=True, 
          applymode='calonly')
 
-# Split the data, in the final ms file.
-os.system('rm -rf '+prefix+'_combined_selfcal_final.ms')
+
+
+#######################################################################
+#                      COMBINED AMP-SELFCAL 1                         #
+#######################################################################
+
+# Name
+combined_cont_a1 = prefix+'_combined_a1'
+
+# Split the data to continue with the calibrations
+os.system('rm -rf '+combined_cont_a1+'.*')
 split(vis=combined_cont_a0+'.ms',
-      outputvis=prefix+'_combined_selfcal_final.ms',
+      outputvis=combined_cont_a1+'.ms',
       datacolumn='corrected')
+
+
+# Clean for selfcalibration
+tclean_wrapper(vis=combined_cont_a1+'.ms', \
+               imagename=combined_cont_a1, \
+               imsize=combined_imsize, \
+               mask=mask_LB, \
+               scales=combined_scales, \
+               robust=robust, \
+               threshold=str(2.*rms_com_a0)+'mJy', \
+               savemodel='modelcolumn', \
+               interactive=False)
+
+# Check the values from the clean
+estimate_SNR(combined_cont_a1+'.image', disk_mask = mask_LB_main, noise_mask = res_mask_LB)
+#HTLup_combined_a1.image
+#Beam 0.038 arcsec x 0.033 arcsec (61.46 deg)
+#Flux inside disk mask: 76.71 mJy
+#Peak intensity of source: 8.28 mJy/beam
+#rms: 1.41e-02 mJy/beam
+#Peak SNR: 586.95
+
+# RMS in mJy
+rms_com_a1 = imstat(imagename=combined_cont_a1+'.image', region=res_mask_LB)['rms'][0]*10**3
+
+# First amp-calibration
+os.system('rm -rf '+combined_cont_a1+'.cal')
+gaincal(vis=combined_cont_a1+'.ms',
+        caltable=combined_cont_a1+'.cal',
+        refant=combined_refant,
+        combine='spw, scan', 
+        solint='180s',
+        calmode='ap',
+        gaintype='T',
+        spw=combined_contspw,
+        minsnr=3.0,
+        minblperant=4, 
+        solnorm=False)
+
+'''
+Too much flags
+'''
+
+
+if not skip_plots:
+    # Plot the first phase calibration
+    plotcal(caltable=combined_cont_a1+'.cal',
+            xaxis='time',
+            yaxis='phase',
+            subplot=221,
+            plotrange=[0, 0, 0, 0],
+            iteration='antenna',
+            timerange='2017/05/14/00~2017/05/15/00',
+            figfile=combined_cont_a1+'_a.png',
+            showgui=True)
+
+    plotcal(caltable=combined_cont_a1+'.cal',
+            xaxis='time',
+            yaxis='phase',
+            subplot=221,
+            plotrange=[0, 0, 0, 0],
+            iteration='antenna',
+            timerange='2017/05/16/00~2017/05/18/00',
+            figfile=combined_cont_a1+'_b.png',
+            showgui=True)
+
+    plotcal(caltable=combined_cont_a1+'.cal',
+            xaxis='time',
+            yaxis='amp',
+            subplot=221,
+            plotrange=[0, 0, 0, 0],
+            iteration='antenna',
+            timerange='2017/09/24/00~2017/09/25/00',
+            figfile=combined_cont_a1+'_c.png',
+            showgui=True)
+
+# Apply calibration
+applycal(vis=combined_cont_a1+'.ms',
+         gaintable=[combined_cont_a1+'.cal'],
+         spw=combined_contspw, 
+         spwmap=combined_spwmap, 
+         interp='linearPD',
+         calwt=True, 
+         applymode='calonly')
 
 
 #######################################################################
 #                              FINAL IMAGE                            #
 #######################################################################
 
-finalms = prefix+'_combined_selfcal_final'
+robust = 0.5
+
+finalms = prefix+'_combined_selfcal_ap'
+
+# Split the data, in the final ms file.
+os.system('rm -rf '+finalms+'.ms')
+split(vis=combined_cont_a1+'.ms',
+      outputvis=finalms+'.ms',
+      datacolumn='corrected')
 
 # First Clean for selfcalibration
 tclean_wrapper(vis=finalms+'.ms', \
-               imagename=finalms, \
+               imagename=finalms+'_'+str(robust), \
                imsize=combined_imsize, \
                mask=mask_LB, \
                scales=combined_scales, \
-               robust=-0.5, \
+               robust=robust, \
+               threshold=str(2*rms_com_a1)+'mJy', \
+               savemodel='modelcolumn', \
+               interactive=False)
+
+# Check the values from the clean
+estimate_SNR(finalms+'_'+str(robust)+'.image', disk_mask = mask_LB_main, noise_mask = res_mask_LB)
+
+# RMS in mJy
+rms_com_ap = imstat(imagename=finalms+'_'+str(robust)+'.image', region=res_mask_LB)['rms'][0]*10**3
+
+
+# ROBUST 0.5
+#HTLup_combined_selfcal_ap_0.5.image
+#Beam 0.037 arcsec x 0.033 arcsec (59.46 deg)
+#Flux inside disk mask: 76.70 mJy
+#Peak intensity of source: 8.03 mJy/beam
+#rms: 1.38e-02 mJy/beam
+#Peak SNR: 583.06
+
+'''
+There is a decrease in SNR with the last selfcal, which may be due to
+antenna flagging. we proceed with only the first amp calibration
+to generate the final image.
+'''
+
+
+robust = 0.5
+
+finalms = prefix+'_combined_selfcal_ap'
+
+# Split the data, in the final ms file.
+os.system('rm -rf '+finalms+'.ms')
+split(vis=combined_cont_a0+'.ms',
+      outputvis=finalms+'.ms',
+      datacolumn='corrected')
+
+# First Clean for selfcalibration
+tclean_wrapper(vis=finalms+'.ms', \
+               imagename=finalms+'_'+str(robust), \
+               imsize=combined_imsize, \
+               mask=mask_LB, \
+               scales=combined_scales, \
+               robust=robust, \
                threshold=str(2*rms_com_a0)+'mJy', \
                savemodel='modelcolumn', \
                interactive=False)
 
 # Check the values from the clean
-estimate_SNR(finalms+'.image', disk_mask = mask1_LB, noise_mask = res_mask_LB)
-#HTLup_combined_selfcal_final.image
+estimate_SNR(finalms+'_'+str(robust)+'.image', disk_mask = mask_LB_main, noise_mask = res_mask_LB)
 
-# With robust 0.5
-#Beam 0.043 arcsec x 0.038 arcsec (87.85 deg)
+# RMS in mJy
+rms_com_ap = imstat(imagename=finalms+'_'+str(robust)+'.image', region=res_mask_LB)['rms'][0]*10**3
+
+
+# ROBUST 0.5
+#HTLup_combined_selfcal_ap_0.5.image
+#Beam 0.038 arcsec x 0.033 arcsec (61.46 deg)
 #Flux inside disk mask: 76.67 mJy
-#Peak intensity of source: 9.87 mJy/beam
-#rms: 1.48e-02 mJy/beam
-#Peak SNR: 664.74
+#Peak intensity of source: 8.25 mJy/beam
+#rms: 1.41e-02 mJy/beam
+#Peak SNR: 585.28
 
 
-
+exportfits(imagename=finalms+'_0.5.image', \
+           fitsimage=prefix+'_combined_selfcal_ap.fits', \
+           history=False, overwrite=True)
