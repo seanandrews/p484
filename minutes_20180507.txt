@@ -1,0 +1,80 @@
+notes from telecon on 2018 / 05 / 07
+------------------------------------
+
+participants: Andrews, Birnstiel, Carpenter, Dullemond, Guzman, Hughes, Isella, 
+              Oberg, Perez, Ricci, Wilner
+unavailable:  Bai, Guzman, Zhu
+
+- update on data calibration:
+	- nearly everything is done and on the wiki; we expect the last few 
+	  disks (HD 143006, HD 163296, DoAr 25, IM Lup) to be wrapped up within
+	  one week
+
+- projects:
+	- intention is to publish 10-11 papers in an ApJL "Focus Issue"
+		- Sean will contact Fred Rasio about this in June
+
+	- *** FULL DRAFT INTERNAL DEADLINE = AUGUST 1, 2018 ***
+
+	- internal vetting process completed on or before September 1, 2018, 
+	  for timely joint submission
+
+	- goal is to get all of this published before the first long-baseline 
+	  datasets become public (first half of October)
+
+	- "Projects" wiki page is now up to date:
+		- project paper (Sean): covers motivation for the project, the 
+		  sample selection and bulk properties, and data calibration
+
+		- rings/gaps (Jane): empirical characterization (locations, 
+		  widths, morphologies, symmetry, amplitudes, etc.) and 
+	  	  discussion of potential origins
+	
+		- spirals (Jane): empirical characterization (launching points, 
+		  opening angles, extents, bifurcations, etc.) and discussion 
+		  of potential origins
+
+		- HD 143006 (Laura): structure, vortex, warps, connection to 
+		  SPHERE results, 12CO for morphology / kinematics
+			- possible collaborator: Stefano Facchini (MPE/ESO)
+	
+		- HD 163296 (Andrea): minimal plan is to present new 10 au gap 
+		  and "tail" feature in other gap from B6; possible to do the 
+	 	  multifrequency analysis folding in B3, B7 data; possible to 
+		  do the 12CO at high resolution (need to look at that first)
+
+		- vertical structure (Erik): last tests of raytracing code 
+		  before ready to model (HD 142666, MY Lup, DoAr 25); goal is
+		  to quantify vertical height of continuum emission layer in 
+		  the context of turbulence / vertical mixing
+
+		- AS 209 structure (Viviana): simple modeling of rings for a 
+	  	  detailed look at structure; intend preliminary CO analysis
+
+		- dust evolution in rings (Kees): now thinking of two papers, 
+		  the first is an analytic look at "single" pressure traps and 
+		  using the profile morphology to learn about the trapped size
+		  distribution (with some interesting connections / constraints
+		  on streaming instability); the second is another 1-D model 
+		  that uses analytic gap profiles for planets to learn about 
+		  trapping in that specific context
+
+		- hydro limits on planet population (Zhaohuan): suite of hydro 
+	 	  models to look at the planet population as a whole for this 
+	 	  sample [Zhaohuan will have to explain in more detail.]
+
+		- AS 205 and HT Lup (Nico): empirical characterization of these 
+	 	  two triple systems; current plan is to include them together, 
+		  and present the AS 205 gas data (HT Lup 12CO is contaminated)
+
+	- Sean will add individual wiki pages associated with each Project; 
+	  please dump notes and figures (and / or effectively "blog") in there
+
+	- Sean will post homogenized set of stellar parameters to the wiki
+	
+	- Laura will send Sean SED information, and (eventually) Sean will post
+	  SEDs for each target on the wiki
+
+- Future telecons:
+	- We will meet next on *TUESDAY*, May 22 at 2:00pm EDT.  The plan is to
+	  meet every other week now.
