@@ -14,7 +14,7 @@ SB2: Project 2015.1.00964.S/HD143006_a_06_TC (filename: HD143006_TC.ms)
      PI: K. Oberg
      As delivered to PI (data sent by J. Huang)
 
-SB3: 2016.1.00484.L/WSB_52_a_06_TM1 (filename hd143006_p484_SB.ms)
+SB3: 2016.1.00484.L/WSB_52_a_06_TM1 (filename: hd143006_p484_SB.ms)
      Observed 14,17,19 May 2017 (3 execution blocks)
      PI: S. Andrews
      As delivered to PI
