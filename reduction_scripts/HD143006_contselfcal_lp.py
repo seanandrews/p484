@@ -4,22 +4,22 @@ This script was written for CASA 5.1.1
 /almadata02/lperez/casa_5.1.1/casa-release-5.1.1-5.el7/bin/casa
 
 Datasets calibrated (in order of date observed):
-SB1: Project ???/??? (name HD143006_calibrated.ms)
+SB1: Project 2015.1.00964.S/HD143006_a_06_TE (filename: HD143006_calibrated.ms)
      Observed 14 June 2016 (2 execution blocks)
      PI: K. Oberg
      As delivered to PI (data sent by J. Huang)
 
-SB2: Project ???/??? (name HD143006_TC.ms)
+SB2: Project 2015.1.00964.S/HD143006_a_06_TC (filename: HD143006_TC.ms)
      Observed 02 July 2016 (1 execution block)
      PI: K. Oberg
      As delivered to PI (data sent by J. Huang)
 
-SB3: 2016.1.00484.L/ (name hd143006_p484_SB.ms)
+SB3: 2016.1.00484.L/WSB_52_a_06_TM1 (filename hd143006_p484_SB.ms)
      Observed 14,17,19 May 2017 (3 execution blocks)
      PI: S. Andrews
      As delivered to PI
 
-LB1: 2016.1.00484.L/ (name hd143006_p484_LB.ms)
+LB1: 2016.1.00484.L/HD_143006_a_06_TM1 (filename: hd143006_p484_LB.ms)
      Observed 26 September 2017 and 26 November 2017 (2 execution blocks)
      PI: S. Andrews
      As delivered to PI
