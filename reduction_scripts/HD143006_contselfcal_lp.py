@@ -79,13 +79,11 @@ initweights(vis = data_params['LB1']['vis'], wtmode = 'weight', dowtsp = True)
 # Plot each spw of each execution to see if there is some problem
 if not skip_plots:
     for i in data_params.keys():
-i='SB2'
-plotms(vis=data_params[i]['vis'], xaxis='channel', yaxis='amplitude', field=data_params[i]['field'], ydatacolumn='data', avgtime='1e8', avgscan=True, avgbaseline=True, iteraxis='spw')
+	plotms(vis=data_params[i]['vis'], xaxis='channel', yaxis='amplitude', field=data_params[i]['field'], ydatacolumn='data', avgtime='1e8', avgscan=True, avgbaseline=True, iteraxis='spw')
 
 #Amplitudes of channels 0 to 200 in SPW 0 of SB2 look problematic
 flagmanager(vis = data_params['SB2']['vis'], mode = 'save', versionname = 'original_flags', comment = 'Original flag states') #save flag state before flagging spectral lines
 flagdata(vis=data_params['SB2']['vis'], mode='manual', spw='0:0~200', flagbackup=False, field = data_params['SB2']['field']) #flag spectral lines 
-
 
 for i in data_params.keys():      
     flagchannels_string = get_flagchannels(data_params[i], prefix, velocity_range = np.array([-4, 20]))
@@ -102,7 +100,6 @@ for i in data_params.keys():
 
 # sample command to check that amplitude vs. uvdist looks normal
 # plotms(vis=prefix+'_SB1_initcont.ms', xaxis='uvdist', yaxis='amp', coloraxis='spw', avgtime='30', avgchannel='16')
-
 
 """
 Quick imaging of every execution block in the measurement set using tclean. 
@@ -242,6 +239,7 @@ Result using spectral index of -0.580360 for 232.605 GHz from 4.430 Jy at 91.460
 
 Conclusion: Differences are less than 5% between ALMA calibrator catalog and what was input as fluxes for the amplitude calibrators in each of the observations. 
 """
+
 """
 As a final check, we will compare the amplitude calibration by deprojecting the visibilities by a rough estimate of the inclination, PA of the disk
 """
@@ -266,8 +264,6 @@ split(vis=prefix+'_SB3_initcont_exec0.ms',outputvis=prefix+'_SB3_initcont_exec0_
 split(vis=prefix+'_SB3_initcont_exec1.ms',outputvis=prefix+'_SB3_initcont_exec1_spw01.ms', spw='0,1',datacolumn='data')
 split(vis=prefix+'_SB3_initcont_exec2.ms',outputvis=prefix+'_SB3_initcont_exec2_spw01.ms', spw='0,1',datacolumn='data')
 
-
-
 if not skip_plots:
     for msfile in [prefix+'_SB1_initcont_exec0.ms', prefix+'_SB1_initcont_exec1.ms', prefix+'_SB2_initcont_exec0.ms', prefix+'_SB3_initcont_exec0_spw01.ms', prefix+'_SB3_initcont_exec1_spw01.ms', prefix+'_SB3_initcont_exec2_spw01.ms', prefix+'_LB1_initcont_exec0.ms', prefix+'_LB1_initcont_exec1.ms']:
     export_MS(msfile)
@@ -276,37 +272,37 @@ if not skip_plots:
     plot_deprojected([prefix+'_SB1_initcont_exec0.vis.npz', prefix+'_SB1_initcont_exec1.vis.npz', prefix+'_SB2_initcont_exec0.vis.npz', prefix+'_SB3_initcont_exec0_spw01.vis.npz', prefix+'_SB3_initcont_exec1_spw01.vis.npz', prefix+'_SB3_initcont_exec2_spw01.vis.npz', prefix+'_LB1_initcont_exec0.vis.npz', prefix+'_LB1_initcont_exec1.vis.npz'], fluxscale=[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], offx = offx, offy = offy, PA = PA, incl = incl, show_err=False)
 
     estimate_flux_scale(reference = prefix+'_LB1_initcont_exec0.vis.npz', comparison = prefix+'_LB1_initcont_exec1.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-#The ratio of the fluxes of HD143006_LB1_initcont_exec1.vis.npz to HD143006_LB1_initcont_exec0.vis.npz is 0.76910
-#The scaling factor for gencal is 0.877 for your comparison measurement
-#The error on the weighted mean ratio is 2.341e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD143006_LB1_initcont_exec1.vis.npz to HD143006_LB1_initcont_exec0.vis.npz is 0.76910
+    #The scaling factor for gencal is 0.877 for your comparison measurement
+    #The error on the weighted mean ratio is 2.341e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
     estimate_flux_scale(reference = prefix+'_SB3_initcont_exec0_spw01.vis.npz', comparison = prefix+'_SB1_initcont_exec0.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-#The ratio of the fluxes of HD143006_SB1_initcont_exec0.vis.npz to HD143006_SB3_initcont_exec0_spw01.vis.npz is 1.12843
-#The scaling factor for gencal is 1.062 for your comparison measurement
-#The error on the weighted mean ratio is 2.122e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD143006_SB1_initcont_exec0.vis.npz to HD143006_SB3_initcont_exec0_spw01.vis.npz is 1.12843
+    #The scaling factor for gencal is 1.062 for your comparison measurement
+    #The error on the weighted mean ratio is 2.122e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
     estimate_flux_scale(reference = prefix+'_SB3_initcont_exec0_spw01.vis.npz', comparison = prefix+'_SB1_initcont_exec1.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-#The ratio of the fluxes of HD143006_SB1_initcont_exec1.vis.npz to HD143006_SB3_initcont_exec0_spw01.vis.npz is 1.04710
-#The scaling factor for gencal is 1.023 for your comparison measurement
-#The error on the weighted mean ratio is 1.992e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD143006_SB1_initcont_exec1.vis.npz to HD143006_SB3_initcont_exec0_spw01.vis.npz is 1.04710
+    #The scaling factor for gencal is 1.023 for your comparison measurement
+    #The error on the weighted mean ratio is 1.992e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
     estimate_flux_scale(reference = prefix+'_SB3_initcont_exec0_spw01.vis.npz', comparison = prefix+'_SB2_initcont_exec0.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-#The ratio of the fluxes of HD143006_SB2_initcont_exec0.vis.npz to HD143006_SB3_initcont_exec0_spw01.vis.npz is 1.00313
-#The scaling factor for gencal is 1.002 for your comparison measurement
-#The error on the weighted mean ratio is 1.776e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD143006_SB2_initcont_exec0.vis.npz to HD143006_SB3_initcont_exec0_spw01.vis.npz is 1.00313
+    #The scaling factor for gencal is 1.002 for your comparison measurement
+    #The error on the weighted mean ratio is 1.776e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
     estimate_flux_scale(reference = prefix+'_SB3_initcont_exec0_spw01.vis.npz', comparison = prefix+'_SB3_initcont_exec1_spw01.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-#The ratio of the fluxes of HD143006_SB3_initcont_exec1.vis.npz to HD143006_SB3_initcont_exec0.vis.npz is 1.07657
-#The scaling factor for gencal is 1.038 for your comparison measurement
-#The error on the weighted mean ratio is 2.049e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD143006_SB3_initcont_exec1.vis.npz to HD143006_SB3_initcont_exec0.vis.npz is 1.07657
+    #The scaling factor for gencal is 1.038 for your comparison measurement
+    #The error on the weighted mean ratio is 2.049e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
     estimate_flux_scale(reference = prefix+'_SB3_initcont_exec0.vis.npz', comparison = prefix+'_SB3_initcont_exec2.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-#The ratio of the fluxes of HD143006_SB3_initcont_exec2.vis.npz to HD143006_SB3_initcont_exec0.vis.npz is 1.15169
-#The scaling factor for gencal is 1.073 for your comparison measurement
-#The error on the weighted mean ratio is 1.744e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD143006_SB3_initcont_exec2.vis.npz to HD143006_SB3_initcont_exec0.vis.npz is 1.15169
+    #The scaling factor for gencal is 1.073 for your comparison measurement
+    #The error on the weighted mean ratio is 1.744e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
     estimate_flux_scale(reference = prefix+'_SB3_initcont_exec0.vis.npz', comparison = prefix+'_LB1_initcont_exec0.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-#The ratio of the fluxes of HD143006_LB1_initcont_exec0.vis.npz to HD143006_SB3_initcont_exec0.vis.npz is 1.16634
-#The scaling factor for gencal is 1.080 for your comparison measurement
-#The error on the weighted mean ratio is 3.199e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD143006_LB1_initcont_exec0.vis.npz to HD143006_SB3_initcont_exec0.vis.npz is 1.16634
+    #The scaling factor for gencal is 1.080 for your comparison measurement
+    #The error on the weighted mean ratio is 3.199e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
     estimate_flux_scale(reference = prefix+'_SB3_initcont_exec0.vis.npz', comparison = prefix+'_LB1_initcont_exec1.vis.npz', offx = offx, offy = offy, incl = incl, PA = PA)
-#The ratio of the fluxes of HD143006_LB1_initcont_exec1.vis.npz to HD143006_SB3_initcont_exec0.vis.npz is 0.92359
-#The scaling factor for gencal is 0.961 for your comparison measurement
-#The error on the weighted mean ratio is 1.957e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD143006_LB1_initcont_exec1.vis.npz to HD143006_SB3_initcont_exec0.vis.npz is 0.92359
+    #The scaling factor for gencal is 0.961 for your comparison measurement
+    #The error on the weighted mean ratio is 1.957e-03, although it's likely that the weights in the measurement sets are too off by some constant factor
 
     #We replot the deprojected visibilities with rescaled factors to check that the values make sense
     plot_deprojected([prefix+'_SB1_initcont_exec0.vis.npz', prefix+'_SB1_initcont_exec1.vis.npz', prefix+'_SB2_initcont_exec0.vis.npz', prefix+'_SB3_initcont_exec0.vis.npz', prefix+'_SB3_initcont_exec1.vis.npz', prefix+'_SB3_initcont_exec2.vis.npz', prefix+'_LB1_initcont_exec0.vis.npz', prefix+'_LB1_initcont_exec1.vis.npz'], fluxscale=[1.0/1.09932, 1.0/1.02237, 1.0/0.97805, 1.0, 1.0/1.07657, 1.0/1.15169, 1.0/1.16634, 1.0/0.92359], offx = offx, offy = offy, PA = PA, incl = incl, show_err=False)
@@ -369,7 +365,6 @@ SB_scales = [0,10,30] # no larger scales were needed to describe the data
 
 tclean_wrapper(vis = SB_cont_p0+'.ms', imagename = SB_cont_p0, mask = common_mask, scales = SB_scales, threshold = '0.04mJy', savemodel = 'modelcolumn')
 
-
 noise_annulus ="annulus[[%s, %s],['%.2farcsec', '4.25arcsec']]" % (mask_ra, mask_dec, 1.1*mask_radius) #annulus over which we measure the noise. The inner radius is slightly larger than the semimajor axis of the mask (to add some buffer space around the mask) and the outer radius is set so that the annulus fits inside the long-baseline image size 
 estimate_SNR(SB_cont_p0+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD143006_SB_contp0.image
@@ -378,7 +373,6 @@ estimate_SNR(SB_cont_p0+'.image', disk_mask = common_mask, noise_mask = noise_an
 #Peak intensity of source: 7.19 mJy/beam
 #rms: 3.95e-02 mJy/beam
 #Peak SNR: 182.01
-
 
 """
 We need to select one or more reference antennae for gaincal
@@ -392,7 +386,6 @@ for SB1, refant = 'DA41, DA49'
 for SB2, refant = 'DV16@A036'
 for SB3, refant = 'DA46, DA51'
 for all, refant = 'DA41@A004,DA49@A002,DV16@A036,DA46@A034,DA51@A023'
-
 """
 
 SB_contspws = '0~20'
@@ -417,8 +410,7 @@ os.system('rm -rf '+SB_p1)
 gaincal(vis=SB_cont_p0+'.ms' , caltable=SB_p1, gaintype='T', spw=SB_contspws, refant=SB_refant, calmode='p', solint='120s', minsnr=1.5, minblperant=4) #choose self-cal intervals from [120s, 60s, 30s, 18s, 6s]
 
 """
-Lots of solutions flagged when we obtain one solution per spw,
-even at this large time interval.
+Lots of solutions flagged when we obtain one solution per spw, even at this large time interval.
 """
 
 if not skip_plots:
@@ -605,7 +597,6 @@ split(vis=combined_cont_p0+'.ms', outputvis=combined_cont_p1+'.ms', datacolumn='
 
 tclean_wrapper(vis = combined_cont_p1+'.ms' , imagename = combined_cont_p1, mask = common_mask, scales = LB_scales, threshold = '0.019mJy', savemodel = 'modelcolumn', robust=0.5)
 estimate_SNR(combined_cont_p1+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
-
 #HD143006_combined_contp1.image
 #Beam 0.052 arcsec x 0.037 arcsec (86.45 deg)
 #Flux inside disk mask: 57.79 mJy
@@ -767,6 +758,8 @@ estimate_SNR(combined_cont_ap+'.image', disk_mask = common_mask, noise_mask = no
 #rms: 1.16e-02 mJy/beam
 #Peak SNR: 49.11
 
+# For a similar beam size, there is a 4% reduction of peak flux while the noise in the map reduced by 17%, 
+# so we will keep amplitude selfcalibration.
 tclean_wrapper(vis = combined_cont_ap+'.ms' , imagename = combined_cont_ap+'_rob0.8', mask = common_mask, scales = LB_scales, threshold = '0.011mJy', savemodel = 'modelcolumn', robust=0.8)
 estimate_SNR(combined_cont_ap+'_rob0.8.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD143006_combined_contap_rob0.8.image
@@ -775,9 +768,6 @@ estimate_SNR(combined_cont_ap+'_rob0.8.image', disk_mask = common_mask, noise_ma
 #Peak intensity of source: 0.67 mJy/beam
 #rms: 1.07e-02 mJy/beam
 #Peak SNR: 63.10
-
-
-# For a similar beam size, there is a 4% reduction of peak flux while the noise in the map reduced by 17%, so will keep amplitude selfcalibration.
 
 #Export fits file and final calibrated ms file
 exportfits(imagename=combined_cont_ap+'_rob0.8.image',fitsimage=prefix+'_script_image.fits',overwrite=True)
