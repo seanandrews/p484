@@ -1,1 +1,10 @@
-put stuff in here
+Currently the following things can be found here:
+
+analytic_dusttrap_model/
+This is the simple analytic dust trapping model I discussed in the
+flurry of emails mid May 2018
+
+disklab_beta/
+This is the new disk modeling package that Til and I are putting
+together.
+
