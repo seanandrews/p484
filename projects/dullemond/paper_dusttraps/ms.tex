@@ -1,0 +1,1009 @@
+%\documentclass[referee]{aa}
+\documentclass{aa}
+%\documentclass{mn2e}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{natbib}
+\usepackage{xspace}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\def\remark#1{{{\bf remark:} \bf #1}}
+\def\action#1{{\bf #1}}
+\def\putin#1{{\it #1}}
+\def\revised#1{{\bf #1}}
+\newcommand{\todo}[1]{\textcolor{red}{\bf #1}}
+%
+\def\aap{A\&A}
+\def\apss{A\&SS}
+\def\pasp{Proc.Astr.Soc.Pacific}
+\def\pasj{Publ.Astr.Soc.Japan}
+\def\araa{AnnRevA\& A}
+\def\mnras{MNRAS}
+\def\icarus{Icarus}
+\def\nat{Nature}
+\def\apj{ApJ}
+\def\aj{AJ}
+\def\apjl{ApJL}
+\def\apjs{ApJS}
+\def\jqsrt{JQSRT}
+\def\max{\mathrm{max}}
+\def\erg{\hbox{erg}}
+\def\sec{\hbox{s}}
+\def\Hz{\hbox{Hz}}
+\def\gram{\hbox{g}}
+\def\cm{\hbox{cm}}
+\def\km{\hbox{km}}
+\def\kel{\hbox{K}}
+\def\KeV{\hbox{KeV}}
+\def\MeV{\hbox{MeV}}
+\def\eV{\hbox{eV}}
+\def\yr{\hbox{yr}}
+\def\AU{\hbox{AU}}
+\def\ster{\hbox{ster}}
+%\def\in{\mathrm{in}}
+\def\out{\mathrm{out}}
+\def\eff{\mathrm{eff}}
+\def\rad{\mathrm{rad}}
+\def\vrt{\mathrm{vert}}
+\def\vset{\ensuremath{v_\mathrm{sett}}\xspace}
+\def\fact{\ensuremath{\xi}\xspace}
+\def\cs{\ensuremath{c_\mathrm{s}}\xspace}
+\def\siggas{\ensuremath{\sigma_\mathrm{g}}\xspace}
+\def\sigcoag{\ensuremath{\sigma_\mathrm{c}}\xspace}
+\def\Tgas{\ensuremath{T_\mathrm{gas}}\xspace}
+%\def\rhogas{\ensuremath{\rho_\mathrm{gas}}\xspace}
+\def\rhogas{\ensuremath{\rho}\xspace}
+\def\rhodust{\ensuremath{\rho_\mathrm{d}}\xspace}
+\def\mugas{\ensuremath{\mu_\mathrm{gas}}\xspace}
+\def\mp{\ensuremath{m_\mathrm{p}}\xspace}
+\def\Hp{\ensuremath{H_\mathrm{p}}\xspace}
+\def\Hs{\ensuremath{H_\mathrm{s}}\xspace}
+\def\Omegak{\ensuremath{\Omega_\mathrm{K}}\xspace}
+\def\Mstar{\ensuremath{M_\star}\xspace}
+\def\Sc{\ensuremath{\mathrm{Sc}}\xspace}
+\def\St{\ensuremath{\mathrm{St}}\xspace}
+\def\Pt{\ensuremath{\mathrm{Pt}}\xspace}
+\def\comma{\,,}
+\def\fullstop{\,.}
+%
+\def\submitted{submitted\xspace}
+\def\inprep{in prep.\xspace}
+%
+\begin{document}
+%\thesaurus{02.01.2,08.03.4,08.06.2,08.16.5,13.09.6}
+\title{Dust trapping in thin-ringed protoplanetary disks}  \titlerunning{Thin-ringed disks}
+\authorrunning{Dullemond, Birnstiel, Perez, Andrews, Isella, Huang, Zhu, Guzman, Benisty, Carpenter}
+\author{C.P.~Dullemond$^{1}$, T.~Birnstiel$^{2}$, L.~Perez$^{3}$, S.~Andrews$^{4}$, A.~Isella$^{5}$, J.~Huang$^{4}$, Z.~Zhu$^{6}$, V.~Guzm\'an$^{7}$, M.~Benisty$^{8}$, J.~Carpenter$^{9}$}
+\institute{
+  (1) Zentrum f\"ur Astronomie, Heidelberg University, Albert Ueberle Str.~2, 69120 Heidelberg, Germany\\
+  (2) {\bf XXXX}
+  (3) {\bf XXXX}
+  (4) {\bf XXXX}
+  (5) {\bf XXXX}
+  (6) {\bf XXXX}
+} \date{\today}
+
+\abstract{A large fraction of the protoplanetary disks observed with the ALMA
+  Large Programme {\bf XXXX} display multiple well-defined and nearly perfectly
+  circular rings in the continuum, in many cases with substantial peak-to-valley
+  contrast. Several of these rings are very narrow in radial extent.
+  In this paper we analyze these results using the assumption that
+  these dust rings are caused by dust trapping in radial pressure bumps. We
+  model this process in a 1-D axisymmetric way, initially with a simple analytic
+  model, then with a more detailed numerical model. We find that .....
+%  including time-dependent viscous disk evolution coupled to time-dependent
+%  radial dust drift. We perform model calculations without and with dust growth,
+%  the latter with a simplified dust growth recipe. We test several scenarios
+%  for the origin of the pressure bumps, including planetary gaps and dead zones.
+{\bf CONCLUSIONS}
+}
+
+\maketitle
+
+
+
+\begin{keywords}
+accretion, accretion disks -- circumstellar matter 
+-- stars: formation, pre-main-sequence -- infrared: stars 
+\end{keywords}
+
+\section{Introduction}
+The concept of dust trapping in local pressure maxima has become a central theme
+in studies of planet formation and protoplanetary disk evolution, as it may
+provide an elegant solution to several problems in these fields of
+study. Theories of planet formation are plagued by the ``radial drift barrier'':
+the problem that as dust aggregates grow by coagulation, they tend to radially
+drift toward the star before they reach planetsimal size
+\citep[e.g.][]{2010A&A...513A..79B}. A natural solution to this problem could be
+the trapping of dust particles in local pressure maxima
+\citep{1972fpp..conf..211W, 2007ApJ...664L..55K, 1995A&A...295L...1B,
+  1997Icar..128..213K}. From an observational perspective, the radial drift
+problem manifests itself by the presence of large grains in the outer regions of
+protoplanetary disks \citep{2003A&A...403..323T, 2009ApJ...700.1502A}, which
+appears to be in conflict with theoretical predictions
+\citep{2007A&A...469.1169B}. One possible solution to this observational
+conundrum could be that the disks are much more massive in the gas than
+previously suspected, leading to a higher gas friction for millimeter grains and
+thus longer drift times \citep{2017ApJ...840...93P}. But another explanation is
+to invoke, again, pressure traps. The most striking observational evidence for
+dust trapping seems to come from large transitional disks, which feature giant
+dust rings, sometimes lopsided, in which large quantities of dust appears to be
+concentrated \citep{2013Natur.493..191C, 2013Sci...340.1199V}. These observations
+appear to be well explained by the dust trapping scenario
+\citet{2012A&A...545A..81P}. But these transitional disks seem to be rather
+violent environments, possibly with strong warps \citep{2015ApJ...798L..44M,
+  2017A&A...597A..42B} and companion-induced spirals
+\citep{2016ApJ...816L..12D}. For more ``normal'' protoplanetary disk the dust
+traps would have to be more subtle. \cite{2012A&A...538A.114P} explored the
+possibility that the disk features many axisymmetric local pressure maxima, and
+calculated how the dust drift and growth would behave under such conditions. It
+was found that, if the pressure bumps are strong enough, the dust trapping can
+keep a sufficient fraction of the dust mass at large distances from the star to
+explain the observed dust millimeter flux. It would leave, however, a detectable
+pattern of rings that should be discernable with ALMA observations.  Since the
+multi-ringed disk observation of HL Tau \citep{2015ApJ...808L...3A} a number of
+such multi-ringed disks have been detected \citep{2016ApJ...820L..40A,
+  2016PhRvL.117y1101I, 2017ApJ...851L..23C, 2017A&A...600A..72F,
+  2018A&A...610A..24F}. It is therefore very tempting to see also these
+multi-ringed disks as evidence for dust trapping, and as an explanation for
+the retention of dust in the outer regions of protoplanetary disks.
+
+The data from the ALMA Large Programme 2016.1.00484.L offers an exciting new
+opportunity to put this concept to the test, and to put constraints on the
+physics of dust trapping in axisymmetric pressure maxima. This is an opportunity
+which we explore in this paper.
+
+If we assume that the rings seen in our data are caused by dust trapping, the
+question arises: what constraints do the data impose on the physics of dust
+trapping? To explore this we start by studying the rings individually, assuming
+that the dust does not escape from the ring. This makes it possible to look for
+a steady-state dust trapping model in which the radial drift forces (that push
+the dust to the pressure peak) are balanced by turbulent mixing (that tends to
+smear out the dust away from the pressure peak). In Section
+\ref{sec-steady-state-analytic-trap-model} we will construct a very simplified
+analytic dust trapping model, and confront this with the most well-isolated
+rings from our sample. {\bf Describe the next sections.} But before we do the
+modeling, we review, in Section \ref{sec-data}, the key aspects of the data from
+our ALMA Large Programme that we compare our models to.
+
+
+
+\section{The high-contrast rings of AS 209, Elias 24, GW Lup, HD 143006 and HD 163296}
+\label{sec-data}
+%
+In this paper we discuss in particular those sources of the ALMA Large Programme
+that show high-contrast and radially thin rings that are separated by deep
+valleys, and that are sufficiently face-on to not have to worry about 3-D
+lie-of-sight aspects. These are AS 209, Elias 24, GW Lup, HD 143006 and HD
+163296. The high-contrast rings of these sources provide ``clean laboratories''
+for testing the theory of dust trapping, both in a ring-by-ring manner, as well
+as by comparing to global dust drift models. The most striking case is AS 209,
+which features two high-contrast radially thin rings which are isolated and
+large ({\bf see Guzm\'an et al.~(2018) for the detailed description of this
+  dataset}). Fig.\ref{fig-obs-as209} shows the radial profile (deprojected for
+inclination) of the thermal emission of the dust of the disk around AS 209. The
+brightness is expressed as linear brightness temperature
+($T_{\mathrm{bright,linear}}=(c^2/2k_B)I_\nu/\nu^2$), where $I_\nu$ is the
+intensity, $c$ the light speed, $k_B$ the Boltzmann constant, and $\nu$ the
+frequency. It should be noted that the full (non-linear) brightness temperature
+(defined such that $B_\nu(T_{\mathrm{bright,full}})=I_\nu$, with $B_\nu(T)$ the
+Planck function) can have very different values, in particular at low
+brightness. As a result $T_{\mathrm{bright,full}}(r)$ tends to vastly
+underestimate the contrast between the rings and the inter-ring
+regions. Therefore, in this paper we plot the brightness using the linear
+brightness temperature.
+
+\begin{figure}
+\centerline{\includegraphics[width=0.5\textwidth]{as209_gauss_modelfit.pdf}}
+\caption{\label{fig-obs-as209}The linear brightness temperature in band 6 of the
+  disk around AS 209, as a function of deprojected distance to the star (see
+  {\bf Guzm\'an et al.~(2018)} for a detailed description and analysis of these data). The
+  vertical axis is logarithmic to better show the contrast. The two most
+  prominent rings are fitted by Gaussian rings. Ring 1 is fitted by
+  $T_{\mathrm{bright,linear}}(r)=
+  3.5\,\exp(-0.5(r-77\,\mathrm{au})^2/(4.0\,\mathrm{au})^2)$, while ring 2 is fitted by
+  $T_{\mathrm{bright,linear}}(r)=
+  2.8\,\exp(-0.5(r-124.7\,\mathrm{au})^2/(4.4\,\mathrm{au})^2)$.}
+\end{figure}
+
+The two most prominent rings (seen as bumps in Fig.\ref{fig-obs-as209}) are
+fitted by Gaussian profiles with a standard deviation width of
+$4.0\,\mathrm{au}$ and $4.4\,\mathrm{au}$ respectively. This corresponds to a
+full-width-at-half-maximum (FWHM) of $9.3\,\mathrm{au}$ and $10.3\,\mathrm{au}$.
+The ALMA beam FWHM for these observations is roughly $4.4\,\mathrm{au}$, meaning
+that the rings are 2.1 and 2.3 beams wide.
+
+These Gaussian profiles fit the observed data remarkably well, even in the wings
+of the profile (except the outer wing of the outer ring). This is somewhat
+surprising, given that the rings are resolved. The Gauss profiles therefore do
+not represent the beam profile, but tell something about the actual dust
+distribution within the ring.
+
+The source Elias 24 also shows a prominent high-contrast isolated ring,
+albeit flanked on the outside by a plateau of emission (see {\bf Andrews
+  et al.~(2018) for a detailed description of this dataset}). 
+
+\begin{figure}
+\centerline{\includegraphics[width=0.5\textwidth]{elias24_gauss_modelfit.pdf}}
+\caption{\label{fig-obs-elias24}As Fig.~\ref{fig-obs-as209}, but now for the
+  source Elias 24 (see {\bf Andrews et al.~(2018)} for a detailed description
+  and analysis of these data). The most prominent ring is fitted by a Gaussian
+  profile $T_{\mathrm{bright,linear}}(r)=
+  5.3\,\exp(-0.5(r-79.9\,\mathrm{au})^2/(5.0\,\mathrm{au})^2)$.}
+\end{figure}
+
+The ring can be reasonably well fitted with a Gaussian profile with standard
+deviation width of $5.0\,\mathrm{au}$ corresponding to a FWHM of
+$11.7\,\mathrm{au}$. Given a beam size in band 6 of about $4.9\,\mathrm{au}$,
+the ring of Elias 24 is also resolved by about 2.4 beam widths. The Gaussian fit
+is, however, less convincing in the case of Elias 24 than in the case of AS 209,
+so that it cannot be clearly argued that the ring has a Gaussian shape in the
+case of Elias 24.
+
+{\bf [TODO: GW Lup, HD 143006 and HD 163296]}
+
+\section{Steady-state dust distribution in a ringlike trap}
+\label{sec-steady-state-analytic-trap-model}
+%
+Given the nicely separated narrow rings in the above sources, we can analyze
+these rings on a one-by-one basis. This is what we will do in this Section. We
+will assume that the dust trapping in these rings is absolute: no dust escapes.
+But increased turbulent mixing can spread the dust over a broader ring. Before
+we start constructing a model, we will discuss an important feature of the
+observed rings: that they appear to be radially resolved, Gaussian in shape, yet
+sub-Planckian in brightness. We will present a simple analytic dust trapping
+model, and show which radial brightness profiles it predicts, depending on the
+dust size distribution, the turbulent strength and the gas pressure bump width.
+This, when compared to the data, will allow us to draw some conclusions about
+the size distribution {\bf [and perhaps more?]}.
+
+\subsection{Resolved ring width and the brightness temperature}
+If our finding is correct that the rings in our sample are all spatially
+resolved in radial direction, then this poses an interesting question. In many
+cases the brightness of these rings is arguably sub-Planckian. This is, for
+instance, the case for the high-contrast rings of AS 209, as well as {\bf
+  XXXXXXX}. For the outer two rings of AS 209 (at 77 au and 125 au,
+respectively, the non-linear brightness temperatures are $3.5\,\mathrm{K}$ and
+$2.8\,\mathrm{K}$, respectively. If these rings would have been {\em
+  un}resolved, then this sub-Planckian emission is easily explained by the ring
+not filling the beam. But because these rings are radially resolved, this
+scenario should be rejected. The remaining possibilities are that the disk is
+colder than we think or that the rings are optically thin. In the latter case
+the spectral slope $\alpha_{\mathrm{spec}}$ at the location of these rings, once
+measured, will determine if the grains that are trapped in this ring are
+smaller, similar or larger than about $\lambda/2\pi$, where $\lambda$ is the
+wavelength around which the slope is measured. If we use
+$\lambda=0.13\,\mathrm{cm}$ and $\lambda=0.31\,\mathrm{cm}$ (representing ALMA
+band 6 and 3, respectively) to determine $\alpha_{\mathrm{spec}}$ this would
+mean we can distinguish between grains smaller, similar or larger than about 300
+$\mu$m. A low $\alpha_{\mathrm{spec}}$ would imply grains that are substantially
+larger than 300 $\mu$m, i.e.~of the order of millimeter or larger.
+
+In several recent observations of the spectral index across ringed disks
+\citep{2015ApJ...808L...3A,2018ApJ...852..122H} one clearly sees that
+$\alpha_{\mathrm{spec}}$ varies across these rings, being closer to $2$ at the
+ring center and substantially larger between the rings. This makes sense in
+terms of the dust trapping scenario in which we expect larger grains to be
+trapped more efficiently (and thus dominate the peak of the ring) than smaller
+grains, because the smaller grains will be more subject to turbulent
+mixing. This scenario requires a grain size distribution, so that the width of
+the dust ring is smaller for the bigger grains and bigger for the smaller ones.
+
+While this scenario is plausible and appealing, one may worry that it requires
+some fine-tuning. Why would the rings be dominated by a population of grains
+that are larger than 300 $\mu$m, but not too large, for else they would be so
+effectively trapped that they would produce an even narrower ring? For one or
+two sources that could be coincidence, but for a multitude of sources this is
+less plausible. One possible explanation is that millimeter grains are indeed
+the largest grains in the outer regions protoplanetary disks, because larger
+grains would easily get destroyed and/or simply bounce instead of stick when
+they collide, and thus not grow further \citep{2010A&A...513A..56G,
+  2010A&A...513A..57Z}. These models also predict larger grains to drift quickly
+inward, but that is only valid for a model without dust traps. At any rate:
+perhaps millimeter grains are a natural consequence of dust growth. If so, it
+then remains to be understood why the combination of turbulent strength and gas
+surface density conspire to trap these millimeter grains, but not too much, for
+else we might expect at least some rings to be narrower than a pressure scale
+height. We are aware that, even with a sample of 20 sources, we are still in the
+small-number-statistics regime, so these considerations are limited in their
+strength.
+
+In this section we will study this question using a very simple model of a dust
+trap: a parameterized gaussian pressure profile. The goal is to find out if the
+variations of $\alpha_{\mathrm{spec}}$ across the ring are naturally produced,
+while still keeping the dust ring radially resolved, without having to fine-tune
+the size distribution of the grains, the turbulence of the gas or other
+parameters. We will do this in several steps, starting with analytic solutions
+in Subsection \ref{sec-analytic-trap}, and proceeding with DISKLAB models in
+Subsection \ref{sec-disklab-trap}.
+
+\subsection{Analytic approximate solution of dust trapping}
+\label{sec-analytic-model-of-trapping}
+%
+Let us consider a narrow gas ring around the star at radius $r_0$ with a
+midplane pressure given by
+\begin{equation}\label{eq-gaussian-pressure-bump}
+p(r) = p_0 \exp\left(-\frac{(r-r_0)^2}{2w^2}\right)
+\end{equation}
+where $w\ll r_0$ is the parameter setting the width of this gaussian ring.
+We assume that the gas is weakly turbulent with turbulent diffusion coefficient
+$D$. Dust grains get trapped in this ring, and the dust will acquire a
+radial density profile that is in equilibrium between the radial dust drift
+pointing toward the peak of the gas pressure and radial turbulent diffusion
+pointing away from that position. The radial dust drift velocity is
+\citep[see e.g.][]{}:
+\begin{equation}\label{eq-v-radial-drift}
+  v_{\mathrm{dr}} = \frac{1}{\mathrm{St}+\mathrm{St}^{-1}}
+  \left(\frac{d\ln p}{d\ln r}\right)\frac{c_s^2}{\Omega_Kr}
+\end{equation}
+where $c_s$ is the isothermal sound speed and the Stokes number $\mathrm{St}$ is
+defined as
+\begin{equation}
+\mathrm{St} = \Omega_Kt_{\mathrm{stop}}
+\end{equation}
+where $t_{\mathrm{stop}}$ is the stopping time of the grains. The diffusion
+coefficient for the dust is \citep{2007Icar..192..588Y}:
+\begin{equation}
+D_{\mathrm{d}} = \frac{D}{1+\mathrm{St}^2}
+\end{equation}
+We take $D$ to be equal to the turbulent viscosity $\nu$ divided by the
+Schmidt number $\mathrm{Sc}$, which we usually set to $\mathrm{Sc}=1$.
+We use the usual $\alpha$-prescription for the turbulence:
+\begin{equation}
+D=\frac{\nu}{\mathrm{Sc}}= \alpha_{\mathrm{turb}}\frac{c_s^2}{\mathrm{Sc}\,\Omega_K}
+\end{equation}
+If $D$ is sufficiently small, the dust will get concentrated into a ring with
+width $w_d$ that is substantially smaller than the width of the gas ring
+$w$. Also the dust will all be settled vertically into a layer that has a
+vertical thickness less than the gas pressure scale height. In that case the
+solution to the drift-mixing equation for the dust becomes simple, because
+we can then assume everything to be constant with $r$ (within this limited
+domain), except for the gas pressure gradient. We will also ignore any terms
+arising from the curvature of the coordinates. The steady-state radial
+dift-mixing equation for the dust then becomes, in its approximate form:
+\begin{equation}
+  \frac{d}{dr}
+  \left(\Sigma_{\mathrm{d}}v_{\mathrm{dr}}-D_{\mathrm{d}}\frac{d\Sigma_{\mathrm{d}}}{dr}\right) = 0
+\end{equation}
+Integrating this equation once, with integration constant zero (which
+amounts to a zero net radial flux), yields
+\begin{equation}\label{eq-drift-mix-equil-eq}
+  \Sigma_{\mathrm{d}}v_{\mathrm{dr}} = D_{\mathrm{d}}\frac{d\Sigma_{\mathrm{d}}}{dr}
+\end{equation}
+From Eqs.(\ref{eq-v-radial-drift},\ref{eq-gaussian-pressure-bump}) we can express
+$v_{\mathrm{dr}}$ as
+\begin{equation}
+v_{\mathrm{dr}} = -\left(\frac{c_s^2}{w^2\Omega_K(\mathrm{St}+\mathrm{St}^{-1})}\right)(r-r_0)
+\end{equation}
+With this expression we can solve Eq.~(\ref{eq-drift-mix-equil-eq}) for
+$\Sigma_{\mathrm{d}}$:
+\begin{equation}\label{eq-analytic-sol-radial-trapping}
+\Sigma_{\mathrm{d}}(r) = \Sigma_{\mathrm{d0}} \exp\left(-\frac{(r-r_0)^2}{2w_{\mathrm{d}}^2}\right)
+\end{equation}
+with 
+\begin{equation}
+  w_{\mathrm{d}} = w \sqrt{\frac{\Omega_KD_{\mathrm{d}}(\mathrm{St}+\mathrm{St}^{-1})}{c_s^2}}
+  = w\sqrt{\frac{\alpha_{\mathrm{turb}}}{\mathrm{Sc}\,\mathrm{St}}}
+\end{equation}
+Note that this is only valid as long as $\alpha_{\mathrm{turb}}\ll \mathrm{Sc}\,\mathrm{St}$.
+This solution is, in fact, the radial version of the vertical settling-mixing
+equilibrium solutions of \citet{1995Icar..114..237D}.
+
+Now let us introduce a grain size distribution. Since the trapping width
+$w_{\mathrm{d}}$ for the different grain sizes is different, we can only
+impose the grain size distribution for the total (radially integrated)
+dust mass. We define the size distribution according to the following powerlaw
+\begin{equation}
+m(a)\frac{dN}{d\ln a} = \frac{dM}{d\ln a} \propto a^{q}
+\end{equation}
+where $a$ is the grain size, $m(a)$ the corresponding grain mass, $N$ the
+cumulative particle number and $M$ the cumulative dust mass. The parameter $q$
+is the size distribution powerlaw coefficient, and it is $q=1/2$ for the usual
+MRN distribution (this corresponds to $dN/da\propto a^{-3.5}$). We also need to
+define limits $a_{\mathrm{min}}$ and $a_{\mathrm{max}}$. The size distribution
+is then normalized such that its integral over $d\ln(a)$ is the total dust mass
+$M$. The radial surface density solution,
+Eq.~(\ref{eq-analytic-sol-radial-trapping}), then becomes:
+\begin{equation}\label{eq-analytic-sol-radial-trapping-sizedistr}
+\frac{d\Sigma_{\mathrm{d}}(r)}{d\ln a} = \frac{1}{(2\pi)^{3/2}r_0
+    w_{\mathrm{d}}(a)}\frac{dM}{d\ln a}
+\exp\left(-\frac{(r-r_0)^2}{2w_{\mathrm{d}}(a)^2}\right)
+\end{equation}
+
+
+\subsection{Resulting profiles for a size distribution}
+\label{sec-anmodel-profiles}
+%
+The analytic model of the dust trapping for a single grain size speaks for
+itself. But how does it look for a grain size distribution? In
+Fig.~\ref{fig-anmodel-distribution-sigma} we show the radial profiles for an MRN size
+distribution between $a_{\mathrm{min}}=10^{-2}\,\mathrm{cm}$ and
+$a_{\mathrm{min}}=1\,\mathrm{cm}$ and a total dust mass of $M=1.3\times
+10^{-5}\,M_\odot$. The dust material density is taken to be
+$\xi_{\mathrm{dust}}=2\,\mathrm{g}/\mathrm{cm}^3$. We sample this size
+distribution with 10 grain sizes, evenly distributed in $\ln(a)$. These are the
+10 curves in Fig.~\ref{fig-anmodel-distribution-sigma}. These surface densities are
+defined as being the local grain size distribution integrated over the width of
+the grain size bin:
+$\Sigma_{\mathrm{bin}}=\int_{\mathrm{bin}}(d\Sigma_{\mathrm{dust}}/da)da$. The
+stellar mass is $M_{*}=0.9\,M_\odot$ and we set $\mathrm{Sc}=1$.
+
+{\bf MUST ALSO SPECIFY GAS DENSITY, TO GET STOKES NUMBERS. MUST SAY
+(AND CHECK) THAT EPSTEIN REGIME.}
+
+\begin{figure}
+\centerline{\includegraphics[width=0.5\textwidth]{analytic_trapping_sigma_profiles.pdf}}
+\caption{\label{fig-anmodel-distribution-sigma}Results of the analytic dust
+  trapping model for an MRN powerlaw grain size distribution between
+  $a=0.01\,\mathrm{cm}$ and $a=1\,\mathrm{cm}$. The gas pressure bump has a FWHM
+  of 70 au and a peak at $r=77\,\mathrm{au}$. Shown here are the surface density
+  profiles for 10 logarithmically binned grain sizes. The curve with the
+  narrowest peak corresponds to a grain size of $a=1\,\mathrm{cm}$, while that
+  with the widest peak (and lowest maximum value) corresponds to a grain size of
+  $a=0.01\,\mathrm{cm}$. The intermediate curves correspond to $a=0.0167$,
+  0.0278, 0.0464, 0.0774, 0.1291, 0.2154, 0.3593 and 0.5995 $\mathrm{cm}$
+  respectively. The dashed curve shows the total surface density of the dust,
+  which is, by definition of the bin-integrated surface density, the sum of all
+  10 curves. For a description of the model setup and model parameters, see
+  Section \ref{sec-anmodel-profiles}.}
+\end{figure}
+
+As expected, the largest grains are concentrated the most and the smallest ones
+the least. The largest grains, however, have the largest peak value of their
+surface density at the exact location of the gas pressure peak.
+
+\begin{figure}
+\centerline{\includegraphics[width=0.5\textwidth]{analytic_trapping_tau_profiles.pdf}}
+\caption{\label{fig-anmodel-distribution-tau}As Fig.~\ref{fig-anmodel-distribution-sigma},
+  but now the vertical optical depth at $\lambda=1.3\,\mathrm{mm}$ (ALMA band 6)
+  is shown. The opacity model of \citet{1997MNRAS.291..121I} was used to compute these
+from the size distribution.} 
+\end{figure}
+
+When it comes to the contribution to the optical depth, however, the situation
+looks a bit different. Let us assume a very simple dust opacity law, which
+roughly mimicks the real behavior of dust opacities: the model of
+\citet{1997MNRAS.291..121I}, where we take the scattering opacity zero for
+simplicity. In this simple but illustrative opacity model the cross
+section of a grain with radius $a$ is the geometric cross section $\pi a^2$
+for $2\pi a>\lambda$ (with $\lambda$ the wavelength), while it is reduced by
+a factor $(2\pi a/\lambda)$ for $2\pi a<\lambda$. This means that for
+$2\pi a>\lambda$ the opacity (that is, the cross section per unit mass)
+is $\kappa=3/4\xi_{\mathrm{dust}} a$ where $\xi_{\mathrm{dust}}$ is the material
+density, here taken to be $\xi_{\mathrm{dust}}=2\,\mathrm{g}/\cm^3$. For
+$2\pi a<\lambda$ this is reduced by a factor $(2\pi a/\lambda)$ and
+thus becomes independent of $a$.
+
+It can be seen from Fig.~\ref{fig-anmodel-distribution-tau} that at the peak of
+the trap all grain sizes contribute equally to the optical depth. That is
+because, with our opacity model, the larger grains (the ones with $2\pi a >
+\lambda$) have an opacity equal to their geometric cross section per unit dust
+mass, which goes as $1/a$. The smallest grains (the ones with $a=0.01$ and
+$a=0.167$) have $2\pi a < \lambda$, which means that their opacity remains
+constant with $a$. Hence, for these two curves in
+Fig.~\ref{fig-anmodel-distribution-tau} the contribution to the peak optical
+depth drops below those of the other grains. Of course, with a more realistic
+opacity model this can change somewhat, but the rough principle remains valid.
+
+More important is to notice that the relative contributions of the grain sizes
+to the peak optical depth may change if a different grain size distribution is
+chosen. Here we chose the MRN size distribution ($q=1/2$), but that was a rather
+arbitrary choice. Given the complexity of the dust growth processes in
+protoplanetary disks, it is not at all said that the MRN distribution should be
+considered a preferred one. The reader may experiment with other values of
+$q$ or entirely different grain size distribution shapes altogether.
+
+
+
+\subsection{Effect of the degree of trapping on the appearance of the ring}
+\label{sec-anmodel-degree-trapping-alpha-series}
+%
+With this simple analytic dust trapping model we can investigate how the degree
+of trapping affects the appearance of the dust ring. For a model with a single
+grain size this is easy to predict: if the turbulence is weak enough that the
+gaussian profile of $\Sigma_{\mathrm{d}}(r)$ is narrower than the ALMA beam,
+then we observe a gaussian profile with the width of the beam. Even if the dust
+in this narrow ring would be optically thick, the observed ring would have
+sub-Planckian brightness due to beam-dilution. For stronger turbulence,
+$\Sigma_{\mathrm{d}}(r)$ is spread out wider, and we observe a gaussian profile
+with the width of the dust profile itself. As in the case of the strongly
+trapped dust, also the wide rust ring has a Gaussian profile, except that if it
+is optically thick, the observed profile is flattened at the top due to
+saturation to the Planck function.
+
+The situation gets more complex if we have a grain size distribution. For a
+given turbulence strength $\alpha_{\mathrm{turb}}$ some grains may be
+concentrated into a ring that is narrower than the ALMA beam, while others may
+be more spread out. The strongly concentrated grain population produces a cusp
+in the brightness, which will be partly smeared out by the beam convolution,
+while the weakly concentrated grain population produces a broad underlying
+brightness bump.
+
+To see how this looks in practice we set up a realization of our analytic
+model. The peak of the pressure is put at $r_{0}=77\,\mathrm{au}$ (corresponding
+to the inner of the two main rings of AS 209), and the width is chosen to be
+$w=30\,\mathrm{au}$ (corresponding to a FWHM of 70 au).  Given that the ALMA
+beam in band 6 has a FWHM of about 35 milliarcseconds, corresponding to 4.4 au
+for the distance to AS 209, the gas bump is much wider than the beam. The two
+main dust rings of AS 209 are about 3 beams wide, so that for our wide gas bump
+model the dust is strongly concentrated. This requires a low turbulent
+$\alpha_{\mathrm{turb}}$ or large grains. As in Section
+\ref{sec-anmodel-profiles} we choose a grain size distribution between
+$a_{\mathrm{min}}=10^{-2}\,\mathrm{cm}$ and $a_{\mathrm{min}}=1\,\mathrm{cm}$,
+following the usual MRN powerlaw of $q=1/2$ and a total dust mass of
+$M=1.3\times 10^{-5}\,M_\odot$. The dust material density is taken to be
+$\xi_{\mathrm{dust}}=2\,\mathrm{g}/\mathrm{cm}^3$. We sample this size
+distribution with 10 grain sizes, evenly distributed in $\ln(a)$. For the disk
+temperature we choose a simple powerlaw $T(r)=200\,(r/\mathrm{au})^{-1/2}$. The
+stellar mass is $M_{*}=0.9\,M_\odot$, and the source distance is taken to be
+$d=126\,\mathrm{pc}$. All these setting are taken to represent the inner of the
+two main high-contrast rings of the source AS 209. We set $\mathrm{Sc}=1$.
+
+\begin{figure}
+\centerline{\includegraphics[width=0.5\textwidth]{analytic_trapping_series_alpha.pdf}}
+\caption{\label{fig-anmodel-series-alpha}Results of the analytic dust trapping
+  model for various turbulent strengths, for an MRN powerlaw grain size
+  distribution between $a=0.01\,\mathrm{cm}$ and $a=1\,\mathrm{cm}$. The gas
+  pressure bump has a FWHM of 70 au and a peak at $r=77\,\mathrm{au}$. Shown
+  here is the predicted brightness temperature at a wavelength
+  $\lambda=1.3\,\mathrm{mm}$ before (dashed) and after (solid) convolution with
+  the ALMA beam, assuming a source distance of $d=126\,\mathrm{pc}$. For a
+  description of the model setup and model parameters, see Section
+  \ref{sec-anmodel-degree-trapping-alpha-series}.}
+\end{figure}
+
+The results for several values of $\alpha_{\mathrm{turb}}$ are shown in
+Fig.~\ref{fig-anmodel-series-alpha}. In the top panel, representing weak
+turbulence, most of the dust is trapped into a ring more narrow than the
+beam. A clear cusp can be seen in the un-convolved brightness profile,
+which is due to the strongly trapped large grains of the size distribution.
+However, the convolution washes out this cusp for the most part. This
+situation is equivalent to the simple case of a single dust species being
+trapped to a narrow unresolved ring. The only difference is that for a single
+dust size the ring is either optically thick or optically thin, while in the
+multi-size case this can be a mix. That does not make a difference for the
+observed brightness profile, which is a Gaussian either way.
+
+For the case of the strongest turbulence, the bottom panel in
+Fig.~\ref{fig-anmodel-series-alpha}, the cusp is still seen in the un-convolved
+profile, but now the convolution does not wash it out completely. The resulting
+convolved brightness profile is clearly non-Gaussian as a result. It has a
+quasi-Gaussian cusp with broad wings. When seen with ALMA such a cuspy profile
+(narrow at the peak, broad in the wings) should be recognizable.
+
+These findings show that if the turbulent strength is weak, the predicted dust
+ring width equals the ALMA beam width, and the brightness shape should have the
+shape of the beam profile (here assumed to be Gaussian). For stronger
+turbulence, the dust ring becomes indeed broader than the ALMA beam, but then
+the shape of the observed brightness profile may teach us something about the
+grain size distribution. Roughly speaking, if the largest grains of the size
+distribution still get trapped in a narrow ring, this shows up as a cusp in the
+brightness profile. If the smallest grains of the grain size distribution are
+too small, the predicted brightness profile would be too broad compared to the
+observed ring width. In other words: if the observed brightness profile of a
+observed ring in given source is clearly radially resolved, and if it has a
+Gaussian shape, then the most likely fit to our analytic model is that of
+a narrow size distribution (quasi a single grain size) with the right turbulent
+strength to fit the observed ring width. A broader size distribution, with the
+appropriately chosen turbulent strength, would yield a cuspy profile, not a
+Gaussian one.
+
+The two high-contrast rings of AS 209 both appear to fit a Gaussian profile with
+2.5 times the width of the ALMA beam (Fig.~\ref{fig-as209-rings-gauss-fit}). In
+both cases it is therefore likely, according to this analysis, that the dust
+that is trapped in these rings has a narrow size distribution instead of a broad
+MRN powerlaw distribution.
+
+\subsection{Spectral slope variations across the ring}
+\label{sec-anmodel-slope-variations}
+%
+
+
+
+
+
+\subsection{Model degeneracies}
+\label{sec-anmodel-degeneracies}
+%
+When trying to infer the effectiveness of dust trapping within the rings with
+the analytic model of Section \ref{sec-analytic-model-of-trapping}, one notices
+that there are degeneracies in the possible combinations of parameters. Most
+obvious is the degeneracy between grain size and turbulence: smaller grains
+and stronger turbulence may yield the same dust trapping width. But also the
+width of the gas pressure bump can be compensated: a narrower bump but stronger
+turbulence (or smaller grains) will yield the same ring width.
+
+{\bf [CONTINUE THIS; SOME DEGENERACIES FOLLOW DIRECTLY FROM THE EQUATIONS.]}
+
+
+\subsection{Model fits to the ALMA data}
+\label{sec-anmodel-fits-to-data}
+%
+We now apply this model to the isolated rings in our ALMA sample (Section
+\ref{sec-data}). Given the degeneracies of the model in many of the parameters,
+we perform the fitting procedure in three parameters, while fixing the others
+to a particular choice of values. 
+
+
+
+{\bf [CONTINUE THIS; SHOW THE FIT FIGURES; SHOW THE MCMC CORNER PLOTS]}
+
+
+
+
+
+
+
+\subsubsection{Could the rings be optically thick at the center?}
+\label{sec-anmodel-fits-optically-thick}
+%
+All rings in our sample show sub-Planckian brightness, at least for the disk
+temperature assumed in our model. We have calculated the disk midplane temperature
+using a simple ``flaring angle recipe''. If the disks are, however, substantially
+colder (by up to a factor of 2.5 to 3) then the peak flux of the rings might be
+consistent with saturated emission, i.e.\ emission expected from an optically thick
+disk. So the question is: how sure are we that the rings are sub-Planckian? 
+
+To reduce the midplane temperature by a factor of $2$ the irradiation flux must
+be reduced roughly by a factor of $2^4=16$. Within the flaring angle recipe this
+would lead to unrealistically low flaring angle. Presently we assumed $\varphi=0.02$,
+so that it would have to reduce to $\varphi=0.0013$, which is so low that we can no
+longer trust the flaring angle recipe. However, maybe the outer disk lies in the
+shadow of the inner disk. To see whether this can reduce the temperature to low
+enough values, we perform a proper radiative transfer calculation. The results are
+shown in Appendix ({\bf XXXX}). It shows that {\bf XXXXX}.
+
+There is another issue, however. If the emission saturates to the optically thick
+brightness, i.e.\ to the Planck function, then the radial profile of the ring should
+be flat-topped. This is clearly not what we see in the rings in our sample, with
+the possible exception of the ring of GW Lup which shows a very slight hint of that.
+In general, however, it seems that the simple picture of collecting so much dust into
+the ring that the ring becomes optically thick does not seem to explain the observed
+radial brightness profiles. On the other hand, optical thickness can also occur
+on smaller scales, as we will discuss in Section \ref{sec-si-clump}.
+
+{\bf [TO BE DONE: So far the CMB or cloud background is not included in the model.
+    This has to be improved, because we are working at temperatures close to the
+    CMB. It might reduce the sub-Planckianness, I guess.]}
+
+{\bf [Question to the experts: The CMB and/or cloud background is automatically
+filtered out of the interferometric observations, I presume?]}
+
+
+\section{Streaming instability, clumping, and the spectral index}
+\label{sec-si-clump}
+%
+Whenever the dust trapping becomes so effective that the volume density of the
+dust at the midplane of the disk exceeds the gas volume density, the streaming
+instability may set in \citep{2005ApJ...620..459Y}. This produces turbulence and
+leads to clumping \citep{2007ApJ...662..627J, 2008A&A...479..883L,
+  2010ApJ...722.1437B}. If conditions are right, some of these clumps may
+gravitationally collapse and form planetesimals \citep{2007Natur.448.1022J,
+  2017ApJ...847L..12S, 2017A&A...597A..69S}. It is believed that this mechanism
+is the trigger that starts the process of the formation of planets
+\citep[see][for a review]{2014prpl.conf..547J}. If one could find observational
+evidence of this dust clumping occurring in protoplanetary disks, this would
+be a major step forward for our understanding of planet formation.
+
+The clumps that are formed in simulations of the streaming instability are,
+however, typically substantially smaller than a pressure scale height of the
+disk \citep{2007ApJ...662..627J, 2013MNRAS.434.1460K}. This makes it very hard
+to spatially resolve these structures, even with ALMA at its highest resolution.
+
+It might, however, be possible to find indications of particle clumping in an
+indirect way, if it leads to the formation of optically thick clouds of
+particles surrounded by optically thin regions. Even if we cannot spatially
+resolve these clouds, the spatially averaged thermal emission from such a clumpy
+medium has a different spectral slope than that of a homogeneous distribution of
+dust. If all the dust is concentrated in a multitude of small and very optically
+thick clumps, then the brightness of this unresolved clumpy medium would be the
+Planck function times the covering fraction $C$ of the clumps:
+\begin{equation}\label{eq-bright-clumpy}
+I_\nu^{\mathrm{obs}} = B_\nu(T_{\mathrm{disk}})\,C
+\end{equation}
+where the limit $C\rightarrow 0$ means concentrating all the dust in infinitely
+dense clumps so that the covering fraction is zero, and $C\rightarrow 1$ means
+having so many clumps that they multiply overlap, when seen in projection from
+above. In contrast, if all this dust is homogeneously distributed, then the
+brightness is
+\begin{equation}\label{eq-bright-homogeneous}
+I_\nu^{\mathrm{obs}} = B_\nu(T_{\mathrm{disk}})\,(1-e^{-\tau_\nu})
+\end{equation}
+with $\tau_\nu$ being the vertical optical depth of the dust in the disk.
+Reality will likely lie in between these two extreme scenarios, with
+optically thin dust interdispersed between optically thick clouds.
+
+There are at least two ways by which one could use Eqs.~(\ref{eq-bright-clumpy},
+\ref{eq-bright-homogeneous}) to search for hints of clumpiness. The most direct
+way is to make use of the different dependencies of these two equations on
+wavelength $\lambda=c/\nu$. In the case of the clumpy medium with perfectly
+optically thick clumps (Eq.~\ref{eq-bright-clumpy}) the brightness follows the
+Planck curve, whereas for the homogeneous medium
+(Eq.~\ref{eq-bright-homogeneous}), if it is optically thin
+(i.e.~$1-e^{-\tau_\nu}\simeq \tau_\nu$), it follows the Planck curve times the
+opacity law. If we are in the Rayleigh-Jeans domain of the Planck curve, then
+these two limits are usually referred to as spectral slope
+$\alpha_{\mathrm{spec}}=2$ and $\alpha_{\mathrm{spec}}=2+\beta$, respectively,
+where $\beta$ is defined by $\kappa_\nu\propto \nu^\beta$. At ALMA band 6, for
+the low temperatures we expect in these disks at large radii, we are no longer
+strictly in the Rayleigh-Jeans domain, so the spectral slope analysis becomes
+temperature-dependent, which complicates matters a bit, but the principle
+remains the same. If the streaming instability is operating in the rings of our
+sources, and if the numbers work out (see below), then we expect to see
+$\alpha_{\mathrm{spec}}\simeq 2$ within the rings, and
+$\alpha_{\mathrm{spec}}>2$ between the rings.
+
+There is an important caveat to this idea: the grain size and the corresponding
+opacity slope may mimick the same spectral signatures as the clumping. This is,
+in fact, the same degeneracy of the interpretation of the millimeter spectral
+slope as usual \citep[e.g.][]{2003A&A...403..323T}, just on a much smaller
+spatial scale: a scale that remains unresolved even by ALMA.  Nevertheless it is
+worthwhile to investigate if we can find clues that point to clumpiness.
+
+In the scope of this paper we will only do a very simple analysis: we will
+verify if, under the most benign conditions, the above mentioned optically
+thick/thin clumpy medium is at all possible. This is not granted, because
+these rings are several tens of au large, and therefore it requires a lot of
+mass to make dust clumps optically thick at 1.3 millimeter wavelength.
+Furthermore, these dust clouds cannot have a density in excess of the
+Roche density, because then they would immediately gravitationally collapse.
+Therefore, we cannot make the clumps arbitrary dense and compact.
+
+So let us construct the most optimistic model of a dust cloud. The highest
+possible density of a cloud is the Roche density, defined by
+\begin{equation}
+\rho_{\mathrm{Roche}}(r) = \frac{9}{4\pi}\frac{M_{*}}{r^3}
+\end{equation}
+where $M_{*}$ is the stellar mass and $r$ is the distance to the star. We take
+$\rho_{\mathrm{cloud}}=\rho_{\mathrm{Roche}}$. The simplest opacity model for a
+dust grain is that of \cite{1997MNRAS.291..121I}, where we omit the scattering
+part:
+\begin{equation}
+\kappa(a) = \frac{3}{4}\frac{1}{\xi\,a}\left\{\begin{matrix}
+1 & \hbox{for} & \lambda<2\pi a \\
+2\pi a/\lambda & \hbox{for} & \lambda>2\pi a \\
+\end{matrix}\right.
+\end{equation}
+where $a$ is the grain radius and $\xi$ is the material density of the dust
+grain ($\xi=3.6$ for amorphous olivine, $\xi=2.0$ for silica {\bf CHECK}). For a
+given wavelength $\lambda$ (in our case $\lambda=0.13\,\mathrm{cm}$ for ALMA
+band 6), the most optimistic opacity is therefore $\kappa=(3\pi/2)/\xi\lambda$,
+for all $a\le \lambda/2\pi$. For ALMA band 6 and $\xi=2\,\mathrm{g/cm}^3$ this
+is $\kappa=18.1\,\mathrm{cm}^2/\mathrm{g}$. The largest grain size to still
+have this opacity is therefore $a=\lambda/2\pi$, which for ALMA band 6 is
+$a=0.02\,\mathrm{cm}$.  We make a spherical cloud of this dust with radius
+$R$. The optical depth through the cloud center is then
+\begin{equation}
+\tau = 2R\rho_{\mathrm{cloud}}\kappa
+\end{equation}
+To obtain the effect of an optically thick/thin clumpy medium, these clouds
+have to be sufficiently optically thick, not just marginally. So let us demand
+a minimal optical depth of $\tau=4$. This gives a minimal cloud radius of
+\begin{equation}
+  R\gtrsim \frac{2}{\rho_{\mathrm{Roche}}\kappa} = 0.11\frac{1}{\rho_{\mathrm{Roche}}}
+  = 0.15\frac{r^3}{M_{*}}
+\end{equation}
+in CGS units (for ALMA band 6). Note that this scales linearly with
+$\rho_{\mathrm{cloud}}/\rho_{\mathrm{Roche}}$, so that if we choose a much less
+``critical'' cloud density of, say, $\rho_{\mathrm{cloud}}=0.1\,\rho_{\mathrm{Roche}}$,
+then the cloud should become 10$\times$ larger and 100$\times$ more massive.
+
+If we want these clouds to be part of an unresolved clumpy medium, they should
+be substantially smaller than the pressure scale height of the disk, and
+substantially smaller than the ALMA band 6 resolution. Let us take the example
+of the source AS 209, with $M_{*}=0.9\,M_{\odot}$, and its two high-contrast
+rings at 74 au and 120 au, respectively. This gives minimal cloud
+radii of $R\gtrsim 4\times 10^{-3}\,\mathrm{au}$ and $R\gtrsim 22\times
+10^{-3}\,\mathrm{au}$, respectively. Clouds of size similar to these minimal
+values are indeed much smaller than the beam width, and are therefore
+unresolved.  This does not mean that there cannot be any smaller
+clumps/clouds. It only means that any smaller clouds would be optically thin,
+and we would thus not see any effect of these clumps on the unresolved
+brightness: these clouds would have a spectral slope equal to that of an
+optically thin non-clumpy model. At any rate, this estimate shows that, at least
+in principle, it is possible that the rings we see in our data consist, in fact,
+of numerous unresolved optically thick clouds interdispersed with optically thin
+dust (or without any dust in between). Given that such an unresolved, but
+optically thick, set of clumps has a lower spectral slope
+$\alpha_{\mathrm{spec}}$ than an optically thin dusty medium, an analysis of the
+measured spectral slope variations over the radial profile of the rings {\em
+  may} give us some clues as to whether clumpiness occurs or not in these
+rings, even if we cannot resolve the clumps themselves. We would expect that
+within the ring the spectral slope is closer to $\alpha_{\mathrm{spec}}\simeq 2$
+(modulo deviations from Rayleigh-Jeans) than in the inter-ring region.
+
+However, the grain size segregation mechanism, that larger grains are more
+concentrated in the ring than smaller grains, also tends to produce this
+signature. This is particularly the case if the big grains (which are closest to
+the ring peak) are larger than $\lambda/2\pi$ while the small grains are smaller
+than $\lambda/2\pi$. To distinguish between the roles of size seggregation and
+clumping, we need an independent way to probe the grain size. Perhaps the effects
+of self-scattering induced polarization \citep{2015ApJ...809...78K} may provide
+such an avenue. 
+
+Even if we can distinguish between size-sorting and clumping, we still have to
+clarify whether the required total dust mass for the clumping scenario is
+reasonable, and whether the required 'filling factor' is consistent with
+simulations of the streaming instability. Both questions are related. Let us go
+back to the two prominent isolated rings of AS 209. The peak linear brightness
+temperature is 3.5 $\mathrm{K}$ for the inner one and 2.7 $\mathrm{K}$ for the
+outer one. In our model the disk midplane temperature is 13 $\mathrm{K}$ for the
+inner and 10 $\mathrm{K}$ for the outer ring, which translates (for
+$\lambda=0.13\,\mathrm{cm}$) into a linear brightness temperature of
+8 $\mathrm{K}$ and 5.6 $\mathrm{K}$, respectively. If the disk were optically
+thick, we would thus expect to observe a linear brightness temperature of
+8 $\mathrm{K}$ and 5.6 $\mathrm{K}$, which are only about 2 times higher. 
+
+{\bf [TODO: Handle the CMB and cloud background, which might reduce the
+sub-Planckianness we observe.]}
+
+This means that the filling factor of these clouds, as projected vertically
+toward the observer, must be quite high, of the order of 50\%. {\bf [At this
+    point we can calculate the minimum mass in dust needed for this]}
+
+In principle the disk could be warmer than we assume, leading to a larger
+saturation brightness, and thus a lower required filling factor. But given that
+a 2$\times$ higher disk temperature requires a 16$\times$ higher irradiation
+flux, we expect at most a factor of 2 uncertainty in the required filling
+factor.
+
+Checking whether this filling factor is consistent with the expectation of
+simulations of the streaming instability is not easy. Such data are not
+published for the models describing the streaming instability so far.  We can
+only do a ``by eye'' check of the figures in those papers ({\bf give a few
+  example papers here}). Such an exercise gives us the impression that the
+typical fraction of the simulation box that is covered by the dense cluster
+regions, as projected vertically, is typically substantially less than 50\%. If
+this impression is true, then the ring emission seen in our sample cannot be
+explained by a set of spatially unresolved optically thick clouds. That does not
+imply, however, that the streaming instability does not operate in these
+rings. It only implies that if it does, it will be hidden below an optically
+thick shroud of more extended dust.
+
+
+
+
+
+\subsection{Under which conditions should the streaming instability set in?}
+While in Section \ref{sec-si-clump} we investigated if we can recognize the
+ongoing streaming instability in our data if it is taking place in the disk, in
+this Section we will compute, with our analytic dust trapping model, under which
+condition we would {\em expect} that the streaming instability will operate in
+the first place. This depends on the total dust mass locked in the trap, the
+grain sizes and the turbulent strength. To make analytic estimates it is easiest
+to assume a single grain size, instead of a grain size distribution.
+
+{\bf FINISH THIS SECTION}
+
+
+
+
+
+
+\section{Discussion}
+
+
+\subsection{Gap depth estimates from 2-D hydrodynamic simulations}
+
+{\bf Dong \& Fung (2017)} presented a systematic study of the gap
+opening profiles for given planetary masses, and analyzed the
+rings seen in scattered light of 5 sources (HD 97048, TW Hydra,
+HD 169142, LkCa15 and RX J1615).
+
+
+\subsection{Condition for the streaming instability}
+In the literature it is often mentioned that the streaming instability requires
+a dust-to-gas surface density ratio of
+$\Sigma_{\mathrm{d}}/\Sigma_{\mathrm{g}}\gtrsim 0.02$ or higher to operate {\bf
+  XXXXXXXX}. This can, however, not be directly compared to our models, because
+this value of $0.02$ was found for models without any pre-determined
+turbulence. The turbulence in those models was induced by the streaming
+instability itself or, if the streaming instability does not operate, by the
+Kelvin-Helmholtz instability ({\bf XXXX}). In the analytic model of this
+Section, on the other hand, we set the turbulence strength by hand, by setting
+$\alpha_{\mathrm{turb}}$ to some value. In essence, we assume that there is
+another source of turbulence, such as the magnetorotational instability ({\bf
+  XXXX}) or the vertical shear instability ({\bf XXXX}), that determines the
+mixing of the dust in the disk.
+
+According to \citet{2005ApJ...620..459Y} the true criterion for the onset of the
+streaming instability is the ratio of dust and gas {\em volume} densities
+$\rho_{\mathrm{d}}/\rho_{\mathrm{g}}\gtrsim 1$. For a given surface density
+ratio $\Sigma_{\mathrm{d}}/\Sigma_{\mathrm{g}}$, the midplane volume density
+ratio, for a single grain species with midplane Stokes number $\mathrm{St}\ll
+1$, depends on the turbulent strength as
+\begin{equation}\label{eq-dtg-sig-vs-rho}
+  \frac{\rho_{\mathrm{d}}}{\rho_{\mathrm{g}}}\simeq
+  \left(1+\frac{\mathrm{St}}{\alpha_{\mathrm{turb}}}\right)
+  \frac{\Sigma_{\mathrm{d}}}{\Sigma_{\mathrm{g}}}
+\end{equation}
+The criterion of $\Sigma_{\mathrm{d}}/\Sigma_{\mathrm{g}}\gtrsim 0.02$ mentioned
+in the literature thus relates to the criterion
+$\rho_{\mathrm{d}}/\rho_{\mathrm{g}}\gtrsim 1$ via the turbulent strength and
+the Stokes number. Given that we do not compute the turbulent strength
+but prescribe it, we should rely on the more fundamental volume density
+criterion of \citet{2005ApJ...620..459Y} to assess whether the dust in our
+model triggers the streaming instability or not.
+
+In our analytic setup of Section \ref{sec-anmodel-degree-trapping-alpha-series},
+the dust ring is about 5 times narrower than the gas bump. Assuming that
+initially the dust-to-gas ratio was $0.01$, this implies a dust-to-gas surface
+density ratio at the peak of the ring of $0.05$, which is in excess of the usual
+$0.02$ value. But as long as $\mathrm{St}\lesssim 19\alpha_{\mathrm{turb}}$,
+Eq.~(\ref{eq-dtg-sig-vs-rho}) shows that the midplane volume density ratio still
+stays below unity and no streaming instability sets in.
+
+
+\subsection{Dust trapping in the horseshoe region and in resonances}
+The 1-D approach of the {\sf DISKLAB} models make it impossible to treat the
+trapping of particles in the horseshoe region. The low-$\alpha$ models of {\bf
+  Liu et al.~2018} show that this may be a significant effect. However, this
+tends to produce non-axisymmetric rings: there will clearly be a dearth of dust
+near the location of the planet, and a slight enhancement of dust near the L4
+and L5 Lagrange points. Given that the rings we see so far in the multi-ringed
+protoplanetary disks are angularly symmetric, this appears to be ruled out.
+That means that the 1-D approach is justified, but we do have to ensure that we
+are not in the regime where such non-axisymmetric horseshoe-trapping is
+important. Generally the horseshoe region tends to gradually deplete over time,
+but the time scale depends on the turbulent viscosity, with low-$\alpha$ disks
+depleting slower. 
+
+Another issue is the potential for large particles to get trapped in a
+resonance of a planet instead of in a classical dust trap {\bf REFERENCE;
+the Dong double-gap is different, though}.
+This requires high Stokes number, generally $\mathrm{St}\gg 1$ ({\bf is
+  this true?}). Given that grain growth models tend to keep grains below
+this limit ({\bf see e.g.~Birnstiel et al.}), this is less likely to play
+a role.
+
+\subsection{Multiple gaps with a single planet}
+{\bf Dong, Li \& Li (2017)} and 
+{\bf Bae, Zhu \& Hartmann (2017)} show that for very low-$\alpha$ disks
+a planet can open multiple gaps in the disk rather than just a single one.
+The contrast of these rings and gaps in the gas can be large (factor of 2; see
+Bae et al.),
+and thus clearly constitute dust traps. Dong et al.\ show that these gaps
+can even be observable for very low mass planets.
+
+{\bf [TODO: We can do a simple model of dust trapping for their case.]}
+
+{\bf Fung \& Chiang (2017)} have shown that low mass planets in nearly inviscid
+disks can avoid migration and can be responsible for disk accretion in spite
+of the low viscosity.
+
+\subsection{Interpretation of the millimeter flux in terms of grain size}
+A common rule of thumb for interpreting millimeter and sub-millimeter
+fluxes and intensities from thermal dust emission is that you ``observe
+the grain size equal to the wavelength you observe at''. This rule is
+based on the tendency of the dust opacity derived from a Mie calculation
+to peak at wavelength around $\lambda\sim 2\pi a$, with $a$ the grain
+radius. For $\lambda \ll 2\pi a$ the opacity becomes nearly constant
+while $\lambda \gg 2\pi a$ it drops. This effect is even stronger for
+the scattering opacity. The validity of this rule of thumb relies,
+however, on the grain size distribution itself. For the simple
+{\bf Ivezic et al.~(1997)} opacity law, it is only valid for
+grain size distribution powerlaws obeying {\bf XXXXXXXXXXX}.
+{\bf [TODO: Maybe here do an experiment with full opacity laws.]}
+
+
+
+
+\begin{acknowledgements}
+  The authors acknowledge support
+  by the High Performance and Cloud Computing Group at the Zentrum f\"ur
+  Datenverarbeitung of the University of T\"ubingen, the state of
+  Baden-W\"urttemberg through bwHPC and the German Research Foundation (DFG)
+  through grant no INST 37/935-1 FUGG. This research was initiated at the
+  ``Stars, Planets and Galaxies'' meeting at the Harnackhaus in Berlin,
+  April 2018. Part of this work was also funded by the DFG Forschergruppe
+  FOR 2634 ``Planet Formation Witnesses and Probes: Transition Disks''.
+\end{acknowledgements}
+
+
+\begingroup
+\bibliographystyle{aa}
+\bibliography{ms}
+\endgroup
+
+\end{document}
