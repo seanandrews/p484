@@ -636,31 +636,18 @@ os.system('cp -r '+combined_cont_ap+'_backup.ms DoAr25_cont_final.ms')
 
 mscont = 'DoAr25_cont_final.ms'
 
-# Make a final image with robust=0 cleaning deeper
-cont_final = prefix+'_cont_final_r0'
-os.system('rm -rf %s*' % cont_final)
-tclean_wrapper(vis=mscont, imagename=cont_final, cellsize='0.01arcsec', imsize=[1000], mask = LB1_mask, scales = LB_scales, threshold = '0.03mJy', robust=0, interactive=True)
-estimate_SNR(cont_final+'.image', disk_mask = LB1_mask, noise_mask = noise_annulus)
-#DoAr25_cont_final_r0.image
-#Beam 0.042 arcsec x 0.021 arcsec (74.31 deg)
-#Flux inside disk mask: 227.07 mJy
-#Peak intensity of source: 1.39 mJy/beam
-#rms: 1.73e-02 mJy/beam
-#Peak SNR: 80.27
-
 # Make a final image with robust=0.5 cleaning deeper
 cont_final = prefix+'_cont_final_r0.5'
 os.system('rm -rf %s*' % cont_final)
-tclean_wrapper(vis=mscont, imagename=cont_final, cellsize='0.01arcsec', imsize=[1000], mask = LB1_mask, scales = LB_scales, threshold = '0.02mJy', robust=0.5, interactive=True)
+tclean_wrapper(vis=mscont, imagename=cont_final, cellsize='0.003arcsec', imsize=[3000], mask = LB1_mask, scales = LB_scales, threshold = '0.02mJy', robust=0.5, interactive=True)
 estimate_SNR(cont_final+'.image', disk_mask = LB1_mask, noise_mask = noise_annulus)
-#DoAr25_cont_final_r0.image
-#Beam 0.042 arcsec x 0.021 arcsec (74.31 deg)
-#Flux inside disk mask: 227.07 mJy
-#Peak intensity of source: 1.39 mJy/beam
-#rms: 1.73e-02 mJy/beam
-#Peak SNR: 80.27
+#DoAr25_cont_final_r0.5.image
+#Beam 0.048 arcsec x 0.027 arcsec (79.38 deg)
+#Flux inside disk mask: 227.45 mJy
+#Peak intensity of source: 1.84 mJy/beam
+#rms: 1.34e-02 mJy/beam
+#Peak SNR: 137.41
 
-
-exportfits(imagename=cont_final+'.image', fitsimage='HD142666.fits', overwrite=True) 
+exportfits(imagename=cont_final+'.image', fitsimage='DoAr25.fits', overwrite=True) 
 
 
