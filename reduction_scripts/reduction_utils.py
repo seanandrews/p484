@@ -278,20 +278,18 @@ def image_each_obs(ms_dict, prefix, scales, smallscalebias = 0.6, mask = '', thr
 def fit_gaussian(imagename, region, dooff = False):
     """
     Wrapper for imfit in CASA to fit a single Gaussian component to a selected region of the image
-
     Parameters
     ==========
     imagename: Name of CASA image (ending in .image) (string)
     region: CASA region format, e.g., 'circle[[200pix, 200pix], 3arcsec]' (string)
     dooff: boolean option to allow for fitting a zero-level offset 
-
     """
     imfitdict = imfit(imagename = imagename, region = region, dooff = dooff)
+    # Check if the source was resolved
+    was_resolved = not imfitdict['deconvolved']['component0']['ispoint']
+    # Get the coordinate system
     coordsystem = imfitdict['deconvolved']['component0']['shape']['direction']['refer']
-    PA = imfitdict['deconvolved']['component0']['shape']['positionangle']['value']
-    majoraxis = imfitdict['deconvolved']['component0']['shape']['majoraxis']['value']
-    minoraxis = imfitdict['deconvolved']['component0']['shape']['minoraxis']['value']
-    
+    # Get the parameters
     headerlist = imhead(imagename)
     phasecenter_ra, phasecenter_dec = headerlist['refval'][:2]
     peak_ra = imfitdict['deconvolved']['component0']['shape']['direction']['m0']['value']
@@ -300,7 +298,7 @@ def fit_gaussian(imagename, region, dooff = False):
     deltax, deltay = headerlist['incr'][:2]
     peak_x = xcen+np.unwrap(np.array([0, peak_ra-phasecenter_ra]))[1]/deltax*np.cos(phasecenter_dec)
     peak_y = ycen+(peak_dec-phasecenter_dec)/deltay
-
+    # Print
     if coordsystem=='J2000':
         print '#Peak of Gaussian component identified with imfit: J2000 %s' % au.rad2radec(imfitdict = imfitdict, hmsdms = True, delimiter = ' ')
     elif coordsystem=='ICRS':
@@ -309,9 +307,15 @@ def fit_gaussian(imagename, region, dooff = False):
         print '#Peak in J2000 coordinates: %s' % J2000coords
     else:
        print "#If the coordinates aren't in ICRS or J2000, then something weird is going on"
+    # If the object was resolved, print the inclination, PA, major and minor axis
+    if was_resolved:    
+        PA = imfitdict['deconvolved']['component0']['shape']['positionangle']['value']
+        majoraxis = imfitdict['deconvolved']['component0']['shape']['majoraxis']['value']
+        minoraxis = imfitdict['deconvolved']['component0']['shape']['minoraxis']['value']
+
+        print '#PA of Gaussian component: %.2f deg' % PA
+        print '#Inclination of Gaussian component: %.2f deg' % (np.arccos(minoraxis/majoraxis)*180/np.pi,)
     print '#Pixel coordinates of peak: x = %.3f y = %.3f' % (peak_x, peak_y)
-    print '#PA of Gaussian component: %.2f deg' % PA
-    print '#Inclination of Gaussian component: %.2f deg' % (np.arccos(minoraxis/majoraxis)*180/np.pi,)
 
 def split_all_obs(msfile, nametemplate):
     """
@@ -480,8 +484,8 @@ def deproject_vis(data, bins=np.array([0.]), incl=0., PA=0., offx=0., offy=0.,
             else:
                 bvis[ib] = 0+1j*0
                 berr[ib] = 0+1j*0
-            parser = np.where(berr.real != 0)
-            output = avbins[parser], bvis[parser], berr[parser]
+        parser = np.where(berr.real != 0)
+        output = avbins[parser], bvis[parser], berr[parser]
         return output       
         
     # - if not, returned the unbinned representation
@@ -543,14 +547,14 @@ def plot_deprojected(filelist, incl = 0, PA = 0, offx = 0, offy = 0, fluxscale =
     allmaxvis = np.max(maxvis)
     allminvis = np.min(minvis)
     if ((allminvis < 0) or (allminvis-0.1*allmaxvis < 0)):
-        ax[0].axis([0, 1000, allminvis-0.1*allmaxvis, 1.1*allmaxvis])
-        ax[1].axis([0, 1000, allminvis-0.1*allmaxvis, 1.1*allmaxvis])
+        ax[0].axis([0, np.max(uvbins), allminvis-0.1*allmaxvis, 1.1*allmaxvis])
+        ax[1].axis([0, np.max(uvbins), allminvis-0.1*allmaxvis, 1.1*allmaxvis])
     else: 
-        ax[0].axis([0, 1000, 0., 1.1*allmaxvis])
-        ax[1].axis([0, 1000, 0., 1.1*allmaxvis])
+        ax[0].axis([0, np.max(uvbins), 0., 1.1*allmaxvis])
+        ax[1].axis([0, np.max(uvbins), 0., 1.1*allmaxvis])
 
-    ax[0].plot([0, 1000], [0, 0], '--k')
-    ax[1].plot([0, 1000], [0, 0], '--k')
+    ax[0].plot([0, np.max(uvbins)], [0, 0], '--k')
+    ax[1].plot([0, np.max(uvbins)], [0, 0], '--k')
     plt.xlabel('deprojected baseline length [kilo$\lambda$]')
     ax[0].set_ylabel('average real [Jy]')
     ax[1].set_ylabel('average imag [Jy]')
@@ -625,7 +629,7 @@ def estimate_flux_scale(reference, comparison, incl = 0, PA = 0, uvbins = None, 
     ratio_avg =  np.sum(w*ratio)/np.sum(w)
     print "#The ratio of the fluxes of %s to %s is %.5f" % (comparison, reference, ratio_avg)
     print "#The scaling factor for gencal is %.3f for your comparison measurement" % (sqrt(ratio_avg))
-    print "#The error on the weighted mean ratio is %.3e, although it's likely that the weights in the measurement sets are too off by some constant factor" % (1/np.sqrt(np.sum(w)),)
+    print "#The error on the weighted mean ratio is %.3e, although it's likely that the weights in the measurement sets are off by some constant factor" % (1/np.sqrt(np.sum(w)),)
     plt.figure()
     plt.errorbar(1e-3*rho_intersection, ratio, yerr = err, fmt = '.', label = 'Binned ratios')
     plt.plot(1e-3*rho_intersection, np.ones_like(ratio)*ratio_avg, label = 'weighted average')
