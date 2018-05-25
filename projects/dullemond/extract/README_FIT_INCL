@@ -1,0 +1,40 @@
+This is a set of scripts to extract the radial profile from the
+observations. The main tricky part is the fitting of the inclination.  See the
+document fitincl/fitincl.pdf for the explanation.
+
+The other directories contain the scripts for the specific sources.
+Example usage:
+
+cd GW_Lup
+ipython --matplotlib
+%run extract_radial.py
+
+It asks you whether you want to recompute the (r,phi) image. For the first time
+you run this script, you must type 'y', because it has to extract the (r,phi)
+image from the fits file, which has (x,y) coordinates. This takes a while, but
+the result is written to file. So the next time you run the script, you can say
+'n' and you skip this step, saving you time.
+
+Next you get a widget where you can do an initial by-eye fit, which serves as
+the intial condition for the MCMC fit. To start the MCMC fit you simply click on
+the close window button, and the MCMC run begins.
+
+Once the MCMC run is finished, the most likely inclination and position angle are
+taken to deproject the image. Next the radial profile is determined. These are
+saved to ascii files:
+
+GW_Lup_radial_tbright.txt          --> Contains the full (non-linear) brightness temperature
+GW_Lup_radial_tbright_linear.txt   --> Contains the linear (RJ) brightness temperature
+
+You also see various plots popping up, which are also saved to PDF.
+
+Note that the center of the image is usually determined automatically by finding
+the brightest pixel. But in some cases that does not work well, in which case
+the center is determined by hand.
+
+Note also that I renamed the sources in the following way: AS209 --> AS_209,
+etc, and also the fits files. Sorry about that...
+
+For HD 143006 I cut out the blob.
+
+2018.05.25
