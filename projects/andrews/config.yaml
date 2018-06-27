@@ -1,0 +1,20 @@
+# List of grids, possible values include
+DartmouthPMS:
+  age_range: [0.1, 80]
+  mass_range: [0.1, 1.8]
+
+PISA:
+  age_range: [0.1, 80]
+  mass_range: [0.1, 1.8]
+
+Baraffe15:
+  age_range: [0.1, 80]
+  mass_range: [0.1, 1.4]
+
+Seiss:
+  age_range: [0.1, 80]
+  mass_range: [0.1, 1.8]
+
+MIST:
+  age_range: [0.05, 100]
+  mass_range: [0.1, 100]
