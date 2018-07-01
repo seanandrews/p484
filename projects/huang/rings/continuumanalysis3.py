@@ -78,6 +78,36 @@ class Continuum:
         B_nu = Ivals*1.e-26*1/beamsize*(206264.806**2)
         return h*self.freq/(k*np.log(2*h*self.freq**3/c**2*1/B_nu+1.))
 
+    def radialprofile(self,radialbins,yaxis = 'intensity', theta_exclusion = np.array([]), high_incl = False): 
+        """
+        Parameters
+        ==========
+        """
+        rbins = radialbins
+        rwidth = (rbins[1]-rbins[0])
+
+        radial_profile = np.zeros( len(rbins) )
+        rad_prof_scatter = np.zeros_like(radial_profile)
+
+        for i in range(len(rbins)):
+            annulus_thetas = self.theta[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+            #for azimuthal asymmetries
+            if len(theta_exclusion)==2:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(self.theta<=theta_exclusion[0]) & (self.theta>=theta_exclusion[1])]
+            #for high inclination disks 
+            elif high_incl:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(np.abs(self.theta)<=110)&(np.abs(self.theta)>=70)]
+            else:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+
+            radial_profile[i] = np.average(annulus_intensities)
+            rad_prof_scatter[i] = np.std(annulus_intensities)
+
+        if yaxis == 'temperature': #return brightness temperature (K)
+            return self.get_TB(radial_profile)
+        elif yaxis == 'intensity': #return intensity profile (mJy/beam)
+            return radial_profile, rad_prof_scatter
+
     def azunwrap(self,radialbins, tbins = -179.+2*np.arange(180), yaxis = 'intensity', theta_exclusion = np.array([])): 
         """
         Parameters
@@ -95,7 +125,7 @@ class Continuum:
         for i in range(len(rbins)):
             annulus_thetas = self.theta[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
             if len(theta_exclusion)==2:
-                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(self.theta<=theta_exclusion[0] & (self.theta>=theta_exclusion[1]))]
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(self.theta<=theta_exclusion[0]) & (self.theta>=theta_exclusion[1])]
             else:
                 annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
 
