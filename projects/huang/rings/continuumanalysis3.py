@@ -294,5 +294,5 @@ class Continuum:
         LBmap = plt.subplot(111, aspect = 'equal', adjustable = 'box')
         self.plot_cont_intensity(LBmap, size, cmap = cmap, vmin = 2.e-2, gamma = gamma)
         plt.scatter(xcoords-self.offsetx, ycoords-self.offsety, s = 1, color = 'white')
-        plt.show()
+        return LBmap
                     
