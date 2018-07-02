@@ -13,7 +13,7 @@ import copy
 import matplotlib as mpl
 import matplotlib.colors as col
 import yaml
-from skimage import transform
+from skimage import transform, measure
 from scipy import ndimage
 
 
@@ -78,7 +78,41 @@ class Continuum:
         B_nu = Ivals*1.e-26*1/beamsize*(206264.806**2)
         return h*self.freq/(k*np.log(2*h*self.freq**3/c**2*1/B_nu+1.))
 
-    def azunwrap(self,radialbins, tbins = -179.+2*np.arange(180), yaxis = 'intensity'): 
+    def radialprofile(self,radialbins,yaxis = 'intensity', theta_exclusion = np.array([]), high_incl = False): 
+        """
+        Parameters
+        ==========
+        """
+        rbins = radialbins
+        rwidth = (rbins[1]-rbins[0])
+
+        radial_profile = np.zeros( len(rbins) )
+        rad_prof_scatter = np.zeros_like(radial_profile)
+
+        for i in range(len(rbins)):
+            annulus_thetas = self.theta[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+            #for azimuthal asymmetries
+            if len(theta_exclusion)==2:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(self.theta<=theta_exclusion[0]) & (self.theta>=theta_exclusion[1])]
+            #for high inclination disks 
+            elif high_incl:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(np.abs(self.theta)<=110)&(np.abs(self.theta)>=70)]
+            else:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+
+            radial_profile[i] = np.average(annulus_intensities)
+            rad_prof_scatter[i] = np.std(annulus_intensities)
+
+        if yaxis == 'temperature': #return brightness temperature (K)
+            return self.get_TB(radial_profile)
+        elif yaxis == 'intensity': #return intensity profile (mJy/beam)
+            return radial_profile, rad_prof_scatter
+
+    def azunwrap(self,radialbins, tbins = -179.+2*np.arange(180), yaxis = 'intensity', theta_exclusion = np.array([])): 
+        """
+        Parameters
+        ==========
+        """
         rbins = radialbins
         rwidth = (rbins[1]-rbins[0])
         twidth = np.abs((tbins[1]-tbins[0]))
@@ -89,10 +123,16 @@ class Continuum:
         rad_prof_scatter = np.zeros_like(radial_profile)
 
         for i in range(len(rbins)):
-            annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
             annulus_thetas = self.theta[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+            if len(theta_exclusion)==2:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(self.theta<=theta_exclusion[0]) & (self.theta>=theta_exclusion[1])]
+            else:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+
             radial_profile[i] = np.average(annulus_intensities)
             rad_prof_scatter[i] = np.std(annulus_intensities)
+            if len(theta_exclusion)==2:
+                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
             for j in range(len(tbins)):
                 wedge = annulus_intensities[(annulus_thetas>=(tbins[j]-0.5*twidth)) & (annulus_thetas<(tbins[j]+0.5*twidth))]
                 if len(wedge) > 0:
@@ -123,7 +163,7 @@ class Continuum:
         else:
             return rtmap
 
-    def plot_cont_intensity(self, ax, size, cmap ='magma', vmin =None, vmax = None, alpha = False, gamma = 1.0, contours=False, labels_off = False, show_beam = True):
+    def plot_cont_intensity(self, ax, size, cmap ='magma', vmin =None, vmax = None, alpha = False, gamma = 1.0, contours=False, labels_off = False, show_beam = True, logscale = False):
         """Plots continuum image"""        
         
         imshifted = shift(self.image, np.array([-self.offsety/self.delt_y+0.5,-self.offsetx/self.delt_x+0.5]))
@@ -149,8 +189,10 @@ class Continuum:
         if not vmax:
             vmax = np.max(zoomimgdata)
 
-        #finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = col.PowerNorm(gamma = gamma), vmin = vmin, vmax=vmax, interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
-        finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = col.LogNorm(vmin = vmin, vmax=vmax),  interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
+        if logscale:
+            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = col.LogNorm(vmin = vmin, vmax=vmax),  interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
+        else:
+            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = col.PowerNorm(gamma = gamma), vmin = vmin, vmax=vmax, interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
         if contours: 
             cont = ax.contour(zoomimgdata,levels,linestyles='solid',colors='white', extent=[-size/2., size/2., -size/2., size/2.], linewidths = .5)
         ax.xaxis.tick_top()
@@ -186,7 +228,7 @@ class Continuum:
         rescaled = transform.rescale(rotated, (1/np.cos(self.incl*np.pi/180.),1), preserve_range = False)
         return rescaled
 
-    def extract_ring(self,rmin,rmax,tbins = -179.5+np.arange(360), twidth = 1, extract_type = 'max'): 
+    def extract_ring_old(self,rmin,rmax,tbins = -179.5+np.arange(360), twidth = 1, extract_type = 'max', return_rvals = False): 
         """
         Extracts pixels corresponding to local maxima 
 
@@ -205,6 +247,7 @@ class Continuum:
         
         xcoord = []
         ycoord = []
+        rvals = []
         assert twidth<=np.min(np.abs(np.diff(tbins)))
         annulus_intensities = self.image[(self.r>rmin) & (self.r<rmax)]
         annulus_thetas = self.theta[(self.r>rmin) & (self.r<rmax)]
@@ -217,7 +260,69 @@ class Continuum:
                     index = np.where(wedge==np.min(wedge))[0][0]
                 xcoord.append(self.xx[(self.r>rmin) & (self.r<rmax)][(annulus_thetas>=(tbins[j]-0.5*twidth)) & (annulus_thetas<(tbins[j]+0.5*twidth))][index])
                 ycoord.append(self.yy[(self.r>rmin) & (self.r<rmax)][(annulus_thetas>=(tbins[j]-0.5*twidth)) & (annulus_thetas<(tbins[j]+0.5*twidth))][index])
+                if return_rvals:
+                     rvals.append(self.r[(self.r>rmin) & (self.r<rmax)][(annulus_thetas>=(tbins[j]-0.5*twidth)) & (annulus_thetas<(tbins[j]+0.5*twidth))][index])
+        if return_rvals:
+            return np.array(xcoord)+self.offsetx, np.array(ycoord)+self.offsety, np.array(rvals)
+             
+
+        else:
+            return np.array(xcoord)+self.offsetx, np.array(ycoord)+self.offsety
+
+    def extract_ring(self,rmin,rmax,tbins = -179.5+np.arange(360), extract_type = 'max'): 
+        """
+        Extracts pixels corresponding to local maxima 
+
+        Parameters
+        ==========
+        rmin: Inner radius of annulus over which local maxima/minima are being identified
+        rmax: Outer radius of annulus over which local maxima/minima are being identified
+        tbins: Array denoting the centers of the azimuthal bins in which the local max/min is being identified(in degrees)
+        twidth: Width (in degrees) of each azimuthal search bin (should be less than or equal to the separation between the bin centers)
+        extract_type: 'max' yields local maxima, 'min' yields local minima
+
+        Returns
+        ======
+        xcoord, ycoord: Arrays of coordinates (in arcsec) of the pixels correponding to the local maxima/minima
+        """
+        xcoord = []
+        ycoord = []
+
+
+        xdiff = self.x_prime[0,0]-self.x_prime[1,0]
+        ydiff = self.y_prime[0,0]-self.y_prime[0,1]
+        tbins=tbins*np.pi/180.
+        for j in range(len(tbins)):
+            xpstart = rmin*np.cos(tbins[j])/self.src_distance*np.cos(self.incl*np.pi/180.)
+            ypstart = rmin*np.sin(tbins[j])/self.src_distance
+
+            PAr = self.PA*np.pi/180.
+            xstart = np.int((xpstart*np.cos(-PAr)-ypstart*np.sin(-PAr)+self.offsetx)/self.delt_x+self.imsize/2)
+            ystart = np.int((xpstart*np.sin(-PAr)+ypstart*np.cos(-PAr)+self.offsety)/self.delt_y+self.imsize/2)
+
+        
+            xpend = rmax*np.cos(tbins[j])/self.src_distance*np.cos(self.incl*np.pi/180.)
+            ypend = rmax*np.sin(tbins[j])/self.src_distance
+            xend = np.int((xpend*np.cos(-PAr)-ypend*np.sin(-PAr)+self.offsetx)/self.delt_x+self.imsize/2)
+            yend = np.int((xpend*np.sin(-PAr)+ypend*np.cos(-PAr)+self.offsety)/self.delt_y+self.imsize/2)
+            profile = measure.profile_line(self.image, (ystart,xstart), (yend, xend), order= 0)
+            if extract_type=='max':
+                index = np.where(profile==np.max(profile))[0][0]
+            elif extract_type=='min':
+                index = np.where(profile==np.min(profile))[0][0]
+            if index!=0 and index!=len(profile)-1:
+                loc = np.where(self.image[(self.r>rmin) & (self.r<rmax)]==profile[index])
+
+
+                xcoord.append(self.xx[(self.r>rmin) & (self.r<rmax)][loc[0][0]])
+                ycoord.append(self.yy[(self.r>rmin) & (self.r<rmax)][loc[0][0]])
+            
         return np.array(xcoord)+self.offsetx, np.array(ycoord)+self.offsety
-                    
-                    
+
+    def plot_extracted_ring(self,cont,xcoords, ycoords, gamma, size, cmap = 'magma'):
+        f = plt.figure(figsize=(7,7))
+        LBmap = plt.subplot(111, aspect = 'equal', adjustable = 'box')
+        self.plot_cont_intensity(LBmap, size, cmap = cmap, vmin = 2.e-2, gamma = gamma)
+        plt.scatter(xcoords-self.offsetx, ycoords-self.offsety, s = 1, color = 'white')
+        return LBmap
                     
