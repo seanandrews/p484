@@ -93,7 +93,7 @@ class Continuum:
             annulus_thetas = self.theta[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
             #for azimuthal asymmetries
             if len(theta_exclusion)==2:
-                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(self.theta<=theta_exclusion[0]) & (self.theta>=theta_exclusion[1])]
+                  annulus_intensities = self.image[(self.r>=(radialbins[i]-0.5*rwidth)) & (self.r<(radialbins[i]+0.5*rwidth))&((self.theta<=theta_exclusion[0]) | (self.theta>=theta_exclusion[1]))]
             #for high inclination disks 
             elif high_incl:
                 annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(np.abs(self.theta)<=110)&(np.abs(self.theta)>=70)]
@@ -113,7 +113,7 @@ class Continuum:
         Parameters
         ==========
         """
-        rbins = radialbins
+        rbins = np.copy(radialbins)
         rwidth = (rbins[1]-rbins[0])
         twidth = np.abs((tbins[1]-tbins[0]))
 
@@ -125,7 +125,7 @@ class Continuum:
         for i in range(len(rbins)):
             annulus_thetas = self.theta[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
             if len(theta_exclusion)==2:
-                annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(self.theta<=theta_exclusion[0]) & (self.theta>=theta_exclusion[1])]
+                annulus_intensities = self.image[(self.r>=(radialbins[i]-0.5*rwidth)) & (self.r<(radialbins[i]+0.5*rwidth))&((self.theta<=theta_exclusion[0]) | (self.theta>=theta_exclusion[1]))]
             else:
                 annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
 
@@ -163,7 +163,7 @@ class Continuum:
         else:
             return rtmap
 
-    def plot_cont_intensity(self, ax, size, cmap ='magma', vmin =None, vmax = None, alpha = False, gamma = 1.0, contours=False, labels_off = False, show_beam = True, logscale = False):
+    def plot_cont_intensity(self, ax, size, cmap ='magma', vmin =None, vmax = None, alpha = False, gamma = 1.0, contours=False, labels_off = False, show_beam = True, norm = None):
         """Plots continuum image"""        
         
         imshifted = shift(self.image, np.array([-self.offsety/self.delt_y+0.5,-self.offsetx/self.delt_x+0.5]))
@@ -189,10 +189,10 @@ class Continuum:
         if not vmax:
             vmax = np.max(zoomimgdata)
 
-        if logscale:
-            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = col.LogNorm(vmin = vmin, vmax=vmax),  interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
+        if norm:
+            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = norm,  interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
         else:
-            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = col.PowerNorm(gamma = gamma), vmin = vmin, vmax=vmax, interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
+            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,vmin = vmin, vmax=vmax, interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
         if contours: 
             cont = ax.contour(zoomimgdata,levels,linestyles='solid',colors='white', extent=[-size/2., size/2., -size/2., size/2.], linewidths = .5)
         ax.xaxis.tick_top()
@@ -322,7 +322,13 @@ class Continuum:
     def plot_extracted_ring(self,cont,xcoords, ycoords, gamma, size, cmap = 'magma'):
         f = plt.figure(figsize=(7,7))
         LBmap = plt.subplot(111, aspect = 'equal', adjustable = 'box')
-        self.plot_cont_intensity(LBmap, size, cmap = cmap, vmin = 2.e-2, gamma = gamma)
+        self.plot_cont_intensity(LBmap, size, cmap = cmap, vmin = 2.e-2, norm = col.PowerNorm(gamma = gamma))
         plt.scatter(xcoords-self.offsetx, ycoords-self.offsety, s = 1, color = 'white')
         return LBmap
+
+    def plotbeamprofile(self, x,y, height, ax):
+        bmin = self.bmin*self.src_distance
+        sigma = bmin/(2*np.sqrt(2*np.log(2.)))
+        xvals = np.linspace(x-2.5*bmin, x+2.5*bmin)
+        ax.plot(xvals, y+height*np.exp(-(xvals-x)**2/(2*sigma**2)), color = 'gray')
                     
