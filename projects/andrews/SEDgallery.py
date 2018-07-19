@@ -7,6 +7,8 @@ from astropy.io import ascii
 from starspectrum import starspectrum
 from deredden import deredden
 
+show_median = True
+
 names = ['HTLup', 'GWLup', 'IMLup', 'HD142666', 'RULup',
          'HD143006', 'Sz129', 'MYLup', 'Sz114', 'AS205',
          'SR4', 'Elias20', 'DoAr25', 'Elias24', 'Elias27',
@@ -78,6 +80,19 @@ for i in range(len(names)):
     sLnu = 1e-23*4.*np.pi*(dpc[i]*3.0857e18)**2*snu*sFnu/3.826e33
     sSED = np.log10(sLnu)
     ax.plot(swl, sSED, 'r', linewidth=0.8, alpha=0.5)
+
+    # if you want to show median SED, do so
+    if (show_median == True):
+        ribas = ascii.read('SEDs/ribas_median.SED.txt')
+        rwl, rlo, rmed, rhi = ribas['col1'], ribas['col2'], ribas['col3'], \
+                              ribas['col4']
+        rnu = 2.9979e14 / rwl
+        FtargJ = Fnu[wl == 1.235] * deredden([1.235], Av[i], thresh=1.0)
+        Flo, Fhi = rlo * FtargJ[0], rhi * FtargJ[0]
+        Llo = 1e-23*4.*np.pi*(dpc[i] * 3.0857e18)**2 * rnu * Flo / 3.826e33
+        Lhi = 1e-23*4.*np.pi*(dpc[i] * 3.0857e18)**2 * rnu * Fhi / 3.826e33
+        SEDlo, SEDhi = np.log10(Llo), np.log10(Lhi)
+        ax.fill_between(rwl, SEDlo, SEDhi, facecolor='green', interpolate=True)
 
     # if an IRS or ISO spectrum is available, plot it
     if (os.path.isfile('SEDs/'+names[i]+'.IRS.txt') == True):

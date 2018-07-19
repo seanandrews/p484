@@ -25,8 +25,8 @@ Alims = [5., 7.5]
 
 # HRD
 ntest = 15000
-data_logT = np.random.normal(3.97, 0.03, ntest)
-data_logL = np.random.normal(1.23, 0.30, ntest)
+data_logT = np.random.normal(3.82, 0.03, ntest)
+data_logL = np.random.normal(0.86, 0.20, ntest)
 
 
 # HRD
@@ -158,12 +158,12 @@ axcor.set_ylim(Mlims)
 tf = time.time()
 print(tf-t0)
 
-os.system('rm -rf hd163296_mt_test.npz')
-np.savez('hd163296_mt_test.npz', logT=data_logT, logL=data_logL, 
+os.system('rm -rf sao206462_mt_test.npz')
+np.savez('sao206462_mt_test.npz', logT=data_logT, logL=data_logL, 
          logMstar=massstar, logAGE=agestar)
 
 # plot appearances
 fig.subplots_adjust(left=lbound, right=rbound, bottom=bbound, top=tbound)
 fig.subplots_adjust(hspace=dhspace, wspace=dwspace)
-fig.savefig('hd163296_hrd_inferences.pdf',dpi=1000)
+fig.savefig('sao206462_hrd_inferences.pdf',dpi=1000)
 fig.clf()
