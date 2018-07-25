@@ -6,24 +6,25 @@ import matplotlib.gridspec as gridspec
 from astropy.io import ascii
 from starspectrum import starspectrum
 from deredden import deredden
+plt.rc('font', size=9)
 
-show_median = True
+show_median = False
 
 names = ['HTLup', 'GWLup', 'IMLup', 'HD142666', 'RULup',
          'HD143006', 'Sz129', 'MYLup', 'Sz114', 'AS205',
          'SR4', 'Elias20', 'DoAr25', 'Elias24', 'Elias27',
          'DoAr33', 'WSB52', 'WaOph6', 'AS209', 'HD163296']
 
-labels = [r'${\rm HT \;\: Lup}$', r'${\rm GW \;\: Lup}$', 
-          r'${\rm IM \;\: Lup}$', r'${\rm HD \;\: 142666}$', 
-          r'${\rm RU \;\: Lup}$', r'${\rm HD \;\: 143006}$', 
-          r'${\rm Sz \;\: 129}$', r'${\rm MY \;\: Lup}$', 
-          r'${\rm V908 \;\: Sco}$', r'${\rm AS \;\: 205}$',
-          r'${\rm SR \;\: 4}$', r'${\rm Elias \;\: 20}$', 
-          r'${\rm DoAr \;\: 25}$', r'${\rm Elias \;\: 24}$', 
-          r'${\rm Elias \;\: 27}$', r'${\rm DoAr \;\: 33}$', 
-          r'${\rm WSB \;\: 52}$', r'${\rm WaOph \;\: 6}$', 
-          r'${\rm AS \;\: 209}$', r'${\rm HD \;\: 163296}$']
+labels = ['HT Lup', 'GW Lup', 
+          'IM Lup', 'HD 142666', 
+          'RU Lup', 'HD 143006', 
+          'Sz 129', 'MY Lup', 
+          'Sz 114', 'AS 205',
+          'SR 4', 'Elias 20', 
+          'DoAr 25', 'Elias 24', 
+          'Elias 27', 'DoAr 33', 
+          'WSB 52', 'WaOph 6', 
+          'AS 209', 'HD 163296']
 
 dpc = np.array([154., 155., 158., 148., 159.,
                 165., 161., 156., 162., 128., 
@@ -48,7 +49,7 @@ Av = np.array([ 1.0,  0.5,  0.9,  0.5,  0.0,
 xlims = [0.2, 5000.]
 ylims = [-6.0, 1.8]
 
-fig = plt.figure(figsize=(7.5, 4.5))
+fig = plt.figure(figsize=(7.5, 4.7))
 gs = gridspec.GridSpec(4, 5)
 
 for i in range(len(names)):
@@ -118,20 +119,20 @@ for i in range(len(names)):
 
     # plot formatting
     ax.tick_params('both', length=2, which='major')
-    ax.tick_params('both', which='major', labelsize=6)
     ax.annotate(labels[i], xy=(0.92, 0.83), xycoords='axes fraction',
-                size=7, horizontalalignment='right', color='k')
+                horizontalalignment='right', color='k')
     if (i == 15):
-        ax.set_xlabel(r'$\lambda$'+' / '+r'$\mu{\rm m}$', fontsize=7)
+        ax.set_xlabel('$\lambda$ / $\mu$m')
         ax.xaxis.set_label_coords(0.5, -0.18)
-        ax.set_xticklabels([' ', ' ', '1', '10', '100', '1000'])
-        ax.set_ylabel(r'${\rm log}$'+' '+r'$L_\nu$'+' / '+r'$L_\odot$', 
-                      fontsize=7)
+        ax.set_xticks([1, 10, 100, 1000])
+        ax.set_xticklabels(['1', '10', '100', '1000'])
+        ax.set_ylabel('log $L_\\nu$ / $L_\odot$') 
+                      
     else:
         ax.set_xticklabels([])
         ax.set_yticklabels([])
 
 fig.subplots_adjust(wspace=0.0, hspace=0.0)
-fig.subplots_adjust(left=0.05, right=0.95, bottom=0.06, top=0.99)
-fig.savefig('SEDgallery.pdf')
+fig.subplots_adjust(left=0.055, right=0.945, bottom=0.07, top=0.99)
+fig.savefig('SEDgallery.pdf', dpi=1000)
 fig.clf()
