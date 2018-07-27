@@ -85,7 +85,7 @@
 } \date{\today}
 
 \abstract{A large fraction of the protoplanetary disks observed with the ALMA
-  Large Programme {\bf XXXX} display multiple well-defined and nearly perfectly
+  Large Programme DSHARP display multiple well-defined and nearly perfectly
   circular rings in the continuum, in many cases with substantial peak-to-valley
   contrast. Several of these rings are very narrow in radial extent.
   In this paper we analyze these results using the assumption that
@@ -152,7 +152,7 @@ such multi-ringed disks have been detected \citep{2016ApJ...820L..40A,
 multi-ringed disks as evidence for dust trapping, and as an explanation for
 the retention of dust in the outer regions of protoplanetary disks.
 
-The data from the ALMA Large Programme 2016.1.00484.L offers an exciting new
+The data from the ALMA Large Programme DSHARP ({\bf REFERENCES}) offers an exciting new
 opportunity to put this concept to the test, and to put constraints on the
 physics of dust trapping in axisymmetric pressure maxima. This is an opportunity
 which we explore in this paper.
@@ -175,7 +175,7 @@ our ALMA Large Programme that we compare to our models.
 \section{The high-contrast rings of AS 209, Elias 24, HD 163296, GW Lup and HD 143006}
 \label{sec-data}
 %
-In this paper we focus on those sources of the ALMA Large Programme
+In this paper we focus on those sources of the DSHARP Programme
 that show high-contrast and radially thin rings that are separated by deep
 valleys, and that are sufficiently face-on to not have to worry about 3-D
 line-of-sight issues. These are AS 209, Elias 24, HD 163296, GW Lup and
@@ -188,16 +188,19 @@ HD 143006. Their stellar parameters are given in Table \ref{tab-stellar-params}.
 \hline
 Source     & $d\,\mathrm{[pc]}$ & $M_{*}/M_{\odot}$ & $L_{*}/L_{\odot}$ \\
 \hline
-AS 209     & 121              & 0.912        &  0.631 \\
-Elias 24   & 136              & 0.776        &  6.03  \\
-HD 163296  & 101              & 2.14         &  25.7  \\
-GW Lup     & 155              & 0.457        &  0.331 \\
-HD 143006  & 166              & 0.813        &  0.871 \\
+% AS 209     & 121              & 0.912        &  0.631 \\ % Data from 2018.05.13 Table
+AS 209     & 121              & 0.832        &  1.413 \\ % 2018.07.02
+Elias 24   & 136              & 0.776        &  6.03  \\ % 2018.07.02
+% HD 163296  & 101              & 2.14         &  25.7  \\ % Data from 2018.05.13 Table
+HD 163296  & 101              & 2.04         &  17.0  \\ % 2018.07.02
+GW Lup     & 155              & 0.457        &  0.331 \\ % 2018.07.02
+% HD 143006  & 166              & 0.813        &  0.871 \\ % Data estimated by Kees May/June 2018
+HD 143006  & 165              & 1.78        &  3.80 \\  % 2018.07.02 ** Big change **
 \hline
 \hline
 \end{tabular}
 \end{center}
-\caption{\label{tab-stellar-params}The stellar parameters for the
+\caption{\label{tab-stellar-params}The stellar parameters assumed for the
   stars studied in this paper. Distance is in parsec and mass and luminosity
   are in units of the solar values.}
 \end{table}
@@ -218,20 +221,20 @@ sources we refer to {\bf [LIST HERE THE PAPERS]}.
 \end{figure*}
 
 The high-contrast rings of these sources provide ``clean laboratories''
-for testing the theory of dust trapping, both in a ring-by-ring manner, as well
-as by comparing to global dust drift models. Fig.\ \ref{fig-obs-profiles}
+for testing the theory of dust trapping in a ring-by-ring manner.
+Fig.\ \ref{fig-obs-profiles}
 shows the radial profile (deprojected for
 inclination) of the thermal emission of the dust of the five disks. The
 procedure used to extract these radial profiles from the continuum maps
 is described in {\bf [Paper Jane Huang, but note that for HD 163296 and
 HD 143006 we removed the blob]}. The
 brightness is expressed as linear brightness temperature
-$T_{\mathrm{bright,linear}}=(c^2/2k_B)I_\nu/\nu^2$, where $I_\nu$ is the
+$T_{\mathrm{br,lin}}=(c^2/2k_B)I_\nu/\nu^2$, where $I_\nu$ is the
 intensity, $c$ the light speed, $k_B$ the Boltzmann constant, and $\nu$ the
 frequency\footnote{It should be noted that the full (non-linear) brightness temperature,
-defined such that $B_\nu(T_{\mathrm{bright,full}})=I_\nu$, with $B_\nu(T)$ the
+defined such that $B_\nu(T_{\mathrm{br,full}})=I_\nu$, with $B_\nu(T)$ the
 Planck function, can have very different values, in particular at low
-brightness. As a result $T_{\mathrm{bright,full}}(r)$ tends to vastly
+brightness. As a result $T_{\mathrm{br,full}}(r)$ tends to vastly
 underestimate the contrast between the rings and the inter-ring
 regions. Therefore, in this paper we plot the brightness using the linear
 brightness temperature, which is proportional to the intensity in Jy/beam.}.
@@ -247,15 +250,24 @@ brightness temperature, which is proportional to the intensity in Jy/beam.}.
   data, see {\bf Guzm\'an et al.~(2018)} for AS 209, {\bf XXXX}}
 \end{figure*}
 
-The eight rings which we study in this paper (see annotations in
-Fig.~\ref{fig-obs-images}) are fitted with a Gaussian profile, shown as inverse
-parabolas in Fig.\ \ref{fig-obs-profiles}. The fitting procedure was done in the
-image plane, in order to make it possible to fit to a limited radial range,
-i.e.\ selecting a single ring. Details of this fitting procedure, and tests
-using the ALMA simulator, are described in Appendix {\bf XXXXX}. In
-Fig.~\ref{fig-obs-gaussfits} these gaussian fits are shown in close-up. The
-parameters of the best-fitting Gaussians are listed in Table
-\ref{tab-gauss-params}.
+As is shown in Appendix \ref{sec-steady-state-analytic-trap-model}, for a
+Gaussian pressure bump the solution to the radial dust mixing and drift problem
+is, to first approximation, also a Gaussian, with a width smaller than, or equal
+to, that of the gas pressure bump. Our analysis of the eight rings of this paper
+therefore naturally starts with the fitting of the observed radial intensity
+profiles with a Gaussian function. For some {\bf [CHECK]} of the rings of this
+paper such Gaussian fits were done in the context of fitting the entire radial
+intensity profile in the uv-plane to the ALMA data ({\bf Guzman et al.XXXX;
+  More??}). Our fits may deviate slightly from those {\bf [CHECK]}, because here
+we put emphasis on the shape of the peak of the rings, and deemphasize the
+wings.
+
+The fitting procedure is described in Appendix \ref{sec-gauss-fitting}.  The
+fitting was done in the image plane, in order to make it possible to fit to a
+limited radial range, i.e.\ selecting a single ring. The Gaussian fits are shown
+as inverse parabolas in Fig.\ \ref{fig-obs-profiles}. In
+Fig.~\ref{fig-obs-gaussfits} these Gaussian fits are shown in close-up. The
+parameters of the best fits are listed in Table \ref{tab-gauss-params}.
 
 \begin{figure*}
 \centerline{\includegraphics[width=0.85\textwidth]{gaussfits_allrings.pdf}}
@@ -281,51 +293,61 @@ parameters of the best-fitting Gaussians are listed in Table
 
 \begin{table*}
 \begin{center}
-\begin{tabular}{|cc|cc|ccccc|ccccc|}
+\begin{tabular}{|cc|cc|ccccc|cccccc|}
 \hline
 \hline
-%Source & Ring & $r_i\, [\mathrm{au}]$ & $r_o\, [\mathrm{au}]$ & $A\, [\mathrm{K}]$ & $r\, [\mathrm{au}]$ & $\mathrm{fwhm}\, [\mathrm{mas}]$ & $\sigma\, [\mathrm{au}]$ & $w_d\, [\mathrm{au}]$ & $T_{\mathrm{model}}\,\mathrm{[K]}$ & $w_d/h_p$ & $M_{\mathrm{d,ri}} [M_{\oplus}]$ & $M_{\mathrm{d,iv}} [M_{\oplus}]$\\
-Source & Ring & $r_{\mathrm{in}}$ & $r_{\mathrm{out}}$ & $A$ & $r_0$ & $\mathrm{fwhm}$ & $\sigma$ & $w_d$ & $T_{\mathrm{model}}$ & $T_{\mathrm{model,br,lin}}$ & $w_d/h_p$ & $M_{\mathrm{d,ri}}$ & $M_{\mathrm{d,iv}}$\\
-            & & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $[\mathrm{K}]$ & $[\mathrm{au}]$ & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $\mathrm{[K]}$ & $\mathrm{[K]}$ &  & $[M_{\oplus}]$ & $[M_{\oplus}]$\\
+%Source & Ring & $r_i\, [\mathrm{au}]$ & $r_o\, [\mathrm{au}]$ & $A\, [\mathrm{K}]$ & $r\, [\mathrm{au}]$ & $\mathrm{fwhm}\, [\mathrm{mas}]$ & $\sigma\, [\mathrm{au}]$ & $w_d\, [\mathrm{au}]$ & $T_{\mathrm{d}}\,\mathrm{[K]}$ & $w_d/h_p$ & $M_{\mathrm{d,ri}} [M_{\oplus}]$ & $M_{\mathrm{d,iv}} [M_{\oplus}]$\\
+%Source & Ring & $r_{\mathrm{in}}$ & $r_{\mathrm{out}}$ & $A$ & $r_0$ & $\mathrm{fwhm}$ & $\sigma$ & $w_d$ & $T_{\mathrm{d}}$ & $T_{\mathrm{d,br,lin}}$ & $w_d/h_p$ & $M_{\mathrm{d,ri}}$ & $M_{\mathrm{d,iv}}$\\
+%            & & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $[\mathrm{K}]$ & $[\mathrm{au}]$ & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $\mathrm{[K]}$ & $\mathrm{[K]}$ &  & $[M_{\oplus}]$ & $[M_{\oplus}]$\\
+Source & Ring & $r_{\mathrm{in}}$ & $r_{\mathrm{out}}$ & $A$ & $r_0$ & $\mathrm{fwhm}$ & $\sigma$ & $w_d$ & $T_{\mathrm{d}}$ & $T_{\mathrm{d,br,lin}}$ & $w_d/h_p$ & $\tau$ & $M_{\mathrm{d,ri}}$ & $M_{\mathrm{d,iv}}$\\
+            & & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $[\mathrm{K}]$ & $[\mathrm{au}]$ & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $\mathrm{[K]}$ & $\mathrm{[K]}$ &  &  & $[M_{\oplus}]$ & $[M_{\oplus}]$\\
 \hline
 % NOTE: This table is made automatically with python_make_tables/make_latex_table.py
-AS 209     & 1 &  69 &  79 &   3.64 &  74.13 &  75.42 &   3.88 &   3.43 &  12.9 &   8.2 &   0.7 &  44.4 &   2.41\\
-AS 209     & 2 & 115 & 125 &   2.95 & 120.31 &  90.28 &   4.64 &   4.28 &  10.1 &   5.6 &   0.5 & 101.9 &   5.54\\
-Elias 24   & 1 &  72 &  82 &   5.22 &  76.85 &  87.99 &   5.08 &   4.66 &  22.3 &  17.2 &   0.6 &  41.1 &   2.23\\
-HD 163296  & 1 &  60 &  76 &   8.48 &  67.41 & 171.73 &   7.36 &   7.21 &  34.2 &  29.0 &   1.6 &  50.4 &   2.74\\
-HD 163296  & 2 &  94 & 104 &   4.92 &  99.86 & 133.56 &   5.73 &   5.53 &  28.1 &  22.9 &   0.8 &  42.5 &   2.31\\
-GW Lup     & 1 &  79 &  89 &   1.48 &  85.13 &  72.08 &   4.74 &   4.15 &  10.3 &   5.7 &   0.6 &  36.3 &   1.97\\
-HD 143006  & 1 &  35 &  45 &   3.21 &  41.05 &  71.76 &   5.06 &   4.42 &  18.8 &  13.8 &   1.7 &  16.7 &   0.91\\
-HD 143006  & 2 &  59 &  72 &   2.48 &  64.83 & 111.83 &   7.88 &   7.49 &  15.0 &  10.1 &   1.7 &  43.5 &   2.36\\
+% Note: New table made with new stellar parameters 2018.07.02
+AS 209     & 1 &  69 &  79 &   3.64 &  74.13 &  75.42 &   3.88 &   3.43 &  15.8 &  10.9 &   0.6 &   0.41 &  33.3 &   1.81\\
+AS 209     & 2 & 115 & 125 &   2.95 & 120.31 &  90.28 &   4.64 &   4.28 &  12.4 &   7.7 &   0.4 &   0.48 &  74.3 &   4.04\\
+Elias 24   & 1 &  72 &  82 &   5.22 &  76.85 &  87.99 &   5.08 &   4.66 &  22.3 &  17.2 &   0.6 &   0.36 &  41.1 &   2.23\\
+HD 163296  & 1 &  60 &  76 &   8.48 &  67.41 & 171.73 &   7.36 &   7.21 &  30.8 &  25.6 &   1.7 &   0.40 &  56.9 &   3.09\\
+HD 163296  & 2 &  94 & 104 &   4.92 &  99.86 & 133.56 &   5.73 &   5.53 &  25.3 &  20.2 &   0.8 &   0.28 &  48.3 &   2.62\\
+GW Lup     & 1 &  79 &  89 &   1.48 &  85.13 &  72.08 &   4.74 &   4.15 &  10.3 &   5.7 &   0.6 &   0.30 &  36.3 &   1.97\\
+HD 143006  & 1 &  35 &  45 &   3.21 &  41.05 &  72.20 &   5.06 &   4.42 &  27.2 &  22.0 &   2.1 &   0.16 &  10.5 &   0.57\\
+HD 143006  & 2 &  59 &  72 &   2.48 &  64.83 & 112.51 &   7.88 &   7.49 &  21.6 &  16.6 &   2.0 &   0.16 &  26.5 &   1.44\\
 \hline
 \hline
 \end{tabular}
 \end{center}
 \caption{\label{tab-gauss-params}The model parameters for the Gaussian ring fits
-  in Figs.~\ref{fig-obs-profiles} and \ref{fig-obs-gaussfits}. The values $r_{\mathrm{in}}$
-  and $r_{\mathrm{out}}$ are the inner and outer boundary of the fitting domain. $A$ is the
-  peak brightness temperature of the ring, $r_0$ is its radius in $\mathrm{au}$,
+  in Figs.~\ref{fig-obs-profiles} and \ref{fig-obs-gaussfits}. The values
+  $r_{\mathrm{in}}$ and $r_{\mathrm{out}}$ are the inner and outer boundary of
+  the fitting domain. $A$ is the peak linear brightness temperature of the
+  best-fit Gaussian ring model, $r_0$ is its radius in $\mathrm{au}$,
   $\mathrm{fwhm}$ is the width expressed as full-width-at-half-maximum in units
   of milliarcsecond, $\sigma$ is its width expressed as standard deviation in
   units of $\mathrm{au}$ and $w_d$ is the width of the underlying (deconvolved)
   dust emission profile, also expressed as standard deviation in units of
-  $\mathrm{au}$. The last five columns are derived from a simple disk model
-  assumption: $T_{\mathrm{model}}$ is the midplane temperature computed from
+  $\mathrm{au}$. The last six columns are derived from a simple disk model
+  assumption: $T_{\mathrm{d}}$ is the midplane temperature of the disk (we
+  assume gas and dust temperature to be equal) computed from
   Eq.~(\ref{eq-disk-temperature-model}) assuming a flaring angle of
   $\varphi=0.02$. From that one can derive the corresponding linear brightness
-  temerature $T_{\mathrm{model,br,lin}}=B_\nu(T_{\mathrm{model}})c^2/2\nu^2$ with
-  $\nu=c/0.13\,\mathrm{cm}$ is the frequency belonging to the wavelength of
-  0.13 $\mathrm{cm}$ of ALMA band 6.
-  The third-to-last column expresses the deconvolved dust ring
-  width in units of the disk pressure scale height $h_p$ computed from
-  $T_{\mathrm{model}}$. The last two columns are the computed dust mass in the
-  ring in units of Earth masses, assuming the small grain absorption opacity
+  temerature $T_{\mathrm{d,br,lin}}=B_\nu(T_{\mathrm{d}})c^2/2\nu^2$ where
+  $\nu=c/0.13\,\mathrm{cm}$ is the frequency belonging to the wavelength of 0.13
+  $\mathrm{cm}$ of ALMA band 6.  The fourth-to-last column expresses the
+  deconvolved dust ring width in units of the disk pressure scale height $h_p$
+  computed from $T_{\mathrm{d}}$. The $\tau$ column gives the estimated optical
+  depth at the peak of the ring, calculated from
+  $\tau=-\ln(1-A/T_{\mathrm{d,br,lin}})$.  The last two columns are the computed
+  dust mass in the ring in units of Earth masses, assuming the small grain
+  absorption opacity
   $\kappa_{\mathrm{abs,ri}}(\lambda=0.13\,\mathrm{cm})=1.70\,\mathrm{cm}^2/\mathrm{g}$
   of \citet{2010A&A...512A..15R} ($M_{\mathrm{d,ri}}$) and the corresponding
   value
   $\kappa_{\mathrm{abs,ri}}(\lambda=0.13\,\mathrm{cm})=31.3\,\mathrm{cm}^2/\mathrm{g}$
-  of \citet{1997MNRAS.291..121I} ($M_{\mathrm{d,iv}}$). The stellar parameter
-  are taken from Table \ref{tab-stellar-params}.}
+  of \citet{1997MNRAS.291..121I} ($M_{\mathrm{d,iv}}$). In making these
+  estimates, the optically thin approximation was used. See Appendix
+  \ref{sec-computing-dust-mass} for details. An estimate of the
+  optical-depth-corrected dust mass can be made by multiplying the mass values
+  in the table by $\tau/(1-e^{-\tau})$.}
 \end{table*}
 
 The observed rings are the result of the thermal emission of a dust ring convolved
@@ -342,22 +364,22 @@ $\mathrm{au}$ ($b=d_{\mathrm{pc}}b_{\mathrm{fwhm,as}}/2.355$, where
 $b_{\mathrm{fwhm,as}}$ is the beam full width at half maximum in units of
 arcseconds, and $d_{\mathrm{pc}}$ is the distance to the source in units of
 parsec). The width of the dust rings
-in units of the local pressure scale height $h_p$ (last column of Table
+in units of the local pressure scale height $h_p$ (see Table
 \ref{tab-gauss-params}) can only be roughly estimated, because we do not know
 the disk midplane temperature. Our estimate is made as follows:
 \begin{equation}\label{eq-disk-temperature-model}
-T_{\mathrm{model}}(r) = \left(\frac{\tfrac{1}{2}\varphi L_{*}}{4\pi r^2\sigma_{\mathrm{SB}}}\right)^{1/4}
+T_{\mathrm{d}}(r) = \left(\frac{\tfrac{1}{2}\varphi L_{*}}{4\pi r^2\sigma_{\mathrm{SB}}}\right)^{1/4}
 \end{equation}
 where $\sigma_{\mathrm{SB}}$ is the Stefan-Boltzmann constant and $\varphi$ is
 the so-called flaring angle \citep[e.g.][]{1997ApJ...490..368C,
   1998ApJ...500..411D, 2001ApJ...560..957D}. The pressure scale height then
-follows from $h_p=\sqrt{k_BT_{\mathrm{model}}r^3/\mu m_pGM_{*}}$ with $k_B$ the
+follows from $h_p=\sqrt{k_BT_{\mathrm{d}}r^3/\mu m_pGM_{*}}$ with $k_B$ the
 Boltzmann constant, $m_p$ the proton mass, $G$ the gravitational constant and
-$mu=2.3$ the mean molecular weight in atomic units. The stellar parameters are
+$\mu=2.3$ the mean molecular weight in atomic units. The stellar parameters are
 taken from Table \ref{tab-stellar-params}. We take the flaring angle to be
 $\varphi=0.02$ which is an estimate based on typical values from models.  But
 this value can easily be wrong by a factor of four or so. The fact that the
-pressure scale height goes as $T_{\mathrm{model}}^{1/2}\propto \varphi^{1/8}$
+pressure scale height goes as $T_{\mathrm{d}}^{1/2}\propto \varphi^{1/8}$
 means, however, that such an error only affects $h_p$ mildly.
 
 We see from Table \ref{tab-gauss-params} that some rings are narrower than the
@@ -514,11 +536,13 @@ $\mathrm{Sc}$, $\mathrm{St}$ and $w$.
 \subsection{Ranges of $\alpha_{\mathrm{turb}}$, $\mathrm{Sc}$, $\mathrm{St}$ and $w$}
 \label{sec-ranges-of-params}
 %
-First of all, the Schmidt number $\mathrm{Sc}$ is merely a way to relate the
-turbulent viscosity with the turbulent mixing. If we do not strive to learn
-about the turbulent viscosity and instead are satisfied with learning only about
-the turbulent mixing, then we are only interested in the combination
-$\alpha_{\mathrm{turb}}/\mathrm{Sc}$. For simplicity we set $\mathrm{Sc}=1$.
+Reasonable values of $\alpha_{\mathrm{turb}}$, $\mathrm{Sc}$, $\mathrm{St}$ and
+$w$ obey certain restrictions. First of all, the Schmidt number $\mathrm{Sc}$
+is merely a way to relate the turbulent viscosity with the turbulent mixing. If
+we do not strive to learn about the turbulent viscosity, and instead are
+satisfied with learning only about the turbulent mixing, then we are only
+interested in the combination $\alpha_{\mathrm{turb}}/\mathrm{Sc}$. For
+simplicity we set $\mathrm{Sc}=1$.
 
 The value of the turbulence parameter $\alpha_{\mathrm{turb}}$ is usually
 considered to be between $10^{-6}\lesssim \alpha_{\mathrm{turb}}\lesssim
@@ -534,19 +558,21 @@ point of the gap to the inside of the ring as the upper limit on the
 half-width-at-half-maximum $1.178\,w$. These lower and upper limits on $w$
 are listed in Table \ref{tab-ring-model-limits}.
 
-The Stokes number $\mathrm{St}$ can be any value. But it is
-directly related to the grain size $a$ and the gas density
-$\rho_{\mathrm{g}}$. If we have observational constraints on $a$ and a good
-estimate of the gas density $\rho_{\mathrm{g}}$, then we can eliminate this
-uncertainty, and we are left with two unknown parameters
-($\alpha_{\mathrm{turb}}$ and $w$) for one measurement ($w_{\mathrm{d}}$).
-Unfortunately, while estimating $a$ from observations may be doable, it is far
-more difficult to estimate $\rho_{\mathrm{g}}$. Standard disk gas mass estimates
-are of limited use, as they are based on measuring the dust mass and multiplying
-it by the estimated gas-to-dust ratio. Since we are testing the hypothesis of
-dust trapping, we cannot assume a standard gas-to-dust ratio.
+The Stokes number $\mathrm{St}$ can be any value. But it is directly related to
+the grain size $a$ and the gas density $\rho_{\mathrm{g}}$, where the gas
+density is directly related to the gas surface density $\Sigma_{\mathrm{g}}$ via
+$\Sigma_{\mathrm{g}}=\sqrt{2\pi}h_p\rho_{\mathrm{g}}$. If we have observational
+constraints on $a$ and a good estimate of the gas surface density
+$\Sigma_{\mathrm{g}}$, then we can eliminate this uncertainty, and we are left
+with two unknown parameters ($\alpha_{\mathrm{turb}}$ and $w$) for one
+measurement ($w_{\mathrm{d}}$).  Unfortunately, while estimating $a$ from
+observations may be doable, it is far more difficult to estimate
+$\Sigma_{\mathrm{g}}$. Standard disk gas mass estimates are of limited use, as
+they are based on measuring the dust mass and multiplying it by the estimated
+gas-to-dust ratio. Since we are testing the hypothesis of dust trapping, we
+cannot assume a standard gas-to-dust ratio.
 
-One can, however, set an upper bound on $\rho_{\mathrm{g}}$ by demanding that
+One can, however, set an upper bound on $\Sigma_{\mathrm{g}}$ by demanding that
 the disk is gravitationally stable, i.e.\ that the Toomre parameter obeys
 \begin{equation}
 Q_{\mathrm{Toomre}}\equiv \frac{c_s\Omega_K}{\pi G \Sigma_{\mathrm{g}}} >2
@@ -555,30 +581,29 @@ Here $c_s=\sqrt{k_BT/\mu m_p}$ is the isothermal sound speed, with $k_B$ the
 Boltzmann constant, $m_p$ the proton mass, and $mu=2.3$ the mean molecular
 weight in atomic units. $\Omega_K=\sqrt{GM_{*}/r^3}$ is the Kepler frequency,
 $G$ is the gravitational constant and, finally, $\Sigma_{\mathrm{g}}$ the gas
-surface density. The gas surface density and midplane density are related via
-the pressure scale height $h_p=c_s/\Omega_K$ via the identity
-$\Sigma_{\mathrm{g}}=\sqrt{2\pi}h_p\rho_{\mathrm{g}}$. Taking the disk midplane
+surface density. Taking the disk midplane
 temperature from Table \ref{tab-gauss-params}, which was calculated using
 Eq.~(\ref{eq-disk-temperature-model}), we can compute the upper limits on
-$\rho_{\mathrm{g}}$ for all of the rings. The results are given in Table
+$\Sigma_{\mathrm{g}}$ for all of the rings. The results are given in Table
 \ref{tab-ring-model-limits}.
 
 \begin{table*}
 \begin{center}
-\begin{tabular}{|cc|cccccc|cc|}
+\begin{tabular}{|cc|ccccccc|ccc|}
 \hline
 \hline
-Source     & Ring & $w_{\mathrm{min}}$ & $w_{\mathrm{max}}$ & $\rho_{\mathrm{g,min,iv}}$ & $\rho_{\mathrm{g,min,ri}}$ & $\rho_{\mathrm{g,max}}$ & $a_{\mathrm{max}}$ & $(\alpha/\mathrm{St})_{\mathrm{min}}$ & $(\alpha/\mathrm{St})_{\mathrm{max}}$\\
-           &      & $[\mathrm{au}]$  & $[\mathrm{au}]$  & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{cm}]$ & $\equiv\psi^{-2}_{\mathrm{max}}$ & $\equiv\psi^{-2}_{\mathrm{min}}$\\
+Source     & Ring & $w_{\mathrm{min}}$ & $w_{\mathrm{max}}$ & $\Sigma_{\mathrm{g,min,iv}}$ & $\Sigma_{\mathrm{g,min,ri}}$ & $\Sigma_{\mathrm{g,max}}$ & $a_{\mathrm{max}}$ & $\mathrm{St}_{(a=0.02\,\mathrm{cm})}$ & $\alpha/\mathrm{St}$ & $\alpha/\mathrm{St}$ & $\alpha_{\mathrm{exmp}}$\\
+           &      & $[\mathrm{au}]$  & $[\mathrm{au}]$  & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{cm}]$ & (for $\Sigma_{\mathrm{g,max}}$)& (for $w_\mathrm{max}$) & (for $w_\mathrm{min}$) &   \\
 \hline
-AS 209     & 1 &  4.83 & 19.6 & 7.9e-17 & 1.4e-15 & 8.4e-14 & 11.1 & 3.2e-02 & 1.0e+00 \\
-AS 209     & 2 &  8.85 & 19.6 & 5.1e-17 & 9.3e-16 & 2.0e-14 &  4.0 & 5.0e-02 & 3.0e-01 \\
-Elias 24   & 1 &  7.26 & 17.1 & 3.6e-17 & 6.5e-16 & 6.4e-14 & 18.8 & 8.0e-02 & 7.0e-01 \\
-HD 163296  & 1 &  7.21$^{*}$ & 13.8 & 5.6e-17 & 1.0e-15 & 2.6e-13 & 48.7 & 3.8e-01 & -- \\
-HD 163296  & 2 &  7.27 & 13.8 & 2.5e-17 & 4.6e-16 & 8.1e-14 & 33.4 & 1.9e-01 & 1.4e+00 \\
-GW Lup     & 1 &  7.49 &  9.9 & 2.9e-17 & 5.4e-16 & 2.8e-14 &  9.8 & 2.1e-01 & 4.4e-01 \\
-HD 143006  & 1 &  4.42$^{*}$ & 10.1 & 7.8e-17 & 1.4e-15 & 4.4e-13 & 58.9 & 2.4e-01 & -- \\
-HD 143006  & 2 &  7.49$^{*}$ & 10.1 & 4.6e-17 & 8.5e-16 & 1.1e-13 & 25.1 & 1.2e+00 & -- \\
+% Note: New table made with new stellar parameters 2018.07.02
+AS 209     & 1 &  5.59 & 19.6 & 1.1e-02 & 2.0e-01 & 1.6e+01 & 15.7 & 3.9e-03 & 3.2e-02 & 6.0e-01 & 1.2e-04\\
+AS 209     & 2 & 10.25 & 19.6 & 1.2e-02 & 2.3e-01 & 6.9e+00 &  5.8 & 9.1e-03 & 5.0e-02 & 2.1e-01 & 4.5e-04\\
+Elias 24   & 1 &  7.26 & 17.1 & 9.7e-03 & 1.8e-01 & 1.8e+01 & 18.8 & 3.6e-03 & 8.0e-02 & 7.0e-01 & 2.9e-04\\
+HD 163296  & 1 &  7.21$^{*}$ & 13.8 & 1.1e-02 & 1.9e-01 & 4.1e+01 & 40.0 & 1.5e-03 & 3.8e-01 & -- & 5.8e-04\\
+HD 163296  & 2 &  7.07 & 13.8 & 7.8e-03 & 1.4e-01 & 2.0e+01 & 27.3 & 3.1e-03 & 1.9e-01 & 1.6e+00 & 5.9e-04\\
+GW Lup     & 1 &  7.49 &  9.9 & 8.3e-03 & 1.5e-01 & 7.8e+00 &  9.8 & 8.0e-03 & 2.1e-01 & 4.4e-01 & 1.7e-03\\
+HD 143006  & 1 &  4.42$^{*}$ & 10.1 & 4.7e-03 & 8.6e-02 & 7.5e+01 & 167.2 & 8.4e-04 & 2.4e-01 & -- & 2.0e-04\\
+HD 143006  & 2 &  7.49$^{*}$ & 10.1 & 4.8e-03 & 8.8e-02 & 3.4e+01 & 73.2 & 1.9e-03 & 1.2e+00 & -- & 2.3e-03\\
 \hline
 \hline
 \end{tabular}
@@ -590,19 +615,23 @@ HD 143006  & 2 &  7.49$^{*}$ & 10.1 & 4.6e-17 & 8.5e-16 & 1.1e-13 & 25.1 & 1.2e+
   upper limit $w_{\mathrm{max}}$ is derived from the separation between the
   rings (for AS 209, HD 163296 and HD 143006) or from the separation of the ring
   to the nearest minimum (for Elias 24 and GW Lup). The two lower limits on the
-  gas density $\rho_{\mathrm{g}}$ were derived by demanding
+  gas surface density $\Sigma_{\mathrm{g}}$ were derived by demanding
   $\Sigma_{\mathrm{g}}\gtrsim \Sigma_{\mathrm{d}}$, where $\Sigma_{\mathrm{d}}$
   was computed in Appendix \ref{sec-computing-dust-mass} using two different
-  opacities: that of Ivezic et al. (leading to $\rho_{\mathrm{g,min,iv}}$) and
-  that of Ricci et al.\ (leading to $\rho_{\mathrm{g,min,ri}}$). The column
-  marked with $\rho_{\mathrm{g,max}}$ is the upper limit on the midplane gas
+  opacities: that of Ivezic et al. (leading to $\Sigma_{\mathrm{g,min,iv}}$) and
+  that of Ricci et al.\ (leading to $\Sigma_{\mathrm{g,min,ri}}$). The column
+  marked with $\Sigma_{\mathrm{g,max}}$ is the upper limit on the gas surface
   density derived from demanding that the gas disk is gravitationally
   stable. The $a_{\mathrm{max}}$ column is the maximum grain size for which the
   derived dust surface density together with the gas surface density remain
-  gravitationally stable. The column $(\alpha/\mathrm{St})_{\mathrm{min}}\equiv
-  \psi^{-2}_{\mathrm{max}}$ is a result of the analysis: the lower limit to
-  $\alpha_{\mathrm{turb}}/\mathrm{St}$ derived from the ratio of
-  $w_{\mathrm{max}}/w_{\mathrm{d}}$.}
+  gravitationally stable. The $\mathrm{St}_{(a=0.02\,\mathrm{cm})}$ column gives
+  an example value of the Stokes number: it is the value of $\mathrm{St}$ if the
+  grains have a radius of $0.02\,\mathrm{cm}$, for the case of
+  $\Sigma_{\mathrm{g}}=\Sigma_{\mathrm{g,max}}$. The two columns for
+  $\alpha/\mathrm{St}$ are derived for the widest and narrowest
+  gas bump, respectively. The column $\alpha_{\mathrm{exmp}}$ is the value of
+  $\alpha_{\mathrm{turb}}$ for an example choice of parameters: $w=w_{\mathrm{max}}$,
+  $\Sigma_{\mathrm{g}}=\Sigma_{\mathrm{g,max}}$ and $a=0.02\,\mathrm{cm}$.}
 \end{table*}
 
 One can estimate a lower limit to the gas density by demanding that the gas
@@ -611,15 +640,13 @@ dust trapping is unlikely to achieve a larger concentration of dust than
 that. Depending on which of the two opacities we use (see Appendix
 \ref{sec-computing-dust-mass}) we arrive at different estimates of
 $\Sigma_{\mathrm{d}}(r=r_0)$. By demanding $\Sigma_{\mathrm{g}}\gtrsim
-\Sigma_{\mathrm{d}}$, and using the pressure scale height $h_p$
-and the formula $\rho_{\mathrm{g,midplane}}=\Sigma_{\mathrm{g}}/\sqrt{2\pi}h_p$,
-we arrive at two lower limits of the midplane gas density, given in
+\Sigma_{\mathrm{d}}$ we arrive at two lower limits of the gas surface density, given in
 Table \ref{tab-ring-model-limits}. It is likely that even for much
-larger values of the midplane gas density the dust-gas mixture becomes
+larger values of the gas surface density the dust-gas mixture becomes
 unstable to the streaming instability and other types of instabilities.
 If we can convince ourselves that such instabilities are not operating
 in these rings, then this puts a substantially stronger (i.e.~larger)
-lower limit on the midplane gas density.
+lower limit on the gas surface density.
 
 Also if the grains are much larger than $\lambda/(2\pi)\simeq 0.02\,\mathrm{cm}$,
 the opacity drops and the resulting dust surface density estimate increases,
@@ -641,78 +668,133 @@ with the limits on the parameter ranges derived in Subsection
 \ref{sec-ranges-of-params} to the observed ring widths $w_d$ listed in
 Table \ref{tab-gauss-params}. 
 
-Let us first choose the widest allowed pressure bump (i.e.\ taking
-$w=w_{\mathrm{max}}$ from Table \ref{tab-ring-model-limits}). In that
-case the dust rings are all narrower that the gas rings: $w_{\mathrm{d}}<w$,
-which implies that the dust trapping is operational. We can derive the
-values of $\psi$ directly from Eq.~(\ref{eq-wd-afo-w-psi}). And together
-with Eq.~(\ref{eq-psi-afo-alpha-sc-st}) we can then directly derive the
-following constraint on the unknown parameters $\alpha_{\mathrm{turb}}$
-and $\mathrm{St}$, 
-\begin{equation}
-\frac{\mathrm{Sc}\,\mathrm{St}}{\alpha_{\mathrm{turb}}} \equiv \psi^2 = \left(\frac{w}{w_{\mathrm{d}}}\right)^2-1
+From an assumed value of $w$ and the measured value $w_{\mathrm{d}}$ we can
+directly compute the ratio $\alpha_{\mathrm{turb}}/\mathrm{St}$
+\begin{equation}\label{eq-alphaSt-equation}
+\frac{\alpha_{\mathrm{turb}}}{\mathrm{St}} \equiv \psi^{-2} = \left[\left(\frac{w}{w_{\mathrm{d}}}\right)^2-1\right]^{-1}
 \end{equation}
-where, we recall, set $\mathrm{Sc}=1$. Given that this is the largest
-possible value of $w$, and therefore the largest possible value
-of $\psi$, this gives a lower limit to the ratio $\alpha_{\mathrm{turb}}/\mathrm{St}$:
-\begin{equation}
-\frac{\alpha_{\mathrm{turb}}}{\mathrm{St}} \gtrsim \frac{1}{\psi^2_{\mathrm{max}}} \qquad\hbox{($\psi_{\mathrm{max}}$ from largest $w$)}
-\end{equation}
-The resulting values are given in Table \ref{tab-ring-model-limits}.  These are
-the first quantitative results of the application of the dust trapping model to
-the data.
+where we used Eqs.~(\ref{eq-wd-afo-w-psi}, \ref{eq-psi-afo-alpha-sc-st}), and
+set $\mathrm{Sc}=1$. We will consider two choices of $w$: the $w_{\mathrm{min}}$ and
+$w_{\mathrm{max}}$ from Table \ref{tab-ring-model-limits}. 
 
-We can also derive an upper limit to the ratio
-$\alpha_{\mathrm{turb}}/\mathrm{St}$, but only for the rings for which
+For the choice $w=w_{\mathrm{max}}$ (the widest possible pressure bump) the dust
+rings are all narrower that the gas rings: $w_{\mathrm{d}}<w$, which implies
+that the dust trapping is operational, and Eq.~(\ref{eq-alphaSt-equation}) gives
+information about the turbulent strength. For the choice $w=w_{\mathrm{min}}$
+(the narrowest possible pressure bump) we can only use
+Eq.~(\ref{eq-alphaSt-equation}) for the rings for which
 $w_{\mathrm{d}}<h_p$. The reason is that for those rings with
 $w_{\mathrm{d}}>h_p$ (marked with a $^{*}$ in Table \ref{tab-ring-model-limits})
 the minimal pressure bump width is $w_{\mathrm{min}}=w_{\mathrm{d}}$, and the
-dust ring is as wide as the pressure bump, implying that dust trapping is weak.
-Any increase of $\alpha_{\mathrm{turb}}/\mathrm{St}$ will keep
-$w_{\mathrm{d}}=w_{\mathrm{min}}$, so one cannot derive an upper limit on
-$\alpha_{\mathrm{turb}}/\mathrm{St}$. For the rings with $w_{\mathrm{d}}<h_p$
-(and thus $w_{\mathrm{min}}=h_p$) we can write
-\begin{equation}
-\frac{\alpha_{\mathrm{turb}}}{\mathrm{St}} \lesssim \frac{1}{\psi^2_{\mathrm{min}}} \qquad\hbox{($\psi_{\mathrm{min}}$ from smallest $w$)}
-\end{equation}
-The resulting values are given in Table \ref{tab-ring-model-limits}.  These are
-the second quantitative results of the application of the dust trapping model to
-the data.
+dust ring is as wide as the pressure bump, implying that dust trapping is weak
+or non-operational. Any increase of $\alpha_{\mathrm{turb}}/\mathrm{St}$ will
+keep $w_{\mathrm{d}}=w_{\mathrm{min}}$, so one cannot derive any value for
+$\alpha_{\mathrm{turb}}/\mathrm{St}$. But for other rings we can compute
+$\alpha_{\mathrm{turb}}/\mathrm{St}$. The resulting values for both choices of
+pressure bump width are given in Table \ref{tab-ring-model-limits}. They can be
+understood as the lower and upper limit on $\alpha_{\mathrm{turb}}/\mathrm{St}$.
 
-If we will be able to measure the width of the gas pressure bump in an
-independent way, for instance with molecular line observations, then instead of
-the lower- and upper limits on $\alpha_{\mathrm{turb}}/\mathrm{St}$ we will be
-able to directly measure $\alpha_{\mathrm{turb}}/\mathrm{St}$. However, reliable
-measurements of the gas density are notoriously difficult. CO molecular lines
-are usually emitted in the warm sub-surface layers of the disk, not near the
-midplane (see e.g.~{\bf Weaver \& Isella companion paper as well as earlier
-  literature}), and CO appears to be depleted compared to chemistry models
-({\bf XXXX}). Other gas tracers are harder to measure and also not reliable
-indicators of the gas density. Therefore we will, at least for now, have to
-make do with the lower and upper limits on $\alpha_{\mathrm{turb}}/\mathrm{St}$
-from Table \ref{tab-ring-model-limits}.
+% If we will be able to measure the width $w$ of the gas pressure bump in an
+% independent way, for instance with molecular line observations, then instead of
+% the lower- and upper limits on $\alpha_{\mathrm{turb}}/\mathrm{St}$ we will be
+% able to directly measure $\alpha_{\mathrm{turb}}/\mathrm{St}$. However, reliable
+% measurements of the gas density are notoriously difficult. CO molecular lines
+% are usually emitted in the warm sub-surface layers of the disk, not near the
+% midplane (see e.g.~{\bf Weaver \& Isella companion paper as well as earlier
+%   literature}), and CO appears to be depleted compared to chemistry models
+% ({\bf XXXX}). Other gas tracers are harder to measure and also not reliable
+% indicators of the gas density. Therefore we will, at least for now, have to
+% make do with the lower and upper limits on $\alpha_{\mathrm{turb}}/\mathrm{St}$
+% from Table \ref{tab-ring-model-limits}.
 
 The next task is to convert from Stokes number $\mathrm{St}$ to grain size
-$a$. 
+$a$. The Epstein regime is valid for the typical grains we are interested in
+(less than a meter in size), in which case $a$ and $\mathrm{St}$ are related
+by 
+\begin{equation}
+\mathrm{St} = \frac{\pi}{2}\frac{\xi_{\mathrm{dust}}a}{\Sigma_{\mathrm{g}}}
+\end{equation}
+where $\Sigma_{\mathrm{g}}$ is the gas surface density and $\xi_{\mathrm{dust}}$
+is the material density of the dust grains. Given that grains are expected
+to be a mixture of silicate, amorphous carbon and water ice, a value of
+$\xi_{\mathrm{dust}}\simeq 2\,\mathrm{g}/\mathrm{cm}^3$ is reasonable.
 
-{\bf [TO BE DONE]}
+To get a feeling for the results, let us choose the grain size to be
+$a=0.02\,\mathrm{cm}$, which corresponds to $\lambda/2\pi$ for
+$\lambda=0.13\,\mathrm{cm}$ (the wavelength of ALMA band 6).  The corresponding
+Stokes numbers, for the most massive possible gas disk
+($\Sigma_{\mathrm{g}}=\Sigma_{\mathrm{g,max}}$), are listed in Table
+\ref{tab-ring-model-limits}. This then allows us to convert the value of
+$\alpha_{\mathrm{turb}}/\mathrm{St}$ into a value of
+$\alpha_{\mathrm{turb}}$. For the case $w=w_{\mathrm{max}}$ this leads to values
+$\alpha_{\mathrm{turb}}= 10^{-4}\cdots\mathrm{few}\,\times 10^{-3}$, listed in
+Table \ref{tab-ring-model-limits} (column $\alpha_{\mathrm{exmp}}$).
 
+These low values of $\alpha_{\mathrm{turb}}$ are consistent with the low values
+or upper limits reported recently \citep{2016ApJ...816...25P,
+  2018ApJ...856..117F} {\bf [more?]}. However, it has to be kept in mind that
+the values of $\alpha_{\mathrm{turb}}=\alpha_{\mathrm{exmp}}$ were derived
+for an example choice of parameters: : $w=w_{\mathrm{max}}$,
+$\Sigma_{\mathrm{g}}=\Sigma_{\mathrm{g,max}}$ and $a=0.02\,\mathrm{cm}$. For a
+smaller value of $w$, a lower value of $\Sigma_{\mathrm{g}}$, or larger grains,
+the computed value of $\alpha_{\mathrm{turb}}$ will increase. So that it is hard
+to set a true upper limit on $\alpha_{\mathrm{turb}}$ from these observations.
 
-{\bf Make an exclusion diagram.}
+This seems to be in conflict with the results found by
+\citet{2016ApJ...816...25P} who, from measuring an upper limit on the vertical
+extent of the dust, imply an upper limit on $\alpha_{\mathrm{turb}}$ of $3\times
+10^{-3}$. {\bf [IMPORTANT: We have to find out why Pinte et al. find this
+    limit. Do they have additional constraints? Why can't they increase the grain
+    size indefinitely? What are the constraints Eric and Andrea find for the
+similar analysis of HD 163296?]}
+
+Can we derive a {\em lower} limit to $\alpha_{\mathrm{turb}}$? This depends on
+whether we have information about the grain size. At present we have only the
+high resolution data for band 6, so we do not yet have information about the
+radial profile of the spectral slope. But in several recent observations of the
+spectral index across ringed disks
+\citep{2015ApJ...808L...3A,2018ApJ...852..122H} one clearly sees that
+$\alpha_{\mathrm{spec}}$ varies across these rings, being closer to $2$ at the
+ring center and substantially larger between the rings. This makes sense in
+terms of the dust trapping scenario in which we expect larger grains to be
+trapped more efficiently (and thus dominate the peak of the ring) than smaller
+grains, because the smaller grains will be more subject to turbulent
+mixing. This scenario requires a grain size distribution, so that the width of
+the dust ring is smaller for the bigger grains and bigger for the smaller ones.
+We will discuss our model in the context of grain size distributions in Section
+\ref{sec-model-with-grain-size-distribution}. But assuming that future data will
+also show similar spectral slope changes for our sources, we can already
+conclude that the grains trapped in the rings must have sizes larger than
+$\lambda/2\pi=0.02\,\mathrm{cm}$. The measured (resolved) width of the dust ring
+$w_d$ then implies a lower limit to $\alpha_{\mathrm{turb}}$. The value
+$\alpha_{\mathrm{turb}}=\alpha_{\mathrm{exmp}}$ is then, in fact, this lower
+limit. We will, however, have to wait until high resolution ALMA data in another
+band becomes available to verify the minimal grain size of $0.02\,\mathrm{cm}$.
+
+Should the low spectral slope at the peak of the rings be confirmed, then the
+lower limits on $\alpha_{\mathrm{turb}}$ from the $\alpha_{\mathrm{exmp}}$
+column in Table \ref{tab-ring-model-limits} paint a different picture from the
+low-turbulence picture that has emerged in recent times. The values of a few
+times $10^{-4}$ to a few times $10^{-3}$ are low, but they are only lower
+bounds. It would be somewhat unlikely if all rings have parameters at this
+extreme size of parameter space, and it is therefore likely that
+$\alpha_{\mathrm{turb}}$ is easily a factor of ten higher or so. This would
+imply that protoplanetary disks are substantially turbulent after all. But to
+confirm this, we need to dig a bit deeper by including size distributions
+(Section \ref{sec-model-with-grain-size-distribution}) and non-perfect
+(``leaky'') dust traps (Section {\bf XXXX}).
 
 
 
 {\bf We can make predictions for pressure slopes in CO}
 
 
-{\bf Coincidence of the slope changes.}
+{\bf CONSIDER PRESSURE OFFSET!}
 
-
-{\bf Can the height measurement help? There is still the degeneracy. Why did
-Pinte et al. not have this degeneracy? How could they pin down the turbulence?}
 
 \subsection{Including a grain size distribution}
 %
+\label{sec-model-with-grain-size-distribution}
 
 {\bf [Here we will move away from a single grain size and see if we can understand
 the deviations from Gaussian by a grain size distribution]}
@@ -724,7 +806,7 @@ the deviations from Gaussian by a grain size distribution]}
 %
 
 {\bf [This section is temporarily hidden, because a lot still has to be
-done on this.]}
+done on this. Maybe it should be removed and put into a future paper.]}
 
 % Whenever the dust trapping becomes so effective that the volume density of the
 % dust at the midplane of the disk exceeds the gas volume density, the streaming
@@ -934,14 +1016,6 @@ done on this.]}
 \section{Discussion}
 
 
-\subsection{Gap depth estimates from 2-D hydrodynamic simulations}
-
-{\bf Dong \& Fung (2017)} presented a systematic study of the gap
-opening profiles for given planetary masses, and analyzed the
-rings seen in scattered light of 5 sources (HD 97048, TW Hydra,
-HD 169142, LkCa15 and RX J1615).
-
-
 \subsection{Condition for the streaming instability}
 In the literature it is often mentioned that the streaming instability requires
 a dust-to-gas surface density ratio of
@@ -1015,42 +1089,7 @@ This means that the ring separation will be spatially resolved by ALMA,
 ruling out the possibility that the wide rings are made up of a multitude of
 narrow rings, at least in the dust trapping scenario.
 
-\subsection{Dust trapping in the horseshoe region and in resonances}
-The 1-D approach of the {\sf DISKLAB} models make it impossible to treat the
-trapping of particles in the horseshoe region. The low-$\alpha$ models of {\bf
-  Liu et al.~2018} show that this may be a significant effect. However, this
-tends to produce non-axisymmetric rings: there will clearly be a dearth of dust
-near the location of the planet, and a slight enhancement of dust near the L4
-and L5 Lagrange points. Given that the rings we see so far in the multi-ringed
-protoplanetary disks are angularly symmetric, this appears to be ruled out.
-That means that the 1-D approach is justified, but we do have to ensure that we
-are not in the regime where such non-axisymmetric horseshoe-trapping is
-important. Generally the horseshoe region tends to gradually deplete over time,
-but the time scale depends on the turbulent viscosity, with low-$\alpha$ disks
-depleting slower. 
-
-Another issue is the potential for large particles to get trapped in a
-resonance of a planet instead of in a classical dust trap {\bf REFERENCE;
-the Dong double-gap is different, though}.
-This requires high Stokes number, generally $\mathrm{St}\gg 1$ ({\bf is
-  this true?}). Given that grain growth models tend to keep grains below
-this limit ({\bf see e.g.~Birnstiel et al.}), this is less likely to play
-a role.
-
-\subsection{Multiple gaps with a single planet}
-{\bf Dong, Li \& Li (2017)} and 
-{\bf Bae, Zhu \& Hartmann (2017)} show that for very low-$\alpha$ disks
-a planet can open multiple gaps in the disk rather than just a single one.
-The contrast of these rings and gaps in the gas can be large (factor of 2; see
-Bae et al.),
-and thus clearly constitute dust traps. Dong et al.\ show that these gaps
-can even be observable for very low mass planets.
-
-{\bf [TODO: We can do a simple model of dust trapping for their case.]}
-
-{\bf Fung \& Chiang (2017)} have shown that low mass planets in nearly inviscid
-disks can avoid migration and can be responsible for disk accretion in spite
-of the low viscosity.
+{\bf [Add discussion of the plateau of Elias 24]}
 
 \subsection{Interpretation of the millimeter flux in terms of grain size}
 A common rule of thumb for interpreting millimeter and sub-millimeter
@@ -1265,7 +1304,10 @@ valid.
   of the ring, the turbulence parameter was set to
   $\alpha_{\mathrm{turb}}=2\times 10^{-4}$, the dust material density was chosen
   to be $2\,\mathrm{g}/\mathrm{cm}^3$ consistent with slightly porous silicate
-  dust aggregates. The standard-deviation width of the gas pressure bump was set
+  dust aggregates.
+  {\bf [CHECK IF THIS IS CONSISTENT WITH THE OPACITY ESTIMATES, IN PARTICULAR
+  THE RICCI OPACITY.]}
+  The standard-deviation width of the gas pressure bump was set
   to $w=9.7\,\mathrm{au}$ which equals two times the gas pressure scale height.}
 \end{figure}
 
@@ -1568,23 +1610,23 @@ turbulence (or smaller grains) will yield the same ring width.
 {\bf [CONTINUE THIS; SOME DEGENERACIES FOLLOW DIRECTLY FROM THE EQUATIONS.]}
 
 
-\subsection{Model fits to the ALMA data}
-\label{sec-anmodel-fits-to-data}
+%\subsection{Model fits to the ALMA data}
+%\label{sec-anmodel-fits-to-data}
+%%
+%We now apply this model to the isolated rings in our ALMA sample (Section
+%\ref{sec-data}). Given the degeneracies of the model in many of the parameters,
+%we perform the fitting procedure in three parameters, while fixing the others
+%to a particular choice of values. 
 %
-We now apply this model to the isolated rings in our ALMA sample (Section
-\ref{sec-data}). Given the degeneracies of the model in many of the parameters,
-we perform the fitting procedure in three parameters, while fixing the others
-to a particular choice of values. 
-
-
-
-{\bf [CONTINUE THIS; SHOW THE FIT FIGURES; SHOW THE MCMC CORNER PLOTS]}
-
-
-
-
-{\bf For HD 163296 we have constraints from the sub/superkepler data of
-Teague. This limits the width of the gas bump.}
+%
+%
+%{\bf [CONTINUE THIS; SHOW THE FIT FIGURES; SHOW THE MCMC CORNER PLOTS]}
+%
+%
+%
+%
+%{\bf For HD 163296 we have constraints from the sub/superkepler data of
+%Teague. This limits the width of the gas bump.}
 
 
 
@@ -1619,7 +1661,22 @@ radial brightness profiles. On the other hand, optical thickness can also occur
 on smaller scales, as we will discuss in Section \ref{sec-si-clump}.
 
 
-\subsection{Computing the dust mass trapped in the rings}
+\section{Gauss fitting procedure}
+\label{sec-gauss-fitting}
+%
+In this paper we study each dust ring individually, and try to understand it in
+terms of the trapping of dust in a pressure trap. In Appendix
+\ref{sec-steady-state-analytic-trap-model} we find that for a Gaussian pressure
+bump the solution to the radial dust mixing and drift problem is, to first
+approximation, also a Gaussian, albeit a narrower one. Fitting the dust trapping
+model to the data can therefore be done in two stages: first fitting a Gaussian
+radial profile to the observed rings, then interpreting these Gaussian fits
+through the dust trapping model. In this appendix
+
+
+
+
+\section{Computing the dust mass trapped in the rings}
 \label{sec-computing-dust-mass}
 %
 We can compute the dust mass trapped in each of the rings by integrating over
@@ -1635,7 +1692,7 @@ depth effects. So we will estimate the mass of the best fitting Gaussian model
 only.
 
 We will assume that the intrinsic dust temperature is as given in Table
-\ref{tab-gauss-params} (column $T_{\mathrm{model}}$), which was computed based on
+\ref{tab-gauss-params} (column $T_{\mathrm{d}}$), which was computed based on
 a simple flaring angle irradiation model. We consider the Gaussian profile with
 the deconvolved width, i.e.\ $w_d$ (not $\sigma$). The peak linear brightness
 temperature is taken to be
@@ -1651,9 +1708,9 @@ T_{\mathrm{br,lin,deconv}}(r) = A_{\mathrm{deconv}}\,\exp\left(-\frac{(r-r_0)^2}
 
 Next we have to worry about optical depth effects. From Table
 \ref{tab-gauss-params} one can see that for most rings 
-$A_{\mathrm{deconv}}$ is significantly smaller than $T_{\mathrm{model,br,lin}}$.
+$A_{\mathrm{deconv}}$ is significantly smaller than $T_{\mathrm{d,br,lin}}$.
 However, for the rings of AS 209 the ratios
-$A_{\mathrm{deconv}}/T_{\mathrm{model,br,lin}}$ are around 0.5, so optical depth
+$A_{\mathrm{deconv}}/T_{\mathrm{d,br,lin}}$ are around 0.5, so optical depth
 effects start to play a role. Given a dust surface density profile
 $\Sigma_{\mathrm{d}}(r)$ as a function of radial coordinate $r$, and
 given an absorption opacity $\kappa_{\mathrm{a}}$ at the wavelength we
@@ -1664,14 +1721,14 @@ are measuring, the absorption optical depth $\tau_{\mathrm{a}}(r)$ is
 We assume that scattering does not play a role. The emission from this
 dusty ring is then, expressed as linear brightness temperature:
 \begin{equation}
-T_{\mathrm{br,lin,deconv}}(r) = \left(1-e^{-\tau_{\mathrm{a}}(r)}\right)\,T_{\mathrm{model,br,lin}}
+T_{\mathrm{br,lin,deconv}}(r) = \left(1-e^{-\tau_{\mathrm{a}}(r)}\right)\,T_{\mathrm{d,br,lin}}
 \end{equation}
 If $\tau_{\mathrm{a}}(r)\ll 1$ for all $r$ this reduces to
 \begin{equation}\label{eq-int-afo-tau-bnu}
-T_{\mathrm{br,lin,deconv}}(r) = \tau_{\mathrm{a}}(r)\,T_{\mathrm{model,br,lin}}
+T_{\mathrm{br,lin,deconv}}(r) = \tau_{\mathrm{a}}(r)\,T_{\mathrm{d,br,lin}}
 \end{equation}
-But given that for some rings $A_{\mathrm{deconv}}/T_{\mathrm{model,br,lin}}
-=\mathrm{max}(I_{\mathrm{obs}}(r)/B_\nu(T_{\mathrm{model}}))$ can be as large as
+But given that for some rings $A_{\mathrm{deconv}}/T_{\mathrm{d,br,lin}}
+=\mathrm{max}(I_{\mathrm{obs}}(r)/B_\nu(T_{\mathrm{d}}))$ can be as large as
 $\sim 0.5$, this condition is not always fulfilled.  On the other hand, these
 optical depth effects cannot be too strong, because then the Gaussian shape
 would flatten off at the top, which is not what we see in the observations. We
@@ -1684,20 +1741,20 @@ Using Eq.~(\ref{eq-int-afo-tau-bnu}) we can, from the deconvolved
 $T_{\mathrm{br,lin,deconv}}(r)$ (Eq.~\ref{eq-tbrlin-deconvolved}), solve for
 $\tau_{\mathrm{a}}(r)$ and obtain
 \begin{equation}
-  \tau_{\mathrm{a}}(r)=\frac{A_{\mathrm{deconv}}}{T_{\mathrm{model,br,lin}}}\,
+  \tau_{\mathrm{a}}(r)=\frac{A_{\mathrm{deconv}}}{T_{\mathrm{d,br,lin}}}\,
   \exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
 \end{equation}
 leading with Eq.~(\ref{eq-tau-afo-sig-kap}) to
 \begin{equation}
-  \Sigma_{\mathrm{d}}(r)=\frac{A_{\mathrm{deconv}}}{\kappa_{\mathrm{a}}T_{\mathrm{model,br,lin}}}\,
+  \Sigma_{\mathrm{d}}(r)=\frac{A_{\mathrm{deconv}}}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}\,
   \exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
 \end{equation}
 Integrating over $r$, ignoring geometric terms leads to
 \begin{equation}\label{eq-ringmass-from-obs}
   \begin{split}
     M_{\mathrm{d}} &\simeq 2\pi r_0\int_{r_{\mathrm{in}}}^{r_{\mathrm{out}}}\Sigma_{\mathrm{d}}(r)dr\\
-    &= (2\pi)^{3/2}\frac{r_0w_dA_{\mathrm{deconv}}}{\kappa_{\mathrm{a}}T_{\mathrm{model,br,lin}}}\\
-    &= (2\pi)^{3/2}\frac{r_0\sigma A}{\kappa_{\mathrm{a}}T_{\mathrm{model,br,lin}}}
+    &= (2\pi)^{3/2}\frac{r_0w_dA_{\mathrm{deconv}}}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}\\
+    &= (2\pi)^{3/2}\frac{r_0\sigma A}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}
   \end{split}
 \end{equation}
 
