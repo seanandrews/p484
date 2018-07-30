@@ -16,6 +16,8 @@ import yaml
 from skimage import transform, measure
 from scipy import ndimage
 
+mpl.rcParams.update({'font.size':9})
+
 
 class Continuum:
     def __init__(self, filename, offsetx, offsety, PA, incl, src_distance):
@@ -90,10 +92,9 @@ class Continuum:
         rad_prof_scatter = np.zeros_like(radial_profile)
 
         for i in range(len(rbins)):
-            annulus_thetas = self.theta[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
             #for azimuthal asymmetries
             if len(theta_exclusion)==2:
-                  annulus_intensities = self.image[(self.r>=(radialbins[i]-0.5*rwidth)) & (self.r<(radialbins[i]+0.5*rwidth))&((self.theta<=theta_exclusion[0]) | (self.theta>=theta_exclusion[1]))]
+                annulus_intensities = self.image[(self.r>=(radialbins[i]-0.5*rwidth)) & (self.r<(radialbins[i]+0.5*rwidth))&((self.theta<=theta_exclusion[0]) | (self.theta>=theta_exclusion[1]))]
             #for high inclination disks 
             elif high_incl:
                 annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))&(np.abs(self.theta)<=110)&(np.abs(self.theta)>=70)]
@@ -107,6 +108,24 @@ class Continuum:
             return self.get_TB(radial_profile)
         elif yaxis == 'intensity': #return intensity profile (mJy/beam)
             return radial_profile, rad_prof_scatter
+
+    def profilepercentile(self,radialbins,percentile = 50): 
+        """
+        Parameters
+        ==========
+        """
+        rbins = radialbins
+        rwidth = (rbins[1]-rbins[0])
+
+        radial_profile = np.zeros( len(rbins) )
+
+
+        for i in range(len(rbins)):
+            annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+
+            radial_profile[i] = np.percentile(annulus_intensities, percentile)
+
+        return radial_profile
 
     def azunwrap(self,radialbins, tbins = -179.+2*np.arange(180), yaxis = 'intensity', theta_exclusion = np.array([])): 
         """
@@ -162,57 +181,6 @@ class Continuum:
             return radial_profile, rad_prof_scatter, rtmap
         else:
             return rtmap
-
-    def plot_cont_intensity(self, ax, size, cmap ='magma', vmin =None, vmax = None, alpha = False, gamma = 1.0, contours=False, labels_off = False, show_beam = True, norm = None):
-        """Plots continuum image"""        
-        
-        imshifted = shift(self.image, np.array([-self.offsety/self.delt_y+0.5,-self.offsetx/self.delt_x+0.5]))
-
-        imgdata = imshifted*1000 #convert to mJy/beam if this is an intensity image
-
-        size_pix = size/np.abs(self.delt_x) #size of zoomed-in image in pixels
-
-        padding = int(0.5*(self.imsize-size_pix))
-
-        std =np.std(imgdata[int(0.2*padding):padding, int(0.2*padding):padding])
-        n = np.arange(4,26)
-        levels = std*np.append([4,8],2**n)
-        
-        zoomimgdata = imgdata[padding:self.imsize - padding, padding:self.imsize - padding]
-        
-        zoomimgdata = np.fliplr(zoomimgdata) #since reversing the x-axis later will flip the image around, we have to flip it back
-        if show_beam:
-            self.beam_plot(0.4*size,-0.4*size,ax,flip =  True)
-
-        if not vmin:
-            vmin = 0
-        if not vmax:
-            vmax = np.max(zoomimgdata)
-
-        if norm:
-            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = norm,  interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
-        else:
-            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,vmin = vmin, vmax=vmax, interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
-        if contours: 
-            cont = ax.contour(zoomimgdata,levels,linestyles='solid',colors='white', extent=[-size/2., size/2., -size/2., size/2.], linewidths = .5)
-        ax.xaxis.tick_top()
-        
-        if labels_off:
-            ax.set_xticks([])
-            ax.set_yticks([])
-        else:
-            ticks = np.arange(-np.floor(size)/2., np.floor(size)/2+0.5, 2)
-            ax.set_xticks(ticks)
-
-            plt.setp(ax.get_xticklabels(), size=12)
-            ax.yaxis.set_label_coords(-.12,0.5)
-            ax.set_yticks(ticks)
-
-            plt.setp(ax.get_yticklabels(), size=12)
-
-
-        plt.gca().invert_xaxis() #since RA increases right to left 
-        return finalimage
 
     def beam_plot(self, x, y, ax, flip = False, color = 'white'):
         """Retrieves parameters for drawing the synthesized beam"""
@@ -326,9 +294,126 @@ class Continuum:
         plt.scatter(xcoords-self.offsetx, ycoords-self.offsety, s = 1, color = 'white')
         return LBmap
 
+    def subtractprofile(self, radialbins, percentile = 50):
+        profile = self.profilepercentile(radialbins,percentile)
+        extended_prof = np.insert(profile, 0, np.max(self.image))
+        extended_bins = np.insert(radialbins, 0,0)
+        radinterp = interp1d(extended_bins, extended_prof, bounds_error = False, fill_value = 0)
+        return self.image - radinterp(self.r)
+
+    def plot_cont_intensity(self, ax, size, im = None, cmap ='magma', vmin =None, vmax = None, alpha = False, gamma = 1.0, contours=False, labels_off = False, show_beam = True, norm = None):
+        """Plots continuum image"""        
+        
+        if im is None:
+            im = self.image
+        imshifted = shift(im, np.array([-self.offsety/self.delt_y,-self.offsetx/self.delt_x]))
+
+        imgdata = imshifted*1000 #convert to mJy/beam if this is an intensity image
+
+        size_pix = size/np.abs(self.delt_x) #size of zoomed-in image in pixels
+
+        padding = int(0.5*(self.imsize-size_pix))
+
+        std =np.std(imgdata[int(0.2*padding):padding, int(0.2*padding):padding])
+        n = np.arange(4,26)
+        levels = std*np.append([4,8],2**n)
+        
+        zoomimgdata = imgdata[padding:self.imsize - padding, padding:self.imsize - padding]
+        
+        zoomimgdata = np.fliplr(zoomimgdata) #since reversing the x-axis later will flip the image around, we have to flip it back
+        if show_beam:
+            self.beam_plot(0.4*size,-0.4*size,ax,flip =  True)
+
+        if not vmin:
+            vmin = 0
+        if not vmax:
+            vmax = np.max(zoomimgdata)
+
+        if norm:
+            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = norm,  interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
+        else:
+            finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,vmin = vmin, vmax=vmax, interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
+        if contours: 
+            cont = ax.contour(zoomimgdata,levels,linestyles='solid',colors='white', extent=[-size/2., size/2., -size/2., size/2.], linewidths = .5)
+
+        
+        if labels_off:
+            ax.set_xticks([])
+            ax.set_yticks([])
+        else:
+            ax.xaxis.set_ticks_position('both')
+            ax.yaxis.set_ticks_position('both')
+            if size >=5:
+                ticks = np.arange(-np.floor(size/2.), np.floor(size/2.)+0.001, 2)
+            elif 2<size<5:
+                ticks = np.arange(-np.floor(size/2.), np.floor(size/2.)+0.001, 1)
+            else:
+                ticks = np.arange(-np.floor(size)/2., np.floor(size)/2.+0.001, 0.5)
+
+            ax.tick_params(axis = "both", direction = 'in',which = 'major', colors = 'white', length = 3)
+            ax.set_xticks(ticks)
+            ax.set_yticks(ticks)
+
+            for xtick in ax.get_xticklabels():
+                xtick.set_color('black')
+            for ytick in ax.get_yticklabels():
+                ytick.set_color('black')
+
+            #plt.setp(ax.get_xticklabels())
+
+            #plt.setp(ax.get_yticklabels())
+
+
+        plt.gca().invert_xaxis() #since RA increases right to left 
+        return finalimage
+
     def plotbeamprofile(self, x,y, height, ax):
         bmin = self.bmin*self.src_distance
         sigma = bmin/(2*np.sqrt(2*np.log(2.)))
         xvals = np.linspace(x-2.5*bmin, x+2.5*bmin)
         ax.plot(xvals, y+height*np.exp(-(xvals-x)**2/(2*sigma**2)), color = 'gray')
                     
+    def extract_spiral(self,residualimage, rmin,rmax,r_search_func,tbins = -177.5+5*np.arange(72), outfile = None): 
+        ntheta = len(tbins)
+        xcoord = []
+        ycoord = []
+        thetas = []
+        rvals = []
+        tbins=tbins*np.pi/180.
+        for i in range(ntheta):
+            r_lower, r_upper = r_search_func(tbins[i]*180/np.pi, rmin, rmax)
+
+            xpstart = r_lower*np.cos(tbins[i])/self.src_distance*np.cos(self.incl*np.pi/180.)
+            ypstart = r_lower*np.sin(tbins[i])/self.src_distance
+
+            PAr = self.PA*np.pi/180.
+            xstart = np.int((xpstart*np.cos(-PAr)-ypstart*np.sin(-PAr)+self.offsetx)/self.delt_x+self.imsize/2)
+            ystart = np.int((xpstart*np.sin(-PAr)+ypstart*np.cos(-PAr)+self.offsety)/self.delt_y+self.imsize/2)
+
+            xpend = r_upper*np.cos(tbins[i])/self.src_distance*np.cos(self.incl*np.pi/180.)
+            ypend = r_upper*np.sin(tbins[i])/self.src_distance
+            xend = np.int((xpend*np.cos(-PAr)-ypend*np.sin(-PAr)+self.offsetx)/self.delt_x+self.imsize/2)
+            yend = np.int((xpend*np.sin(-PAr)+ypend*np.cos(-PAr)+self.offsety)/self.delt_y+self.imsize/2)
+        
+
+            profile = measure.profile_line(residualimage, (ystart,xstart), (yend, xend), order= 0)
+            index = np.where(profile==np.max(profile))[0][0]
+        
+            if index!=0 and index!=len(profile)-1:
+                loc = np.where(residualimage[(self.r>r_lower) & (self.r<r_upper)]==profile[index])
+                xcoord.append(self.xx[(self.r>r_lower) & (self.r<r_upper)][loc[0][0]])
+                ycoord.append(self.yy[(self.r>r_lower) & (self.r<r_upper)][loc[0][0]])
+                rvals.append(self.r[(self.r>r_lower) & (self.r<r_upper)][loc[0][0]])
+            
+                thetas.append(tbins[i])
+        xcoord = np.array(xcoord)
+        ycoord = np.array(ycoord)
+        thetas = np.array(thetas)
+        rvals = np.array(rvals)
+        if outfile:
+            arr = np.row_stack((xcoord, ycoord, thetas, rvals)).T
+            np.savetxt(outfile, arr)
+        
+        
+        return xcoord, ycoord, thetas, rvals
+
