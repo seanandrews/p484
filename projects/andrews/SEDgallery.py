@@ -10,39 +10,33 @@ plt.rc('font', size=9)
 
 show_median = False
 
-names = ['HTLup', 'GWLup', 'IMLup', 'HD142666', 'RULup',
-         'HD143006', 'Sz129', 'MYLup', 'Sz114', 'AS205',
+names = ['HTLup', 'GWLup', 'IMLup', 'RULup', 'Sz114', 
+         'Sz129', 'MYLup', 'HD142666', 'HD143006', 'AS205',
          'SR4', 'Elias20', 'DoAr25', 'Elias24', 'Elias27',
          'DoAr33', 'WSB52', 'WaOph6', 'AS209', 'HD163296']
 
-labels = ['HT Lup', 'GW Lup', 
-          'IM Lup', 'HD 142666', 
-          'RU Lup', 'HD 143006', 
-          'Sz 129', 'MY Lup', 
-          'Sz 114', 'AS 205',
-          'SR 4', 'Elias 20', 
-          'DoAr 25', 'Elias 24', 
-          'Elias 27', 'DoAr 33', 
-          'WSB 52', 'WaOph 6', 
-          'AS 209', 'HD 163296']
+labels = ['HT Lup', 'GW Lup', 'IM Lup', 'RULup', 'Sz 114', 
+          'Sz 129', 'MY Lup', 'HD 142666', 'HD 143006', 'AS 205',
+          'SR 4', 'Elias 20', 'DoAr 25', 'Elias 24', 'Elias 27', 
+          'DoAr 33', 'WSB 52', 'WaOph 6', 'AS 209', 'HD 163296']
 
-dpc = np.array([154., 155., 158., 148., 159.,
-                165., 161., 156., 162., 128., 
+dpc = np.array([154., 155., 158., 159., 162., 
+                161., 156., 148., 165., 128., 
                 134., 138., 138., 136., 116.,
                 139., 136., 123., 131., 101.])
 
-Teff = 10.**(np.array([3.69, 3.56, 3.63, 3.88, 3.61,
-                       3.75, 3.61, 3.71, 3.50, 3.63,
+Teff = 10.**(np.array([3.69, 3.56, 3.63, 3.61, 3.50, 
+                       3.61, 3.71, 3.88, 3.75, 3.63,
                        3.61, 3.59, 3.63, 3.63, 3.59,
                        3.65, 3.57, 3.62, 3.63, 3.97]))
 
-Lstar = 10.**(np.array([ 0.74, -0.40,  0.31,  0.96,  0.16,
-                         0.58, -0.26,  0.16, -0.69,  0.33, 
+Lstar = 10.**(np.array([ 0.74, -0.40,  0.31,  0.16, -0.69,  
+                        -0.25,  0.16,  0.96,  0.58,  0.33, 
                          0.07,  0.35, -0.02,  0.78, -0.04,
                          0.18, -0.15,  0.46,  0.15,  1.23]))
 
-Av = np.array([ 1.0,  0.5,  0.9,  0.5,  0.0, 
-                0.6,  0.9,  1.3,  0.3,  2.4,
+Av = np.array([ 1.0,  0.5,  0.9,  0.0,  0.3, 
+                0.9, 1.3, 0.5,  0.6,  2.4,
                 1.3, 14.0,  2.5,  8.7, 15.0,
                 3.7,  5.0,  3.6,  0.5,  0.0])
 
@@ -80,7 +74,7 @@ for i in range(len(names)):
     snu  = 2.9979e14 / swl
     sLnu = 1e-23*4.*np.pi*(dpc[i]*3.0857e18)**2*snu*sFnu/3.826e33
     sSED = np.log10(sLnu)
-    ax.plot(swl, sSED, 'r', linewidth=0.8, alpha=0.5)
+    ax.plot(swl, sSED, 'dodgerblue', linewidth=0.8, alpha=0.5)
 
     # if you want to show median SED, do so
     if (show_median == True):
@@ -103,7 +97,7 @@ for i in range(len(names)):
         iLnu = 1e-23 *4.*np.pi*(dpc[i] * 3.0857e18)**2*inu*iFnu / 3.826e33
         iLnu *= deredden(iwl, Av[i], thresh=1.0)
         iSED = np.log10(iLnu)
-        ax.plot(iwl, iSED, 'gray')
+        ax.plot(iwl, iSED, 'r')
 #    if (os.path.isfile('SEDs/'+names[i]+'.ISO.txt') == True):
 #        iso = ascii.read('SEDs/'+names[i]+'.ISO.txt')
 #        iwl, iFnu  = iso['lambda'], iso['Flux']

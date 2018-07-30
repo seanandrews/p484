@@ -176,7 +176,8 @@ for i in range(len(uvsets)):
 
     # plot the (u,v) tracks
     ax = fig.add_subplot(gs1[0,i])
-    ax.plot(u, v, '.k', markersize=0.2, rasterized=True)
+    ax.plot(u, v, '.k', markersize=0.1, alpha=0.2, rasterized=True)
+    ax.plot(-u, -v, '.k', markersize=0.1, alpha=0.2, rasterized=True)
 
     # annotations
     ax.annotate(uvlbls[i], xy=(0.06, 0.86), xycoords='axes fraction',
