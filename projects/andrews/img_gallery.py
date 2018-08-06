@@ -12,8 +12,16 @@ plt.rc('font', size=9)
 
 # generalities
 pdir = '/data/sandrews/ALMA_disks/final_images/'
+jdir = '/data/sandrews/ALMA_disks/jane_supplementary_images/'
+hdir = 'test'
 cc = 2.9979e10
 kk = 1.381e-16
+
+fdir = [pdir, jdir, jdir, hdir,
+        pdir, hdir, jdir, pdir,
+        jdir, pdir, jdir, hdir,
+        pdir, jdir, jdir, jdir,
+        hdir, jdir, jdir, hdir]
 
 names = ['HTLup', 'GWLup', 'IMLup', 'RULup', 
          'Sz114', 'Sz129', 'MYLup', 'HD142666', 
@@ -31,18 +39,18 @@ dpc = [154., 155., 158., 159.,
        162., 161., 156., 148., 
        165., 128., 134., 138., 
        138., 136., 116., 139., 
-       136., 123., 131., 101.]
+       136., 123., 121., 101.]
 
 aoffs = [0., 0., 0., -0.02,
          0., 0., -0.06, 0.01,
          0., 0., -0.06, -0.06,
-         0.02, 0.10, 0., -0.09,
+         0.02, 0.10, 0., 0.,
          -0.12, -0.25, 0.01, -0.02]
 
 doffs = [0., 0., 0., 0.08302,
          0., 0., 0.088659, 0.02,
          0.02, 0., -0.51, -0.49,
-         -0.49, -0.38, 0., -0.49,
+         -0.49, -0.38, 0., 0.,
          -0.43, -0.36, 0., 0.]
 
 xlims = np.array([[0.5, -0.5], [1., -1.], [1.5, -1.5], [0.5, -0.5],
@@ -79,7 +87,7 @@ vmaxs = [80., 20., 15., 75.,
          30., 30., 50., 50.,
          15., 60., 50., 50.,
          50., 50., 20., 70.,
-         90., 35., 35., 70.]
+         100., 35., 35., 70.]
 
 # color scale 
 cm = 'inferno'
@@ -93,7 +101,10 @@ gs  = gridspec.GridSpec(5, 4, width_ratios=(1, 1, 1, 1),
 for i in range(len(names)):
 
     # grab image, header
-    hdulist = fits.open(pdir+names[i]+'_script_image.fits')
+    if (fdir[i] == pdir): suff = 'script' 
+    if (fdir[i] == jdir): suff = 'taper'
+    if (fdir[i] == hdir): suff = 'hires'
+    hdulist = fits.open(pdir+names[i]+'_'+suff+'_image.fits')
     Inu = np.squeeze(hdulist[0].data)
     hdr = hdulist[0].header
 
