@@ -247,7 +247,8 @@ thus represents the contrast appropriately.
   as the solid inverse parabolas. The dotted inverse parabolas are Gaussians
   with the width of the ALMA beam. For a detailed description of these
   data, \paperdsharpguzmann{} for AS 209, \paperdsharpisella{}
-  for HD 163296, and \paperdsharphuangrings{} for the rest.}
+  for HD 163296, and \paperdsharphuangrings{} for the rest.
+{\bf TODO: y-labels}}
 \end{figure*}
 
 
@@ -283,8 +284,6 @@ Fig.~\ref{fig-obs-gaussfits} these Gaussian fits are shown in close-up. The
 parameters of the best fits are listed in Table \ref{tab-gauss-params}.  For the
 error estimates on these values, see Appendix \ref{sec-gauss-fitting-procedure}.
 
-{\bf [ADD APPENDIX WITH DETAILS OF FITS AND ERROR ESTIMATES]}
-
 \begin{figure*}
 \centerline{\includegraphics[width=0.85\textwidth]{gaussfits_allrings.pdf}}
 \caption{\label{fig-obs-gaussfits}Gaussian fits to the eight rings of this
@@ -293,7 +292,7 @@ error estimates on these values, see Appendix \ref{sec-gauss-fitting-procedure}.
   the Gauss was fitted to the data. The fit range was chosen to fit the part of
   the curve that, by eye, most resembles a Gaussian. The ``beam'' bar shows the
   FWHM beam size of the observations. The grey band around the blue curve shows
-  the estimated uncertainty of the data.}
+  the estimated uncertainty of the data. {\bf TODO: y-labels}}
 \end{figure*}
 
 \begin{figure*}
@@ -304,7 +303,7 @@ error estimates on these values, see Appendix \ref{sec-gauss-fitting-procedure}.
   }
   \caption{\label{fig-obs-doublegauss}The sum of the two Gaussian fits
     for the two sources with two partly overlapping rings: HD 163296 and
-    HD 143006.}
+    HD 143006. {\bf TODO: y-labels}}
 \end{figure*}
 
 \begin{table*}
@@ -381,11 +380,12 @@ obtain the width $w_d$ of the dust ring
 w_d=\sqrt{\sigma^2-b^2}
 \end{equation}
 where $b$ is the beam width expressed as standard deviation in units of
-$\mathrm{au}$ ($b=d_{\mathrm{pc}}b_{\mathrm{fwhm,as}}/2.355$, where
-$b_{\mathrm{fwhm,as}}$ is the beam full-width at half-maximum (FWHM) in units of
-arcseconds, and $d_{\mathrm{pc}}$ is the distance to the source in units of
-parsec). In using Eq.~(\ref{eq-simple-deconvolve-gauss}) we have ignored the
-elliptical shape of the beam as well as the inclination of the disk.
+$\mathrm{au}$. It is computed from $b_{\mathrm{fwhm,as}}$ (the beam full-width
+at half-maximum (FWHM) in units of arcseconds) through the equation
+$b=d_{\mathrm{pc}}b_{\mathrm{fwhm,as}}/2.355$, where $d_{\mathrm{pc}}$ is the
+distance to the source in units of parsec. In using
+Eq.~(\ref{eq-simple-deconvolve-gauss}) we have ignored the elliptical shape of
+the beam as well as the inclination of the disk.
 
 The slightly narrower deconvolved ring should also have a correspondingly
 higher amplitude $A_{\mathrm{dec}}$ given by
@@ -401,11 +401,11 @@ For completeness, let us note that the deconvolved Gaussian model then becomes
 I_{\nu}^{\mathrm{lb,gauss,dec}}(r) = A_{\mathrm{dec}}\,\exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
 \end{equation}
 
-The width of the dust rings
-in units of the local pressure scale height $h_p$ (see Table
-\ref{tab-gauss-params}) can only be roughly estimated, because we do not know
-the disk midplane temperature. Our estimate of the midplane disk temperature
-is made using the following simple irradiated flaring disk recipe:
+The width of the dust rings in units of the local pressure scale height $h_p$
+(see Table \ref{tab-gauss-params}) can only be roughly estimated, because we do
+not know $h_p$ well enough due to our lack of information about the disk midplane
+temperature. Our estimate of the midplane disk temperature is made using the
+following simple irradiated flaring disk recipe:
 \begin{equation}\label{eq-disk-temperature-model}
 T_{\mathrm{d}}(r) = \left(\frac{\tfrac{1}{2}\varphi L_{*}}{4\pi r^2\sigma_{\mathrm{SB}}}\right)^{1/4}
 \end{equation}
@@ -452,7 +452,7 @@ to Eq.~(\ref{eq-def-average-beam}), based on the values listed in
 Table \ref{tab-gauss-params}, and it shows that the widths of all the rings are
 spatially resolved. Some are only marginally resolved (AS 209 rings 1 and 2, GW
 Lup and the ring 1 of HD 143006), but the data are inconsistent with radially
-unresolved rings. For AS 209 This is confirmed by more detailed analysis in the
+unresolved rings. For AS 209 this is confirmed by more detailed analysis in the
 uv-plane by \paperdsharpguzmann{}. {\bf CHECK IF HUANG DOES THIS, TOO.}
 
 These Gaussian profiles fit the observed data remarkably well, as can be best
@@ -519,7 +519,7 @@ Eq.~(\ref{eq-gauss-lin-br-temp-deconv}) we obtain the corresponding
 $\Sigma_d^{\mathrm{gauss}}(r)$ from
 Eq.~(\ref{eq-optthin-conversion-linbright-sigmad}). From this Gaussian
 model we can derive the total dust mass trapped in the ring:
-\begin{equation}
+\begin{equation}\label{eq-dust-mass-estimate}
   M_d = \int_0^\infty 2\pi r \Sigma_d(r) dr \simeq
   \frac{(2\pi)^{3/2} r_0\, A\,\sigma}{\kappa_\nu^{\mathrm{abs}}\, B_\nu^{\mathrm{lb}}(T_d)}
 \end{equation}
@@ -560,9 +560,9 @@ This allows us to verify if our assumption of optical thinness is justified. The
 results are listed in Table \ref{tab-gauss-params}.  We conclude that the
 optically thin assumption is not entirely wrong, but not quite right either. The
 estimated dust surface density $\Sigma_d$ and dust mass $M_d$ derived from the
-optically thin assumption ( Eqs.~\ref{eq-optthin-conversion-linbright-sigmad}
-and {\bf XXX}, respectively) are only mildly affected by the optical depth
-effects.
+optically thin assumption (Eqs.~\ref{eq-optthin-conversion-linbright-sigmad} and
+\ref{eq-dust-mass-estimate}, respectively) are only mildly affected by the
+optical depth effects.
 
 A much stronger effect on the conversion of the observations to dust mass
 remains the uncertainty of the opacity. As shown in \paperdsharpbirnstiel{}
@@ -712,7 +712,7 @@ absorption optical depth can be substantially lower than unity, even if the full
 extinction optical depth (absorption plus scattering) is unity or larger.  The
 near-unity extinction found in HD 163296 by \paperdsharpisella{} from the CO
 maps could thus be compatible with the sub-unity absorption optical depth we
-derived in out Gaussian fitting procedure (see Table \ref{tab-gauss-params}).
+derived in our Gaussian fitting procedure (see Table \ref{tab-gauss-params}).
 
 In fact, staying with the case of HD 163296, if we would assume that the albedo
 is zero, i.e.\ that the measured extinction optical depth from the CO maps
@@ -767,8 +767,7 @@ that these ``fine-tuned'' properties of the rings are real.
 \section{The rings as dust traps}
 \label{sec-rings-as-dust-traps}
 %
-Given the well separated narrow rings in the above sources, we can analyze these
-rings on a one-by-one basis. The hypothesis we are going to test is that the
+The hypothesis we are now going to test is that the
 rings are caused by dust trapping in axisymmetric pressure bumps. For simplicity
 we will assume that the radial gas pressure profile is fixed in time, and there
 is no back reaction of the dust onto the gas. The pressure bump is assumed to be
@@ -1513,14 +1512,73 @@ radial profile to the observed rings, then interpreting these Gaussian fits
 through the dust trapping model. In this Appendix we detail the procedure we
 used to fit the radial intensity profiles of the rings with Gaussian profiles.
 
-{\bf Complete this section. Add an example of a corner plot (only one is
-presumably enough) and provide a more detailed table of error estimates.}
+The radial intensity profiles (expressed as linear brightness temperature) were
+extracted from the images using a procedure similar to that described by
+\paperdsharphuangrings{}. This procedure involves the fitting of an ellipse to
+describe the inclined ring shape, the deprojection into a ring, and the
+averaging of the intensity along the ring. This averaging procedure enhances the
+signal-to-noise ratio considerably, by a factor $\sqrt{N}$, where $N$ is the
+number of beams that fit along the ring. We estimate the intrinsic noise simply
+by computing the standard deviation along the ring. The resulting averaged
+radial intensity profile $I_\nu^{\mathrm{lb}}(r)$ thus obtains also an error
+estimate $\varepsilon(r)$, which is typically of the order of $\sim$1\% of
+the peak intensity.
 
+The rings display themselves as bumps in $I_\nu^{\mathrm{lb}}(r)$. We choose by eye
+a radial domain around the bump where we believe a Gaussian description is justified.
+The inner and outer radii of this domain are listed in Table \ref{tab-gauss-params}.
+By choosing this domain we can select a specific ring to fit, which is not possible
+when doing the fitting procedure in the uv-plane.
 
-The fitting was done in the
-image plane, in order to make it possible to fit to a limited radial range,
-i.e.\ selecting a single ring. 
+We now fit a Gaussian profile to this bump
+\begin{equation}
+I_\nu^{\mathrm{lb,gauss}}(r) = A\exp\left(-\frac{(r-r_0)^2}{2\sigma^2}\right)
+\end{equation}
+We use the code {\small\sf emcee} \citep{2013PASP..125..306F} to perform a
+Markov Chain Monte Carlo procedure to find the set of parameters
+$(A,r_0,\sigma)$ which have the highest likelihood. Given that the radial
+sampling of $I_\nu^{\mathrm{lb,gauss}}(r)$ is about $N\simeq 70$ points per beam, we
+have to multiply the error estimate of the datapoints by $\sqrt{N}$ before
+feeding it into {\small\sf emcee}, otherwise the MCMC procedure would treat each
+sampling point as an independent measuring point, which is not the case.
 
+We show the corner plot of the fitting of ring 1 of AS 209 in
+Fig.~\ref{fig-corner-gaussfit-as209-1}. The plots for the other rings are
+similar, and are provided in the online material. {\bf TODO: PUT OTHER PLOTS
+IN ONLINE MATERIAL.}
+
+\begin{figure}
+\centerline{\includegraphics[width=0.45\textwidth]{AS_209_ring1_cornerplot_gaussfit.pdf}}
+\caption{\label{fig-corner-gaussfit-as209-1}The correletion plot for the Gauss
+  fitting of ring 1 of AS 209, from the MCMC procedure described in Appendix
+  \ref{sec-gauss-fitting-procedure}.}
+\end{figure}
+
+The most likely parameter values and their error estimates are given in
+Table \ref{tab-gauss-fit-errors}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|cc|ccc|}
+\hline
+\hline
+Source & Ring & $A$ & $r_0$ & $\sigma$ \\
+\hline
+AS 209     & 1 & $  3.637_{-0.047}^{+0.048}$ & $ 74.129_{-0.066}^{+0.063}$ & $  3.885_{-0.090}^{+0.098}$  \\
+AS 209     & 2 & $  2.949_{-0.031}^{+0.030}$ & $120.309_{-0.068}^{+0.065}$ & $  4.651_{-0.111}^{+0.115}$  \\
+Elias 24   & 1 & $  5.214_{-0.068}^{+0.066}$ & $ 76.851_{-0.092}^{+0.088}$ & $  5.104_{-0.172}^{+0.186}$  \\
+HD 163296  & 1 & $  8.475_{-0.056}^{+0.056}$ & $ 67.403_{-0.055}^{+0.057}$ & $  7.370_{-0.098}^{+0.098}$  \\
+HD 163296  & 2 & $  4.918_{-0.026}^{+0.027}$ & $ 99.862_{-0.061}^{+0.059}$ & $  5.741_{-0.116}^{+0.119}$  \\
+GW Lup     & 1 & $  1.467_{-0.052}^{+0.055}$ & $ 85.178_{-0.259}^{+0.316}$ & $  4.882_{-0.402}^{+0.530}$  \\
+HD 143006  & 1 & $  3.202_{-0.084}^{+0.082}$ & $ 41.080_{-0.169}^{+0.190}$ & $  5.133_{-0.320}^{+0.373}$  \\
+HD 143006  & 2 & $  2.473_{-0.043}^{+0.044}$ & $ 64.831_{-0.248}^{+0.230}$ & $  8.029_{-0.501}^{+0.593}$  \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{tab-gauss-fit-errors}The Gaussian fit values with their error
+  estimates from the MCMC procedure described in Appendix \ref{sec-gauss-fitting-procedure}.}
+\end{table}
 
 
 \section{Gaussian mimicry: Detectability of mild optical depth effects}
@@ -1656,7 +1714,7 @@ the more difficult it is to distinguish the real from the mimicked curve.
 If ${\cal F}-1$ is less than the relative error of the observations at the
 peak of the curve, then they are indistinguishable.
 
-Thes results show that up to $\tau_\nu^{\mathrm{peak}}\lesssim 1$ the
+These results show that up to $\tau_\nu^{\mathrm{peak}}\lesssim 1$ the
 differences between the best-fit Gauss and the real curve are at most $\sim
 1\cdots 2$ \%, depending on the beam size. The beam size has most influence
 on ${\cal F}$, but less on the other parameters. That is because many of the
