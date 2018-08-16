@@ -127,6 +127,24 @@ class Continuum:
 
         return radial_profile
 
+    def profilemin(self,radialbins): 
+        """
+        Parameters
+        ==========
+        """
+        rbins = radialbins
+        rwidth = (rbins[1]-rbins[0])
+
+        radial_profile = np.zeros( len(rbins) )
+
+
+        for i in range(len(rbins)):
+            annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+
+            radial_profile[i] = np.min(annulus_intensities)
+
+        return radial_profile
+
     def azunwrap(self,radialbins, tbins = -179.+2*np.arange(180), yaxis = 'intensity', theta_exclusion = np.array([])): 
         """
         Parameters
@@ -350,6 +368,7 @@ class Continuum:
             else:
                 ticks = np.arange(-np.floor(size)/2., np.floor(size)/2.+0.001, 0.5)
 
+
             ax.tick_params(axis = "both", direction = 'in',which = 'major', colors = 'white', length = 3)
             ax.set_xticks(ticks)
             ax.set_yticks(ticks)
@@ -359,9 +378,6 @@ class Continuum:
             for ytick in ax.get_yticklabels():
                 ytick.set_color('black')
 
-            #plt.setp(ax.get_xticklabels())
-
-            #plt.setp(ax.get_yticklabels())
 
 
         plt.gca().invert_xaxis() #since RA increases right to left 
