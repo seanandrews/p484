@@ -56,7 +56,6 @@
 \def\rhogas{\ensuremath{\rho}\xspace}
 \def\rhodust{\ensuremath{\rho_\mathrm{d}}\xspace}
 \def\mugas{\ensuremath{\mu_\mathrm{gas}}\xspace}
-\def\mp{\ensuremath{m_\mathrm{p}}\xspace}
 \def\Hp{\ensuremath{H_\mathrm{p}}\xspace}
 \def\Hs{\ensuremath{H_\mathrm{s}}\xspace}
 \def\Omegak{\ensuremath{\Omega_\mathrm{K}}\xspace}
@@ -69,11 +68,16 @@
 %
 \def\submitted{submitted\xspace}
 \def\inprep{in prep.\xspace}
+\def\paperdsharpandrews{Andrews et al.\ ({\bf 2018})}
+\def\paperdsharphuangrings{Huang et al.\ ({\bf 2018})}
+\def\paperdsharpisella{Isella et al.\ ({\bf 2018})}
+\def\paperdsharpguzmann{Guzmann et al.\ ({\bf 2018})}
+\def\paperdsharpbirnstiel{Birnstiel et al.\ ({\bf 2018})}
 %
 \begin{document}
 %\thesaurus{02.01.2,08.03.4,08.06.2,08.16.5,13.09.6}
 \title{Dust trapping in thin-ringed protoplanetary disks}  \titlerunning{Thin-ringed disks}
-\authorrunning{Dullemond, Birnstiel, Troncoso, Perez, Andrews, Isella, Huang, Zhu, Guzman, Benisty, Carpenter}
+\authorrunning{Dullemond et al.}
 \author{C.P.~Dullemond$^{1}$, T.~Birnstiel$^{2}$, N.~Troncoso$^{3}$, L.~Perez$^{3}$, S.~Andrews$^{4}$, A.~Isella$^{5}$, J.~Huang$^{4}$, Z.~Zhu$^{6}$, V.~Guzm\'an$^{7}$, M.~Benisty$^{8}$, J.~Carpenter$^{9}$}
 \institute{
   (1) Zentrum f\"ur Astronomie, Heidelberg University, Albert Ueberle Str.~2, 69120 Heidelberg, Germany\\
@@ -177,7 +181,7 @@ our ALMA Large Programme that we compare to our models.
 %
 In this paper we focus on those sources of the DSHARP Programme
 that show high-contrast and radially thin rings that are separated by deep
-valleys, and that are sufficiently face-on to not have to worry about 3-D
+valleys, and that are sufficiently face-on to not have to worry much about 3-D
 line-of-sight issues. These are AS 209, Elias 24, HD 163296, GW Lup and
 HD 143006. Their stellar parameters are given in Table \ref{tab-stellar-params}.
 
@@ -188,28 +192,25 @@ HD 143006. Their stellar parameters are given in Table \ref{tab-stellar-params}.
 \hline
 Source     & $d\,\mathrm{[pc]}$ & $M_{*}/M_{\odot}$ & $L_{*}/L_{\odot}$ \\
 \hline
-% AS 209     & 121              & 0.912        &  0.631 \\ % Data from 2018.05.13 Table
 AS 209     & 121              & 0.832        &  1.413 \\ % 2018.07.02
 Elias 24   & 136              & 0.776        &  6.03  \\ % 2018.07.02
-% HD 163296  & 101              & 2.14         &  25.7  \\ % Data from 2018.05.13 Table
 HD 163296  & 101              & 2.04         &  17.0  \\ % 2018.07.02
 GW Lup     & 155              & 0.457        &  0.331 \\ % 2018.07.02
-% HD 143006  & 166              & 0.813        &  0.871 \\ % Data estimated by Kees May/June 2018
-HD 143006  & 165              & 1.78        &  3.80 \\  % 2018.07.02 ** Big change **
+HD 143006  & 165              & 1.78         &  3.80 \\  % 2018.07.02 ** Big change **
 \hline
 \hline
 \end{tabular}
 \end{center}
-\caption{\label{tab-stellar-params}The stellar parameters assumed for the
-  stars studied in this paper. Distance is in parsec and mass and luminosity
-  are in units of the solar values.}
+\caption{\label{tab-stellar-params}The stellar parameters assumed for the stars
+  studied in this paper. Distance is in parsec and mass and luminosity are in
+  units of the solar values. More details, as well as references and uncertainty
+  estimates, can be found in \paperdsharpandrews{}.}
 \end{table}
 
-
-A gallery of these sources is shown in Fig.~\ref{fig-obs-images}.
-For an overview of the ALMA Large Programme we refer to {\bf Andrews et
-  al.~XXXX}, and for an in-depth discussion on the data of the individual
-sources we refer to {\bf [LIST HERE THE PAPERS]}.
+A gallery of these sources is shown in Fig.~\ref{fig-obs-images}.  For an
+overview of the ALMA Large Programme we refer to \paperdsharpandrews{}, and for
+an in-depth discussion on the data of the individual sources we refer to
+\paperdsharphuangrings{}, \paperdsharpisella{}, \paperdsharpguzmann{}.
 
 \begin{figure*}
 \centerline{\includegraphics[width=0.95\textwidth]{gallery_rings.pdf}}
@@ -217,27 +218,25 @@ sources we refer to {\bf [LIST HERE THE PAPERS]}.
   band 6 of the five disks in our sample which have the most pronounced rings.
   The eight highest contrast rings, which are the topic of this paper,
   are marked in the images. For a detailed description of these
-  data, see {\bf Guzm\'an et al.~(2018)} for AS 209, {\bf XXXX}}
+  data, see \paperdsharpguzmann{} for AS 209, \paperdsharpisella{}
+  for HD 163296, and \paperdsharphuangrings{} for the rest.}
 \end{figure*}
 
-The high-contrast rings of these sources provide ``clean laboratories''
-for testing the theory of dust trapping in a ring-by-ring manner.
-Fig.\ \ref{fig-obs-profiles}
-shows the radial profile (deprojected for
+The high-contrast rings of these sources provide ``clean laboratories'' for
+testing the theory of dust trapping in a ring-by-ring manner.
+Fig.\ \ref{fig-obs-profiles} shows the radial profile (deprojected for
 inclination) of the thermal emission of the dust of the five disks. The
-procedure used to extract these radial profiles from the continuum maps
-is described in {\bf [Paper Jane Huang, but note that for HD 163296 and
-HD 143006 we removed the blob]}. The
-brightness is expressed as linear brightness temperature
-$T_{\mathrm{br,lin}}=(c^2/2k_B)I_\nu/\nu^2$, where $I_\nu$ is the
-intensity, $c$ the light speed, $k_B$ the Boltzmann constant, and $\nu$ the
-frequency\footnote{It should be noted that the full (non-linear) brightness temperature,
-defined such that $B_\nu(T_{\mathrm{br,full}})=I_\nu$, with $B_\nu(T)$ the
-Planck function, can have very different values, in particular at low
-brightness. As a result $T_{\mathrm{br,full}}(r)$ tends to vastly
-underestimate the contrast between the rings and the inter-ring
-regions. Therefore, in this paper we plot the brightness using the linear
-brightness temperature, which is proportional to the intensity in Jy/beam.}.
+procedure used to extract these radial profiles from the continuum maps is
+described by \paperdsharphuangrings{}, though we removed the blob seen in HD
+163296 and HD 143006 for this work.
+
+The brightness profiles are expressed as linear brightness temperature
+$I_\nu^{\mathrm{lb}}$, which we define in Appendix \ref{sec-conventions}. The
+choice of linear brightness temperature over full brightness temperature is
+important, because the full brightness temperature tends to vastly underestimate
+the contrast between the rings and the inter-ring regions. The linear brightness
+temperature is instead linearly proportional to the intensity in Jy/beam, and
+thus represents the contrast appropriately.
 
 \begin{figure*}
 \centerline{\includegraphics[width=0.85\textwidth]{gallery_profiles.pdf}}
@@ -247,10 +246,17 @@ brightness temperature, which is proportional to the intensity in Jy/beam.}.
   The eight highest contrast rings are fitted by a Gaussian profile, shown
   as the solid inverse parabolas. The dotted inverse parabolas are Gaussians
   with the width of the ALMA beam. For a detailed description of these
-  data, see {\bf Guzm\'an et al.~(2018)} for AS 209, {\bf XXXX}}
+  data, \paperdsharpguzmann{} for AS 209, \paperdsharpisella{}
+  for HD 163296, and \paperdsharphuangrings{} for the rest.
+{\bf TODO: y-labels}}
 \end{figure*}
 
-As is shown in Appendix \ref{sec-steady-state-analytic-trap-model}, for a
+
+\section{Fitting a Gaussian profile to the ring emission}
+\label{sec-gauss-fits}
+%
+As we will discuss later (Section \ref{sec-rings-as-dust-traps} and Appendix
+\ref{sec-steady-state-analytic-trap-model}), for a
 Gaussian pressure bump the solution to the radial dust mixing and drift problem
 is, to first approximation, also a Gaussian, with a width smaller than, or equal
 to, that of the gas pressure bump. Our analysis of the eight rings of this paper
@@ -260,24 +266,33 @@ paper such Gaussian fits were done in the context of fitting the entire radial
 intensity profile in the uv-plane to the ALMA data ({\bf Guzman et al.XXXX;
   More??}). Our fits may deviate slightly from those {\bf [CHECK]}, because here
 we put emphasis on the shape of the peak of the rings, and deemphasize the
-wings.
+wings. {\bf CHECK}.
 
-The fitting procedure is described in Appendix \ref{sec-gauss-fitting}.  The
-fitting was done in the image plane, in order to make it possible to fit to a
-limited radial range, i.e.\ selecting a single ring. The Gaussian fits are shown
-as inverse parabolas in Fig.\ \ref{fig-obs-profiles}. In
+The aim is now to find, for each ring, a Gaussian linear brightness temperature
+profile
+\begin{equation}\label{eq-gauss-lin-br-temp}
+I_{\nu}^{\mathrm{lb,gauss}}(r) = A\,\exp\left(-\frac{(r-r_0)^2}{2\sigma^2}\right)
+\end{equation}
+that best describes the ring. To be more precise: We determine the values of
+$A$, $r_0$ and $\sigma$ for which Eq.~(\ref{eq-gauss-lin-br-temp}) best fits the
+observed linear brightness temperature profile $I_{\nu}^{\mathrm{lb,obs}}(r)$
+shown in Fig.~\ref{fig-obs-profiles} within a prescribed radial domain as given
+in Table \ref{tab-gauss-params}. Details of the fitting procedure are described
+in Appendix \ref{sec-gauss-fitting-procedure}. The Gaussian fits are shown as
+inverse parabolas in Fig.\ \ref{fig-obs-profiles}. In
 Fig.~\ref{fig-obs-gaussfits} these Gaussian fits are shown in close-up. The
-parameters of the best fits are listed in Table \ref{tab-gauss-params}.
+parameters of the best fits are listed in Table \ref{tab-gauss-params}.  For the
+error estimates on these values, see Appendix \ref{sec-gauss-fitting-procedure}.
 
 \begin{figure*}
 \centerline{\includegraphics[width=0.85\textwidth]{gaussfits_allrings.pdf}}
 \caption{\label{fig-obs-gaussfits}Gaussian fits to the eight rings of this
-  paper. The blue curves are the observations, the green curves are the best fit
+  paper. The blue curves are the observations, the orange curves are the best fit
   Gaussian profiles. The ``fit range'' bar shows the radial range within which
   the Gauss was fitted to the data. The fit range was chosen to fit the part of
   the curve that, by eye, most resembles a Gaussian. The ``beam'' bar shows the
   FWHM beam size of the observations. The grey band around the blue curve shows
-  the estimated uncertainty of the data.}
+  the estimated uncertainty of the data. {\bf TODO: y-labels}}
 \end{figure*}
 
 \begin{figure*}
@@ -288,137 +303,166 @@ parameters of the best fits are listed in Table \ref{tab-gauss-params}.
   }
   \caption{\label{fig-obs-doublegauss}The sum of the two Gaussian fits
     for the two sources with two partly overlapping rings: HD 163296 and
-    HD 143006.}
+    HD 143006. {\bf TODO: y-labels}}
 \end{figure*}
 
 \begin{table*}
 \begin{center}
-\begin{tabular}{|cc|cc|ccccc|cccccc|}
+\begin{tabular}{|cc|cc|cccccc|ccccc|}
 \hline
 \hline
 %Source & Ring & $r_i\, [\mathrm{au}]$ & $r_o\, [\mathrm{au}]$ & $A\, [\mathrm{K}]$ & $r\, [\mathrm{au}]$ & $\mathrm{fwhm}\, [\mathrm{mas}]$ & $\sigma\, [\mathrm{au}]$ & $w_d\, [\mathrm{au}]$ & $T_{\mathrm{d}}\,\mathrm{[K]}$ & $w_d/h_p$ & $M_{\mathrm{d,ri}} [M_{\oplus}]$ & $M_{\mathrm{d,iv}} [M_{\oplus}]$\\
 %Source & Ring & $r_{\mathrm{in}}$ & $r_{\mathrm{out}}$ & $A$ & $r_0$ & $\mathrm{fwhm}$ & $\sigma$ & $w_d$ & $T_{\mathrm{d}}$ & $T_{\mathrm{d,br,lin}}$ & $w_d/h_p$ & $M_{\mathrm{d,ri}}$ & $M_{\mathrm{d,iv}}$\\
 %            & & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $[\mathrm{K}]$ & $[\mathrm{au}]$ & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $\mathrm{[K]}$ & $\mathrm{[K]}$ &  & $[M_{\oplus}]$ & $[M_{\oplus}]$\\
-Source & Ring & $r_{\mathrm{in}}$ & $r_{\mathrm{out}}$ & $A$ & $r_0$ & $\mathrm{fwhm}$ & $\sigma$ & $w_d$ & $T_{\mathrm{d}}$ & $T_{\mathrm{d,br,lin}}$ & $w_d/h_p$ & $\tau$ & $M_{\mathrm{d,ri}}$ & $M_{\mathrm{d,iv}}$\\
-            & & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $[\mathrm{K}]$ & $[\mathrm{au}]$ & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $\mathrm{[K]}$ & $\mathrm{[K]}$ &  &  & $[M_{\oplus}]$ & $[M_{\oplus}]$\\
+%Source & Ring & $r_{\mathrm{in}}$ & $r_{\mathrm{out}}$ & $A$ & $r_0$ & $\mathrm{fwhm}$ & $\sigma$ & $w_d$ & $T_{\mathrm{d}}$ & $T_{\mathrm{d,br,lin}}$ & $w_d/h_p$ & $\tau$ & $M_{\mathrm{d,ri}}$ & $M_{\mathrm{d,iv}}$\\
+%            & & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $[\mathrm{K}]$ & $[\mathrm{au}]$ & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $\mathrm{[K]}$ & $\mathrm{[K]}$ &  &  & $[M_{\oplus}]$ & $[M_{\oplus}]$\\
+%Source & Ring & beam & domain & $A$ & $r_0$ & $\mathrm{fwhm}$ & $\sigma$ & $w_d$ & $T_{\mathrm{d}}$ & $T_{\mathrm{d,br,lin}}$ & $w_d/h_p$ & $\tau$ & $M_{\mathrm{d,ri}}$ & $M_{\mathrm{d,iv}}$\\
+%            & & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{K}]$ & $[\mathrm{au}]$ & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $\mathrm{[K]}$ & $\mathrm{[K]}$ &  &  & $[M_{\oplus}]$ & $[M_{\oplus}]$\\
+Source & Ring & beam & domain & $A$ & $A_{\mathrm{dec}}$ & $r_0$ & $\mathrm{FWHM}$ & $\sigma$ & $w_d$ & $T_{\mathrm{d}}$ & $B_{\mathrm{d}\nu}^{\mathrm{lb}}$ & $w_d/h_p$ & $\tau_\nu^{\mathrm{peak}}$ & $M_{\mathrm{d}}$\\
+            & & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{K}]$ & $[\mathrm{K}]$ & $[\mathrm{au}]$ & $[\mathrm{mas}]$ & $[\mathrm{au}]$ & $[\mathrm{au}]$ & $\mathrm{[K]}$ & $\mathrm{[K]}$ &  &  & $[M_{\oplus}]$\\
 \hline
 % NOTE: This table is made automatically with python_make_tables/make_latex_table.py
 % Note: New table made with new stellar parameters 2018.07.02
-AS 209     & 1 &  69 &  79 &   3.64 &  74.13 &  75.42 &   3.88 &   3.43 &  15.8 &  10.9 &   0.6 &   0.41 &  33.3 &   1.81\\
-AS 209     & 2 & 115 & 125 &   2.95 & 120.31 &  90.28 &   4.64 &   4.28 &  12.4 &   7.7 &   0.4 &   0.48 &  74.3 &   4.04\\
-Elias 24   & 1 &  72 &  82 &   5.22 &  76.85 &  87.99 &   5.08 &   4.66 &  22.3 &  17.2 &   0.6 &   0.36 &  41.1 &   2.23\\
-HD 163296  & 1 &  60 &  76 &   8.48 &  67.41 & 171.73 &   7.36 &   7.21 &  30.8 &  25.6 &   1.7 &   0.40 &  56.9 &   3.09\\
-HD 163296  & 2 &  94 & 104 &   4.92 &  99.86 & 133.56 &   5.73 &   5.53 &  25.3 &  20.2 &   0.8 &   0.28 &  48.3 &   2.62\\
-GW Lup     & 1 &  79 &  89 &   1.48 &  85.13 &  72.08 &   4.74 &   4.15 &  10.3 &   5.7 &   0.6 &   0.30 &  36.3 &   1.97\\
-HD 143006  & 1 &  35 &  45 &   3.21 &  41.05 &  72.20 &   5.06 &   4.42 &  27.2 &  22.0 &   2.1 &   0.16 &  10.5 &   0.57\\
-HD 143006  & 2 &  59 &  72 &   2.48 &  64.83 & 112.51 &   7.88 &   7.49 &  21.6 &  16.6 &   2.0 &   0.16 &  26.5 &   1.44\\
+% Note: New table with new beam size estimates 2018.08.06
+% Note: Added beam size to table, changed a bit the layout, and used new opacities for mass estimates (though still needs improving) 2018.08.07
+% Note: Removed the Ivezic mass column
+% Note: Added A_dec
+AS 209     & 1 & 37 &  69 --  79 &   3.64 &   4.18 &  74.1 &  75.4 &   3.87 &   3.38 &  15.8 &  10.9 &   0.6 &   0.48 &  28.5\\
+AS 209     & 2 & 37 & 115 -- 125 &   2.95 &   3.23 & 120.3 &  90.3 &   4.64 &   4.23 &  12.4 &   7.7 &   0.4 &   0.55 &  60.7\\
+Elias 24   & 1 & 35 &  72 --  82 &   5.22 &   5.69 &  76.9 &  88.0 &   5.08 &   4.66 &  22.3 &  17.2 &   0.6 &   0.40 &  33.4\\
+HD 163296  & 1 & 43 &  60 --  76 &   8.48 &   8.76 &  67.4 & 171.7 &   7.36 &   7.13 &  30.8 &  25.6 &   1.6 &   0.42 &  43.8\\
+HD 163296  & 2 & 43 &  94 -- 104 &   4.92 &   5.20 &  99.9 & 133.6 &   5.73 &   5.42 &  25.3 &  20.2 &   0.8 &   0.30 &  38.0\\
+GW Lup     & 1 & 44 &  79 --  89 &   1.48 &   1.87 &  85.1 &  72.1 &   4.74 &   3.76 &  10.3 &   5.7 &   0.5 &   0.40 &  34.1\\
+HD 143006  & 1 & 45 &  35 --  45 &   3.21 &   4.11 &  41.0 &  72.2 &   5.06 &   3.95 &  27.2 &  22.0 &   1.9 &   0.21 &  10.0\\
+HD 143006  & 2 & 45 &  59 --  72 &   2.48 &   2.71 &  64.8 & 112.5 &   7.88 &   7.22 &  21.6 &  16.6 &   2.0 &   0.18 &  21.6\\
 \hline
 \hline
 \end{tabular}
 \end{center}
 \caption{\label{tab-gauss-params}The model parameters for the Gaussian ring fits
-  in Figs.~\ref{fig-obs-profiles} and \ref{fig-obs-gaussfits}. The values
-  $r_{\mathrm{in}}$ and $r_{\mathrm{out}}$ are the inner and outer boundary of
-  the fitting domain. $A$ is the peak linear brightness temperature of the
-  best-fit Gaussian ring model, $r_0$ is its radius in $\mathrm{au}$,
-  $\mathrm{fwhm}$ is the width expressed as full-width-at-half-maximum in units
-  of milliarcsecond, $\sigma$ is its width expressed as standard deviation in
-  units of $\mathrm{au}$ and $w_d$ is the width of the underlying (deconvolved)
-  dust emission profile, also expressed as standard deviation in units of
-  $\mathrm{au}$. The last six columns are derived from a simple disk model
-  assumption: $T_{\mathrm{d}}$ is the midplane temperature of the disk (we
-  assume gas and dust temperature to be equal) computed from
-  Eq.~(\ref{eq-disk-temperature-model}) assuming a flaring angle of
-  $\varphi=0.02$. From that one can derive the corresponding linear brightness
-  temerature $T_{\mathrm{d,br,lin}}=B_\nu(T_{\mathrm{d}})c^2/2\nu^2$ where
-  $\nu=c/0.13\,\mathrm{cm}$ is the frequency belonging to the wavelength of 0.13
-  $\mathrm{cm}$ of ALMA band 6.  The fourth-to-last column expresses the
-  deconvolved dust ring width in units of the disk pressure scale height $h_p$
-  computed from $T_{\mathrm{d}}$. The $\tau$ column gives the estimated optical
-  depth at the peak of the ring, calculated from
-  $\tau=-\ln(1-A/T_{\mathrm{d,br,lin}})$.  The last two columns are the computed
-  dust mass in the ring in units of Earth masses, assuming the small grain
-  absorption opacity
-  $\kappa_{\mathrm{abs,ri}}(\lambda=0.13\,\mathrm{cm})=1.70\,\mathrm{cm}^2/\mathrm{g}$
-  of \citet{2010A&A...512A..15R} ($M_{\mathrm{d,ri}}$) and the corresponding
-  value
-  $\kappa_{\mathrm{abs,ri}}(\lambda=0.13\,\mathrm{cm})=31.3\,\mathrm{cm}^2/\mathrm{g}$
-  of \citet{1997MNRAS.291..121I} ($M_{\mathrm{d,iv}}$). In making these
-  estimates, the optically thin approximation was used. See Appendix
-  \ref{sec-computing-dust-mass} for details. An estimate of the
-  optical-depth-corrected dust mass can be made by multiplying the mass values
-  in the table by $\tau/(1-e^{-\tau})$.}
+  in Figs.~\ref{fig-obs-profiles} and \ref{fig-obs-gaussfits}. The ``beam''
+  column gives the beam size (full-width-at-half-max). Given that in reality the
+  beam is elliptic, and the disk has an inclination, this is merely an estimate.
+  The ``domain'' column gives the radial domain within which the Gaussian fit
+  was made. $A$ is the peak linear brightness temperature of the best-fit
+  Gaussian ring model, $r_0$ is its radius in $\mathrm{au}$, $\mathrm{FWHM}$ is
+  the width expressed as full-width-at-half-maximum in units of milliarcsecond,
+  $\sigma$ is its width expressed as standard deviation in units of
+  $\mathrm{au}$ and $w_d$ is the width of the underlying (deconvolved) dust
+  emission profile, also expressed as standard deviation in units of
+  $\mathrm{au}$. The $A_{\mathrm{dec}}$ column is like $A$, but corrected for
+  the deconvolution (see Eq.~\ref{eq-a-deconv}). The last five columns are
+  derived from a simple disk model assumption: $T_{\mathrm{d}}$ is the midplane
+  temperature of the disk (we assume gas and dust temperature to be equal)
+  computed from Eq.~(\ref{eq-disk-temperature-model}), assuming a flaring angle
+  of $\varphi=0.02$. From that one can derive the corresponding linear
+  brightness temperature $B_{\mathrm{d}\nu}^{\mathrm{lb}}$ using
+  Eq.~(\ref{eq-app-bnu-bright}) for $\nu=c/(0.13\,\mathrm{cm})$ (ALMA band 6).
+  The $w_d/h_p$ column expresses the deconvolved dust ring width in units of the
+  disk pressure scale height $h_p$ computed from $T_{\mathrm{d}}$. The
+  $\tau_\nu^{\mathrm{peak}}$ column gives the estimated optical depth at the peak of the ring,
+  calculated from Eq.~(\ref{eq-tau-estimate}). The last column is the computed dust mass in the
+  ring in units of Earth masses. See Appendix \ref{sec-computing-dust-mass} for
+  details. In making these mass estimates we use the DSHARP dust opacity model
+  (\paperdsharpbirnstiel{}) for a grain radius of $a=0.1\,\mathrm{cm}$, which
+  yields an absorption opacity
+  $\kappa_\nu^{\mathrm{abs}}(\lambda=0.13\,\mathrm{cm})=1.93\,\mathrm{cm}^2/\mathrm{g}$.
+  The uncertainty of the opacity value is, however, very large, since we do not
+  know apriori the grain size distribution.}
 \end{table*}
 
 The observed rings are the result of the thermal emission of a dust ring convolved
-with the ALMA beam. The standard deviation width $\sigma$ of the fitted Gaussian
-profile is given in Table \ref{tab-gauss-params}.  To obtain the width of the
+with the ALMA beam. To obtain the width of the
 underlying dust ring we have to deconvolve. Assuming a Gaussian beam and a
 Gaussian dust ring, we can use the rule of the convolution of two Gaussians, and
 obtain the width $w_d$ of the dust ring
-\begin{equation}
+\begin{equation}\label{eq-simple-deconvolve-gauss}
 w_d=\sqrt{\sigma^2-b^2}
 \end{equation}
 where $b$ is the beam width expressed as standard deviation in units of
-$\mathrm{au}$ ($b=d_{\mathrm{pc}}b_{\mathrm{fwhm,as}}/2.355$, where
-$b_{\mathrm{fwhm,as}}$ is the beam full width at half maximum in units of
-arcseconds, and $d_{\mathrm{pc}}$ is the distance to the source in units of
-parsec). The width of the dust rings
-in units of the local pressure scale height $h_p$ (see Table
-\ref{tab-gauss-params}) can only be roughly estimated, because we do not know
-the disk midplane temperature. Our estimate is made as follows:
+$\mathrm{au}$. It is computed from $b_{\mathrm{fwhm,as}}$ (the beam full-width
+at half-maximum (FWHM) in units of arcseconds) through the equation
+$b=d_{\mathrm{pc}}b_{\mathrm{fwhm,as}}/2.355$, where $d_{\mathrm{pc}}$ is the
+distance to the source in units of parsec. In using
+Eq.~(\ref{eq-simple-deconvolve-gauss}) we have ignored the elliptical shape of
+the beam as well as the inclination of the disk.
+
+The slightly narrower deconvolved ring should also have a correspondingly
+higher amplitude $A_{\mathrm{dec}}$ given by
+\begin{equation}\label{eq-a-deconv}
+A_{\mathrm{dec}} = \frac{\sigma}{w_d} \, A
+\end{equation}
+to conserve luminosity, where we ignore the geometric effects due to the
+circular coordinates. The values of $A_{\mathrm{dec}}$ are listed in Table
+\ref{tab-gauss-params} as well.
+
+For completeness, let us note that the deconvolved Gaussian model then becomes
+\begin{equation}\label{eq-gauss-lin-br-temp-deconv}
+I_{\nu}^{\mathrm{lb,gauss,dec}}(r) = A_{\mathrm{dec}}\,\exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
+\end{equation}
+
+The width of the dust rings in units of the local pressure scale height $h_p$
+(see Table \ref{tab-gauss-params}) can only be roughly estimated, because we do
+not know $h_p$ well enough due to our lack of information about the disk midplane
+temperature. Our estimate of the midplane disk temperature is made using the
+following simple irradiated flaring disk recipe:
 \begin{equation}\label{eq-disk-temperature-model}
 T_{\mathrm{d}}(r) = \left(\frac{\tfrac{1}{2}\varphi L_{*}}{4\pi r^2\sigma_{\mathrm{SB}}}\right)^{1/4}
 \end{equation}
 where $\sigma_{\mathrm{SB}}$ is the Stefan-Boltzmann constant and $\varphi$ is
 the so-called flaring angle \citep[e.g.][]{1997ApJ...490..368C,
-  1998ApJ...500..411D, 2001ApJ...560..957D}. The pressure scale height then
+  1998ApJ...500..411D, 2001ApJ...560..957D}. The factor of $1/2$ in front of the
+flaring angle $\varphi$ originates from the consideration that the stellar
+radiation heats the surface layer of the disk, which then radiates half of that
+energy away and half into the deeper regions of the disk. Only the latter half
+goes into the energy balance equation between irradiation and radiative cooling
+of the disk interior. We take the flaring angle to be $\varphi=0.02$ which is an
+estimate based on typical values from models. In using this simple recipe we
+assume that the optical and infrared dust opacity is dominated by a population
+of small grains that is vertically more extended than the larger dust grains
+seen in the ALMA images. The two dust populations may
+be largely decoupled (see e.g.\ the BL-series of models of
+\citet{2004A&A...417..159D} as an illustration). The value of $\varphi=0.02$ is
+nothing more than an educated guess, so its value can easily be wrong by a
+factor of four or so. But the fact that the pressure scale height goes as
+$T_{\mathrm{d}}^{1/2}\propto \varphi^{1/8}$ means that such an error only
+affects $h_p$ mildly.
+
+Assuming that the gas temperature is equal to the dust temperature, the
+pressure scale height of the disk now
 follows from $h_p=\sqrt{k_BT_{\mathrm{d}}r^3/\mu m_pGM_{*}}$ with $k_B$ the
 Boltzmann constant, $m_p$ the proton mass, $G$ the gravitational constant and
 $\mu=2.3$ the mean molecular weight in atomic units. The stellar parameters are
-taken from Table \ref{tab-stellar-params}. We take the flaring angle to be
-$\varphi=0.02$ which is an estimate based on typical values from models.  But
-this value can easily be wrong by a factor of four or so. The fact that the
-pressure scale height goes as $T_{\mathrm{d}}^{1/2}\propto \varphi^{1/8}$
-means, however, that such an error only affects $h_p$ mildly.
+taken from Table \ref{tab-stellar-params}.
 
 We see from Table \ref{tab-gauss-params} that some rings are narrower than the
 (estimated) pressure scale height $h_p$, while others are broader. This
 comparison is important because long-lived pressure bumps in the gas cannot be
 radially narrower than about one pressure scale height. If a thermal emission
 ring produced by the dust is substantially narrower than $h_p$, then some kind
-of dust trapping must have taken place. If this were not the case, then the dust
-emission profile would have the same shape as the gas midplane density, and thus
-the gas midplane pressure bump would then be a narrower than $h_p$. 
+of dust trapping must have taken place. We can thus conclude that we have strong
+evidence of dust trapping operating in the rings of AS 209, Elias 24 and GW Lup.
+For the other rings dust trapping is certainly not ruled out either, but would
+require further evidence. 
 
-We see that 5 out of 8 rings are narrower than $h_p$, but not by much. None are
-less than half the width of the pressure scale height of the gas. This is
-perhaps slightly disappointing, because it means that these results are no
-irrefutable proof that dust trapping is playing a role in the shaping of these
-rings. But it is strong evidence for that nonetheless.
+For these observations the FWHM beam size for each ring is listed in Table
+\ref{tab-gauss-params}. These are azimuthal average beam size values according
+to Eq.~(\ref{eq-def-average-beam}), based on the values listed in
+\paperdsharphuangrings{}. This number can be compared to the FWHM ring width in
+Table \ref{tab-gauss-params}, and it shows that the widths of all the rings are
+spatially resolved. Some are only marginally resolved (AS 209 rings 1 and 2, GW
+Lup and the ring 1 of HD 143006), but the data are inconsistent with radially
+unresolved rings. For AS 209 this is confirmed by more detailed analysis in the
+uv-plane by \paperdsharpguzmann{}. {\bf CHECK IF HUANG DOES THIS, TOO.}
 
-For these observations the fwhm beam size is of the order of 35 milliarcseconds
-{\bf [CHECK AND MAKE MORE ACCURATE]}. This number can be compared to the fwhm
-ring width in Table \ref{tab-gauss-params}, and it shows that the widths of all
-the rings are spatially resolved. Some are only marginally resolved (AS 209
-rings 1 and 2, GW Lup and the ring 1 of HD 143006), but the data are
-inconsistent with radially unresolved rings. This is confirmed by more detailed
-analysis in the uv-plane ({\bf REFS TO Guzm\'an et al.~(2018)}).
-
-These Gaussian profiles fit the observed data remarkably well, as can be
-best seen in Fig.~\ref{fig-obs-gaussfits}. 
-For the broad rings of HD 163296 the closeness to a Gaussian profile is
-particularly striking, given that these rings are resolved by many beam
-widths. In particular in this source there is therefore no doubt that the
-Gaussian profile is a reflection of a real phenomenon, and is not caused by
-unknown observational or data reduction issues.  But also the rings of AS 209,
-while not as well-resolved as those of HD 163296, are remarkably close to
-Gaussian.
-
-For Elias 24 the ring fits a Gaussian near the peak, but deviates from Gaussian
-already less half a width from the center. Likewise for the rings of HD
-143006. The ring around GW Lup is an intermediate case, which fits a Gauss well
-on the inner flank, but rather badly on the outer flank.
+These Gaussian profiles fit the observed data remarkably well, as can be best
+seen in Fig.~\ref{fig-obs-gaussfits}.  For the broad rings of HD 163296 the
+closeness to a Gaussian profile is particularly striking, given that these rings
+are resolved by many beam widths.  For Elias 24 the ring fits a Gaussian near
+the peak, but deviates from Gaussian already less half a width from the
+center. Likewise for the rings of HD 143006. The ring around GW Lup is an
+intermediate case, which fits a Gauss well on the inner flank, but rather badly
+on the outer flank.
 
 In all ring profiles shown in Fig.~\ref{fig-obs-gaussfits} the observed profile
 rises above the Gaussian fit at some point in the wings. For the inner flanks of
@@ -444,27 +488,286 @@ looks. This danger is particularly large in the present case, since the fitting
 range was chosen to maximize the similarity to the Gauss near the
 peak. Nevertheless, it clearly signals a deviation from Gaussian.
 
-Given the closeness of the profiles to a Gaussian, we can use the Gaussian fit
-to make estimates of the total mass of dust trapped in each of these rings. The
-procedure is described in Appendix \ref{sec-computing-dust-mass}, and the
-results, for the two opacity choices we make, are listed in Table
-\ref{tab-gauss-params}. In making these estimates we have assumed the dust to be
-made up of micron-sized dust, which is likely too small. The mass based on the
-Ivezic opacity, $M_{\mathrm{d,iv}}$, will increase for $a>\lambda/2\pi$ by a
-factor of $2\pi\,a/\lambda$ with $\lambda=0.13\,\mathrm{cm}$. For the mass based
-on the Ricci opacity the factor first decreases when $a$ approaches the opacity
-peak around $a=\lambda/2\pi$ and then increases for $a>\lambda/2\pi$. Both
-behaviors can be seen as the inverse behavior of the opacities shown in
-Fig.~\ref{fig-opacities}. For ever increasing grain size estimate, the mass
-estimate will increase indefinitely for both opacity choices. 
 
 
+\section{Optically thin analysis}
+\label{sec-opt-thin-analysis}
+%
+As a first guess, we will assume that we can ignore optical depth effects,
+i.e.\ that the thermal emission of the dust is optically thin. The linear
+brightness temperature profiles shown in Section \ref{sec-data}, after
+deconvolution with the beam, are then linear maps of the spatial distribution of
+dust, if we ignore any temperature gradients across these rings.  In other
+words: the deconvolved versions of the Gaussian fits of Section
+\ref{sec-gauss-fits} (Eq.~\ref{eq-gauss-lin-br-temp-deconv}) will then directly
+translate in Gaussian models of the radial dust distribution.
+
+The conversion between the deconvolved observed linear brightness temperature
+profile $I_\nu^{\mathrm{lb,dec}}(r)$ and the dust surface density profile
+$\Sigma_d(r)$ is then
+\begin{equation}\label{eq-optthin-conversion-linbright-sigmad}
+  %I_\nu^{\mathrm{lb}} = \Sigma_d\,\kappa_\nu^{\mathrm{abs}}\, B_\nu^{\mathrm{lb}}(T_d)
+  \Sigma_d(r) =  \frac{I_\nu^{\mathrm{lb,dec}}(r)}{\kappa_\nu^{\mathrm{abs}}\, B_\nu^{\mathrm{lb}}(T_d)} 
+\end{equation}
+where $T_d$ is the temperature of the dust, $\kappa_\nu^{\mathrm{abs}}$ is the
+absorption opacity, and $B_\nu^{\mathrm{lb}}(T_d)$ is the Planck function
+expressed as linear brightness temperature (Eq.~\ref{eq-app-bnu-bright}).
+
+By replacing $I_\nu^{\mathrm{lb,dec}}(r)$ with the Gaussian fit
+$I_\nu^{\mathrm{lb,gauss,dec}}(r)$ given by
+Eq.~(\ref{eq-gauss-lin-br-temp-deconv}) we obtain the corresponding
+$\Sigma_d^{\mathrm{gauss}}(r)$ from
+Eq.~(\ref{eq-optthin-conversion-linbright-sigmad}). From this Gaussian
+model we can derive the total dust mass trapped in the ring:
+\begin{equation}\label{eq-dust-mass-estimate}
+  M_d = \int_0^\infty 2\pi r \Sigma_d(r) dr \simeq
+  \frac{(2\pi)^{3/2} r_0\, A\,\sigma}{\kappa_\nu^{\mathrm{abs}}\, B_\nu^{\mathrm{lb}}(T_d)}
+\end{equation}
+where we used the identity $A\,\sigma=A_{\mathrm{dec}}\,w_d$.
+
+We use the DSHARP opacity model (\paperdsharpbirnstiel{}) which, for a grain
+radius of $a=0.1\,\mathrm{cm}$ yields a dust opacity of
+$\kappa_\nu^{\mathrm{abs}}(\lambda=0.13\,\mathrm{cm})=1.93\,\mathrm{cm}^2/\mathrm{g}$.
+The resulting dust mass estimates are listed in Table \ref{tab-gauss-params}.
+
+The main uncertainty lies in the uncertainty in the opacity value
+$\kappa_\nu^{\mathrm{abs}}$. This value depends on the grain size (or grain size
+distribution) as well as many other factors including composition, grain shape
+and uncertainties in the method of computation of the opacity. We refer to
+\paperdsharpbirnstiel{} for a discussion of the opacity model used for the
+DSHARP campaign.
+
+{\bf [Discuss the minimum and maximum mass values]}
+
+The other uncertainty, though much less severe, is the dust temperature
+$T_d$. From the continuum images we have no information about $T_d(r)$. From the
+CO line emission one can estimate the temperature in the disk surface layers,
+but not in the midplane \citep[see e.g.][]{2018ApJ...853..113W}. Instead, we
+will use the flaring angle recipe given by Eq.~(\ref{eq-disk-temperature-model})
+with $\varphi=0.02$. The resulting values of $T_d$ at the peak of the rings are
+given in Table \ref{tab-gauss-params}. For
+Eq.~(\ref{eq-optthin-conversion-linbright-sigmad}) we need the corresponding
+linear brightness temperature $B_{\mathrm{d}\nu}^{\mathrm{lb}}\equiv B_\nu^{\mathrm{lb}}(T_d)$, which is listed in the
+next column in Table \ref{tab-gauss-params}.
+
+Given the amplitude of the deconvolved Gauss fit $A_{\mathrm{dec}}$ (see
+Eq.~\ref{eq-gauss-lin-br-temp-deconv}), we can derive the optical depth
+$\tau_\nu^{\mathrm{peak}}$ of the ring at its peak at $r=r_0$:
+\begin{equation}\label{eq-tau-estimate}
+\tau_\nu^{\mathrm{peak}} = -\ln\left(1-\frac{A_{\mathrm{dec}}}{B_{\nu}^{\mathrm{lb}}(T_d)}\right)
+\end{equation}
+This allows us to verify if our assumption of optical thinness is justified. The
+results are listed in Table \ref{tab-gauss-params}.  We conclude that the
+optically thin assumption is not entirely wrong, but not quite right either. The
+estimated dust surface density $\Sigma_d$ and dust mass $M_d$ derived from the
+optically thin assumption (Eqs.~\ref{eq-optthin-conversion-linbright-sigmad} and
+\ref{eq-dust-mass-estimate}, respectively) are only mildly affected by the
+optical depth effects.
+
+A much stronger effect on the conversion of the observations to dust mass
+remains the uncertainty of the opacity. As shown in \paperdsharpbirnstiel{}
+the value of $\kappa_\nu^{\mathrm{abs}}=1.93\,\mathrm{cm}^2/\mathrm{g}$ that
+we use here can easily be wrong by a factor of $10$ upward or a factor of
+$0.1$ downward, with correspondingly large changes in the derived dust mass.
+
+
+
+
+\section{Optical depth effects}
+\label{sec-optical-depth-effects}
+%
+As we have seen in Section \ref{sec-opt-thin-analysis}, the optical depth of
+these dust rings is not very low: about 0.2 and upward, usually around 0.4. For
+the case of HD 163296 there is evidence from the absorption of CO line emission
+from the back side of the disk that the optical depth in the two prominent rings
+is even close to unity, as shown by \paperdsharpisella{}. For simplicity we will
+perform most of our analysis of the later Sections using the optically thin
+approximation. But before doing that, it is important to investigate how strong
+the effect of optical depth is, and how it would affect our results. This is the
+topic of this Section.
+
+\subsection{Simple optical depth correction}
+Let us assume that the dust has zero albedo. Then the inclusion of the effect of
+optical depth is simple. We replace
+Eq.~(\ref{eq-optthin-conversion-linbright-sigmad}) with the formal transfer
+equation:
+\begin{equation}\label{eq-simple-formal-rt}
+  I_\nu^{\mathrm{lb,dec}}(r) = e^{-\tau_\nu(r)}I_\nu^{\mathrm{lb,bg}} +
+  \left(1-e^{-\tau_\nu(r)}\right)B_\nu^{\mathrm{lb}}(T_d)
+\end{equation}
+where $\tau_\nu(r)$ is the optical depth profile across the ring, and
+$I_\nu^{\mathrm{lb,bg}}$ is the background brightness, either from background
+clouds or from the cosmic microwave background. In interferometric observations
+a flat background is Fourier-filtered out, but in the radiative transfer it
+plays a role in the non-linear optical depth regime ($\tau_\nu\gtrsim 0.3$),
+even if we are only interested in the excess emission above the background
+$I_\nu-I_\nu^{\mathrm{bg}}$. We assume, however, that the cloud background
+emission is negligible. The linear brightness temperature of the cosmic
+background at $\lambda=0.13\,\mathrm{cm}$ is
+$I_\nu^{\mathrm{lb,cmb}}=0.195\,\mathrm{K}$. This is not negligible compared to
+the brightness temperatures in the inter-ring regions, but those regions are low
+optical depth regions, where the radiative transfer equation for for
+$I_\nu-I_\nu^{\mathrm{bg}}$ is linear and the background drops out. Only near
+the peak of the rings the optical depth becomes non-negligible, but the value of
+$B_{\mathrm{d}\nu}^{\mathrm{lb}}\equiv B_\nu^{\mathrm{lb}}(T_d)$ is always much
+larger than the cosmic background value of $0.195\,\mathrm{K}$ (see Table
+\ref{tab-gauss-params}). We will therefore ignore the background and set
+$I_\nu^{\mathrm{lb,bg}}=0$ in Eq.~(\ref{eq-simple-formal-rt}) for simplicity.
+
+To obtain the dust distribution we first compute $\tau_\nu(r)$
+\begin{equation}\label{eq-tau-profile}
+\tau_\nu(r) = -\ln\left(1-\frac{I_\nu^{\mathrm{lb,dec}}(r)}{B_\nu^{\mathrm{lb}}(T_d)}\right)
+\end{equation}
+which is identical to Eq.~(\ref{eq-tau-estimate}), but now for the entire
+profile instead of just for the peak. The profile for $\Sigma_d(r)$ now follows
+from
+\begin{equation}
+\Sigma_d(r) = \frac{\tau_\nu(r)}{\kappa_\nu^{\mathrm{abs}}}
+\end{equation}
+
+\subsection{Saturation and flat-topped ring profiles}
+\label{sec-saturation-flat-top-profiles}
+%
+Given the non-linearity of Eq.~(\ref{eq-tau-profile}), in particular near
+the peak of the ring profile, the resulting $\Sigma_d(r)$ profile becomes
+non-Gaussian even if the measured $I_\nu^{\mathrm{lb,dec}}(r)$ has a Gaussian
+shape. Or put the other way: if $\Sigma_d(r)$ is a Gaussian profile, the
+resulting $I_\nu^{\mathrm{lb,dec}}(r)$ will not: it will lead to a flattened
+top, where $I_\nu^{\mathrm{lb,dec}}(r)$ saturates to $B_\nu^{\mathrm{lb}}(T_d)$.
+See Fig.~\ref{fig-flat-topped} for a quantitative example.
+
+\begin{figure}
+  \centerline{\includegraphics[width=0.47\textwidth]{saturation_example.pdf}}
+  \caption{\label{fig-flat-topped}The saturation effect of a gaussian emissivity
+    profile at various peak optical depths. Solid curves: the result of the
+    formal radiative transfer equation (Eq.~\ref{eq-simple-formal-rt} with
+    background set to zero). Dotted curves: the unsaturated case, normalized to
+    have the same total integral as the solid curves.}
+\end{figure}
+
+The Gaussian fits of Section \ref{sec-gauss-fits} suggest, however, that the
+$I_\nu^{\mathrm{lb,dec}}(r)$ profiles do not show clear signs of being
+flat-topped. A simple comparison to Fig.~\ref{fig-flat-topped} shows that peak
+optical depths of $\gg 1$ can be clearly excluded.
+
+However, the deviation from true Gaussian becomes small for $\tau_\nu\lesssim
+1$. It is therefore an important question how strongly we can exclude the
+flattening of the top of the peak, or in other words: how strong an upper limit
+we can set on $\tau_\nu^{\mathrm{peak}}$. Can the flattening of the underlying
+Gaussian emissivity due to self-absorption be mistaken for a different Gaussian
+profile that is wider and lower than the underlying dust emissivity, because the
+deviations vanish within the errorbars on the measurements? We investigate this
+in detail in Appendix \ref{sec-mimicry-flat-topped}. We find that up to
+$\tau_\nu\lesssim 1$ the flattened-out profile can still be reasonably well
+fitted by a Gaussian function. This Gauss, of course, has a strongly reduced
+amplitude compared to the optically thin approximation: by a factor
+$(1-e^{-\tau_\nu^{\mathrm{peak}}})/\tau_\nu^{\mathrm{peak}}$, before beam
+smearing, in order to mimick the self-absorption. Also, it has a slightly wider
+shape, but this is a small effect. 
+
+This means that, just from the analysis of the shape of the radial profiles of
+the rings, we can only exclude large optical depth ($\tau_\nu^{\mathrm{peak}}\gg
+1$), but not mild optical depth $\tau_\nu^{\mathrm{peak}}\simeq 0.3\cdots 1$.
+The optically thin treatment, as we will adopt in Section
+\ref{sec-rings-as-dust-traps} and onward, could therefore lead to ignoring
+optical depth effects of the order of
+$(1-e^{-\tau_\nu^{\mathrm{peak}}})/\tau_\nu^{\mathrm{peak}}$, which amounts to
+an underestimation of dust mass of up to 37\% for $\tau_\nu^{\mathrm{peak}}$ up
+to 1.
+
+There is, however, another way to constrain these optical depth effects.  As we
+have already seen in Section \ref{sec-gauss-fits}: given the measured linear
+brightness temperature $I_\nu^{\mathrm{lb,obs}}$, and given a dust temperature
+$T_d$, the optical depth follows immediately. In other words: a larger optical
+depth than given in Table \ref{tab-gauss-params} requires a lower dust
+temperature than given in that table. These temperature estimates are already on
+the low side, by assuming the somewhat low value of the flaring angle
+$\varphi=0.02$ in Eq.~(\ref{eq-disk-temperature-model}). It requires a quite
+strong reduction of $\varphi$ to reduce the temperature sufficiently to increase
+the $\tau_\nu^{\mathrm{peak}}$ from Table \ref{tab-gauss-params} to unity. As an
+example let us take ring 1 of HD 163296 with $T_d=30.8\,\mathrm{K}$ and
+$\tau_\nu^{\mathrm{peak}}=0.42$ according to Table \ref{tab-gauss-params}.
+According to Eq.~(\ref{eq-tau-estimate}), if we set
+$\tau_\nu^{\mathrm{peak}}=1$, we obtain from $A_{\mathrm{dec}}=8.76$ the value
+$B_\nu^{\mathrm{lb}}(T_d)=13.9\,\mathrm{K}$, corresponding, via
+Eq.~(\ref{eq-app-bnu-bright}) to $T_d=18.9\,\mathrm{K}$. This temperature is
+almost twice as low as the original estimate, and would require, according to
+Eq.~(\ref{eq-disk-temperature-model}), a flaring angle of
+$\varphi=0.00082$. Such a flaring angle is unreasonably low and it invalidates
+the simple flaring angle recipe in the first place. Instead we would need to
+perform detailed 2-D/3-D radiative transfer calculations of the disk to
+investigate if such a low temperature is physically attainable. Or equivalently,
+such a study may allow us to find a theoretical lower limit to the dust
+temperature, which then translates into an upper limit to the
+$\tau_\nu^{\mathrm{peak}}$. Alternatively, and possibly more reliably, if we
+obtain a high-resolution map in a second band, we can investigate the behavior
+of the spectral index over the radial profile of the rings, which also provides
+information about the optical depth.
+
+
+\subsection{The effect of scattering albedo}
+If the dust grains have a radius $a$ comparable to the wavelength of our
+observations, the scattering albedo can be quite high. This means that the
+absorption optical depth can be substantially lower than unity, even if the full
+extinction optical depth (absorption plus scattering) is unity or larger.  The
+near-unity extinction found in HD 163296 by \paperdsharpisella{} from the CO
+maps could thus be compatible with the sub-unity absorption optical depth we
+derived in our Gaussian fitting procedure (see Table \ref{tab-gauss-params}).
+
+In fact, staying with the case of HD 163296, if we would assume that the albedo
+is zero, i.e.\ that the measured extinction optical depth from the CO maps
+equals the absorption optical depth, then we would find rather low dust
+temperatures at the location of the rings, which may be hard to explain
+theoretically, as shown in Section \ref{sec-saturation-flat-top-profiles}.
+If, however, part of the extinction is due to scattering, then it is easier
+to remain consistent with the dust temperature estimated from the flaring
+angle recipe.
+
+However, when scattering is included, the radiative transfer becomes more
+complex than a simple use of a factor $1-e^{-\tau_\nu}$. For completeness we
+describe, in Appendix \ref{sec-oned-radtrans-model}, an approximate solution to
+this problem for a thin slab model.  In principle one would have to replace, in
+the above sections, as well as in Appendix \ref{sec-mimicry-flat-topped}, all
+instances of $1-e^{-\tau_\nu}$ with the more detailed radiative transfer model
+of Appendix \ref{sec-oned-radtrans-model}. But to avoid too much complexity in
+this paper, we leave this to an interested reader.
+
+\subsection{Why are most rings so ``fine-tuned''?}
+It is rather striking that in the analysis of the rings up to this point we have
+found several rather ``fine-tuned'' properties. For instance, the rings of AS
+209, Elias 24, GW Lup and the inner ring of HD 143006 have a width that is only
+roughly twice the beam size (between $1.5$ and $2.4$ times, to be precise), but
+none are unresolved. Given the small sample it is very well possible that this
+is just coincidence. The fact that some rings (in particular those of HD 163296)
+are clearly much wider, lends some support to this.
+
+The derived peak optical depths for most sources (except HD 143006), assuming
+our model of the dust temperature is correct, hover around 0.4, i.e.\ just in
+between the optically thin and optically thick regime. Is this coincidence as
+well, or is there a deeper reason behind this? In this paper we have focussed on
+the strongest, most isolated rings in the DSHARP sample, which could mean that
+this is a selection effect.
+
+Finally, all ring profiles are remarkably similar to a Gaussian shape. On the
+one hand, this may be something similar to the effect discussed in Section
+\ref{sec-saturation-flat-top-profiles} and Appendix
+\ref{sec-mimicry-flat-topped}. And with some rings being only about two beams
+wide, any `peaklike' shape will tend to look similar to a Gaussian. On the other
+hand, the two rings or HD 163296 are resolved by more than 3 beams, yet they
+show a Gaussian shape well into the wings.
+
+Could it be that some observational or data reduction effect may have smeared
+out our data more than expected? We have, to the best of our abilities, been
+unable to identify such an effect. And, as described in Appendix {\bf XXXX}, we
+have performed a full self-test cycle of a mock ring being processed through our
+pipeline, and found no excessive smearing-out, nor effects that would skew our
+conclusion that the rings indeed have an intrinsically Gaussian profile. It seems
+that these ``fine-tuned'' properties of the rings are real. 
 
 \section{The rings as dust traps}
 \label{sec-rings-as-dust-traps}
 %
-Given the well separated narrow rings in the above sources, we can analyze these
-rings on a one-by-one basis. The hypothesis we are going to test is that the
+The hypothesis we are now going to test is that the
 rings are caused by dust trapping in axisymmetric pressure bumps. For simplicity
 we will assume that the radial gas pressure profile is fixed in time, and there
 is no back reaction of the dust onto the gas. The pressure bump is assumed to be
@@ -596,14 +899,15 @@ Source     & Ring & $w_{\mathrm{min}}$ & $w_{\mathrm{max}}$ & $\Sigma_{\mathrm{g
            &      & $[\mathrm{au}]$  & $[\mathrm{au}]$  & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{g}/\mathrm{cm}^3]$ & $[\mathrm{cm}]$ & (for $\Sigma_{\mathrm{g,max}}$)& (for $w_\mathrm{max}$) & (for $w_\mathrm{min}$) &   \\
 \hline
 % Note: New table made with new stellar parameters 2018.07.02
-AS 209     & 1 &  5.59 & 19.6 & 1.1e-02 & 2.0e-01 & 1.6e+01 & 15.7 & 3.9e-03 & 3.2e-02 & 6.0e-01 & 1.2e-04\\
-AS 209     & 2 & 10.25 & 19.6 & 1.2e-02 & 2.3e-01 & 6.9e+00 &  5.8 & 9.1e-03 & 5.0e-02 & 2.1e-01 & 4.5e-04\\
+% Note: New table with new beam size estimates 2018.08.06
+AS 209     & 1 &  5.59 & 19.6 & 1.1e-02 & 2.0e-01 & 1.6e+01 & 15.7 & 3.9e-03 & 3.1e-02 & 5.7e-01 & 1.2e-04\\
+AS 209     & 2 & 10.25 & 19.6 & 1.2e-02 & 2.3e-01 & 6.9e+00 &  5.8 & 9.1e-03 & 4.9e-02 & 2.1e-01 & 4.4e-04\\
 Elias 24   & 1 &  7.26 & 17.1 & 9.7e-03 & 1.8e-01 & 1.8e+01 & 18.8 & 3.6e-03 & 8.0e-02 & 7.0e-01 & 2.9e-04\\
-HD 163296  & 1 &  7.21$^{*}$ & 13.8 & 1.1e-02 & 1.9e-01 & 4.1e+01 & 40.0 & 1.5e-03 & 3.8e-01 & -- & 5.8e-04\\
-HD 163296  & 2 &  7.07 & 13.8 & 7.8e-03 & 1.4e-01 & 2.0e+01 & 27.3 & 3.1e-03 & 1.9e-01 & 1.6e+00 & 5.9e-04\\
-GW Lup     & 1 &  7.49 &  9.9 & 8.3e-03 & 1.5e-01 & 7.8e+00 &  9.8 & 8.0e-03 & 2.1e-01 & 4.4e-01 & 1.7e-03\\
-HD 143006  & 1 &  4.42$^{*}$ & 10.1 & 4.7e-03 & 8.6e-02 & 7.5e+01 & 167.2 & 8.4e-04 & 2.4e-01 & -- & 2.0e-04\\
-HD 143006  & 2 &  7.49$^{*}$ & 10.1 & 4.8e-03 & 8.8e-02 & 3.4e+01 & 73.2 & 1.9e-03 & 1.2e+00 & -- & 2.3e-03\\
+HD 163296  & 1 &  7.13$^{*}$ & 13.8 & 1.1e-02 & 1.9e-01 & 4.1e+01 & 40.0 & 1.5e-03 & 3.6e-01 & -- & 5.6e-04\\
+HD 163296  & 2 &  7.07 & 13.8 & 7.8e-03 & 1.4e-01 & 2.0e+01 & 27.3 & 3.1e-03 & 1.8e-01 & 1.4e+00 & 5.6e-04\\
+GW Lup     & 1 &  7.49 &  9.9 & 8.3e-03 & 1.5e-01 & 7.8e+00 &  9.8 & 8.0e-03 & 1.7e-01 & 3.4e-01 & 1.3e-03\\
+HD 143006  & 1 &  3.95$^{*}$ & 10.1 & 4.7e-03 & 8.6e-02 & 7.5e+01 & 167.1 & 8.4e-04 & 1.8e-01 & -- & 1.5e-04\\
+HD 143006  & 2 &  7.22$^{*}$ & 10.1 & 4.8e-03 & 8.8e-02 & 3.4e+01 & 73.1 & 1.9e-03 & 1.0e+00 & -- & 1.9e-03\\
 \hline
 \hline
 \end{tabular}
@@ -657,7 +961,8 @@ the Toomre parameter of the disk stays above 2. We use the Ivezic
 opacity for that, which, for large grains, has similar values as the Ricci
 opacity. This leads to values of several centimeters to half a meter (Table
 \ref{tab-ring-model-limits}). Again these are conservative limits, with real
-values likely to be substantially smaller. 
+values likely to be substantially smaller. {\bf UPDATE THESE VALUES AND RICCI
+NAME SINCE WE NOW USE DIFFERENT OPACITY MODEL.}
 
 
 \subsection{Application to the observed rings}
@@ -1073,18 +1378,23 @@ hard to answer in general, since we have no observational means to test this.
 But from the perspective of particle trapping by a pressure bump this question
 can be rigorously answered. A long-lived radial pressure perturbation in a
 protoplanetary disk cannot be much narrower than about a pressure scale height
-$h_p(r)$. A dust ring produced by dust trapping in this pressure bump may become
+$h_p(r)$. {\bf [Perhaps we should add an appendix where we use the stability
+    criteria to rigorously put limits on the width and depth of the rings (even
+    a wide ring will, deep in the gaussian wings, become unstable), and
+    link this to a leakage of dust out of the trap.]}
+
+A dust ring produced by dust trapping in this pressure bump may become
 rather narrow, dependent on a variety of parameters, as discussed in
 Section \ref{sec-steady-state-analytic-trap-model}. But there can not be
 more than a single such dust ring in each pressure bump.
 
 For the wide rings of HD 163296 the pressure scale height, even under the most
 optimistically low disk temperature (e.g.~10 K) the pressure scale height at
-rings 1 and 2 are 2.4 au and 4.3 au, respectively, which correspond to fwhm
+rings 1 and 2 are 2.4 au and 4.3 au, respectively, which correspond to FWHM
 widths of 55 and 101 milliarcseconds, respectively (where we have multiplied by
 2.355 to obtain the full-width at half-maximum corresponding to a gaussian with
 $h_p$ as standard deviation width). Clearly the ALMA observations in band 6,
-with fwhm beam size of 35 mas, spatially resolve the pressure scale height.
+with FWHM beam size of 35 mas, spatially resolve the pressure scale height.
 This means that the ring separation will be spatially resolved by ALMA,
 ruling out the possibility that the wide rings are made up of a multitude of
 narrow rings, at least in the dust trapping scenario.
@@ -1126,6 +1436,416 @@ grain size distribution powerlaws obeying {\bf XXXXXXXXXXX}.
 \endgroup
 
 \appendix
+
+\section{Conventions on brightness}
+\label{sec-conventions}
+%
+The intensity of an interferometrically produced image at (sub-)millimeter
+wavelengths can be expressed in numerous ways. We will define our symbols here
+to avoid confusion. Expressed in CGS units, the intensity $I_\nu$ at frequency
+$\nu$ has dimension
+$\mathrm{erg}\,\mathrm{cm}^{-2}\,\mathrm{s}^{-1}\,\mathrm{Hz}^{-1}\,\mathrm{ster}^{-1}$.
+From an observational point of view it is convenient to express it instead in
+Jansky/beam. We shall write this as $I_\nu^{\mathrm{jpb}}$. The conversion is
+\begin{equation}
+  I_\nu = 10^{-23}\,\frac{\pi(\mathrm{au}/\mathrm{pc})^2 b_{\mathrm{as}}^2}{4\ln(2)}\frac{1}{b^2_{\mathrm{as}}}I_\nu^{\mathrm{jpb}}
+  = 3.755\times 10^{-13}\frac{1}{b^2_{\mathrm{as}}}I_\nu^{\mathrm{jpb}}
+\end{equation}
+where
+\begin{equation}\label{eq-def-average-beam}
+b_{\mathrm{as}}=\sqrt{b_{\mathrm{as}}^{\parallel}b_{\mathrm{as}}^{\bot}}
+\end{equation}
+is the position-angle-averaged beam full-width-at-half-maximum in units of
+arcseconds. Alternatively it can be expressed as brightness temperature
+$T_\nu^{\mathrm{b}}$ in Kelvin by solving the equation
+\begin{equation}
+I_\nu = B_\nu(T_\nu^{\mathrm{b}})
+\end{equation}
+where $B_\nu(T)=2h\nu^3c^{-2}/(\exp(h\nu/k_BT)-1)$ is the Planck function with $h$
+Planck's constant, $k_B$ Boltzmann's constant and $c$ the light speed. The
+relation between brightness temperature and intensity is non-linear, which is
+inconvenient. As an alternative to the brightness temperature (henceforth called
+``full brightness tempearture'') we therefore use the {\em linear} brightness
+temperature $I_\nu^{\mathrm{lb}}$, also expressed in Kelvin, defined as
+\begin{equation}
+I_\nu^{\mathrm{lb}} = \frac{c^2}{2\nu^2k_B}I_\nu
+  = 3.255\times 10^{36}\, \frac{1}{\nu^2}I_\nu
+\end{equation}
+The linear brightness temperature is thus a linear representation of the
+intensity, which is why we use the symbol $I_\nu^{\mathrm{lb}}$ instead of
+$T_\nu^{\mathrm{lb}}$. The full brightness temperature and the linear brightness
+temperature become equal in the Rayleigh-Jeans regime. However, at the
+wavelength we are working in (ALMA band 6 at $\lambda\simeq 0.13\,\mathrm{cm}$)
+and the temperatures we are dealing with (several Kelvins to tens of Kelvins) we
+are not in the Rayleigh-Jeans regime anymore, so the distinction between linear
+and non-linear brightness temperature becomes important. 
+
+The conversion between the full brightness temperature $T_\nu^{\mathrm{b}}$ and
+the linear brightness temperature $I_\nu^{\mathrm{lb}}$ is given by
+\begin{equation}\label{eq-convert-lin-to-full-bright}
+\frac{h\nu}{k_BT_\nu^{\mathrm{b}}} = \ln\left(1+\frac{h\nu}{k_BI_\nu^{\mathrm{lb}}}\right)
+\end{equation}
+where in our case, with $\lambda=0.13\,\mathrm{cm}$, we have
+$h\nu/k_B=11\,\mathrm{K}$.
+
+The Planck function in units of Kelvin, to be used in conjunction with the
+brightness, is then
+\begin{equation}\label{eq-app-bnu-bright}
+B_\nu^{\mathrm{lb}}(T) = \frac{h\nu}{k_B}\frac{1}{e^{h\nu/k_BT}-1}
+\end{equation}
+so that at high optical depth the brightness saturates to
+$I_\nu^{\mathrm{lb}}=B_\nu^{\mathrm{lb}}(T)$. Throughout this paper we 
+express the intensity as $I_\nu^{\mathrm{lb}}$. 
+
+
+
+\section{Gauss fitting procedure}
+\label{sec-gauss-fitting-procedure}
+%
+In this paper we study each dust ring individually, and try to understand it in
+terms of the trapping of dust in a pressure trap. In Appendix
+\ref{sec-steady-state-analytic-trap-model} we find that for a Gaussian pressure
+bump the solution to the radial dust mixing and drift problem is, to first
+approximation, also a Gaussian, albeit a narrower one. Fitting the dust trapping
+model to the data can therefore be done in two stages: first fitting a Gaussian
+radial profile to the observed rings, then interpreting these Gaussian fits
+through the dust trapping model. In this Appendix we detail the procedure we
+used to fit the radial intensity profiles of the rings with Gaussian profiles.
+
+The radial intensity profiles (expressed as linear brightness temperature) were
+extracted from the images using a procedure similar to that described by
+\paperdsharphuangrings{}. This procedure involves the fitting of an ellipse to
+describe the inclined ring shape, the deprojection into a ring, and the
+averaging of the intensity along the ring. This averaging procedure enhances the
+signal-to-noise ratio considerably, by a factor $\sqrt{N}$, where $N$ is the
+number of beams that fit along the ring. We estimate the intrinsic noise simply
+by computing the standard deviation along the ring. The resulting averaged
+radial intensity profile $I_\nu^{\mathrm{lb}}(r)$ thus obtains also an error
+estimate $\varepsilon(r)$, which is typically of the order of $\sim$1\% of
+the peak intensity.
+
+The rings display themselves as bumps in $I_\nu^{\mathrm{lb}}(r)$. We choose by eye
+a radial domain around the bump where we believe a Gaussian description is justified.
+The inner and outer radii of this domain are listed in Table \ref{tab-gauss-params}.
+By choosing this domain we can select a specific ring to fit, which is not possible
+when doing the fitting procedure in the uv-plane.
+
+We now fit a Gaussian profile to this bump
+\begin{equation}
+I_\nu^{\mathrm{lb,gauss}}(r) = A\exp\left(-\frac{(r-r_0)^2}{2\sigma^2}\right)
+\end{equation}
+We use the code {\small\sf emcee} \citep{2013PASP..125..306F} to perform a
+Markov Chain Monte Carlo procedure to find the set of parameters
+$(A,r_0,\sigma)$ which have the highest likelihood. Given that the radial
+sampling of $I_\nu^{\mathrm{lb,gauss}}(r)$ is about $N\simeq 70$ points per beam, we
+have to multiply the error estimate of the datapoints by $\sqrt{N}$ before
+feeding it into {\small\sf emcee}, otherwise the MCMC procedure would treat each
+sampling point as an independent measuring point, which is not the case.
+
+We show the corner plot of the fitting of ring 1 of AS 209 in
+Fig.~\ref{fig-corner-gaussfit-as209-1}. The plots for the other rings are
+similar, and are provided in the online material. {\bf TODO: PUT OTHER PLOTS
+IN ONLINE MATERIAL.}
+
+\begin{figure}
+\centerline{\includegraphics[width=0.45\textwidth]{AS_209_ring1_cornerplot_gaussfit.pdf}}
+\caption{\label{fig-corner-gaussfit-as209-1}The correletion plot for the Gauss
+  fitting of ring 1 of AS 209, from the MCMC procedure described in Appendix
+  \ref{sec-gauss-fitting-procedure}.}
+\end{figure}
+
+The most likely parameter values and their error estimates are given in
+Table \ref{tab-gauss-fit-errors}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|cc|ccc|}
+\hline
+\hline
+Source & Ring & $A$ & $r_0$ & $\sigma$ \\
+\hline
+AS 209     & 1 & $  3.637_{-0.047}^{+0.048}$ & $ 74.129_{-0.066}^{+0.063}$ & $  3.885_{-0.090}^{+0.098}$  \\
+AS 209     & 2 & $  2.949_{-0.031}^{+0.030}$ & $120.309_{-0.068}^{+0.065}$ & $  4.651_{-0.111}^{+0.115}$  \\
+Elias 24   & 1 & $  5.214_{-0.068}^{+0.066}$ & $ 76.851_{-0.092}^{+0.088}$ & $  5.104_{-0.172}^{+0.186}$  \\
+HD 163296  & 1 & $  8.475_{-0.056}^{+0.056}$ & $ 67.403_{-0.055}^{+0.057}$ & $  7.370_{-0.098}^{+0.098}$  \\
+HD 163296  & 2 & $  4.918_{-0.026}^{+0.027}$ & $ 99.862_{-0.061}^{+0.059}$ & $  5.741_{-0.116}^{+0.119}$  \\
+GW Lup     & 1 & $  1.467_{-0.052}^{+0.055}$ & $ 85.178_{-0.259}^{+0.316}$ & $  4.882_{-0.402}^{+0.530}$  \\
+HD 143006  & 1 & $  3.202_{-0.084}^{+0.082}$ & $ 41.080_{-0.169}^{+0.190}$ & $  5.133_{-0.320}^{+0.373}$  \\
+HD 143006  & 2 & $  2.473_{-0.043}^{+0.044}$ & $ 64.831_{-0.248}^{+0.230}$ & $  8.029_{-0.501}^{+0.593}$  \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{tab-gauss-fit-errors}The Gaussian fit values with their error
+  estimates from the MCMC procedure described in Appendix \ref{sec-gauss-fitting-procedure}.}
+\end{table}
+
+
+\section{Gaussian mimicry: Detectability of mild optical depth effects}
+\label{sec-mimicry-flat-topped}
+%
+As was discussed in Section \ref{sec-saturation-flat-top-profiles}, the
+saturation effect of radiative transfer leads to Gaussian radial profiles of the
+rings to be flattened at the peak by the $1-e^{-\tau_\nu}$ self-absorption
+effect. The resulting flat-topped profile deviates from the optically thin
+approximation (which is proportional to $\tau_\nu$) by a factor
+$(1-e^{-\tau_\nu})/\tau_\nu$. This leads, for $\tau_\nu^{\mathrm{peak}}\gtrsim
+0.6$, to a substantial reduction near the peak. However, for
+$\tau_\nu^{\mathrm{peak}}\lesssim 1$, the {\em shape} of the profile stays
+remarkably close to a Gaussian profile, albeit one that is wider and weaker than
+the underlying $\tau_\nu(r)$. If the differences lie within the errorbars of the
+observations, there is no way to tell the difference.
+
+This `mimicry' (a non-Gaussian function posing as a Gaussian one) makes it hard
+to exclude, from looking at the shape of the profile (it being not
+`flat-topped'), that optical depth effects play a role. Given that much of our
+analysis of the rings in terms of dust trapping relies on the optically thin
+approximation (``what you see is what is there''), it is important to
+quantify this. This is the topic of this appendix.
+
+We do the following experiment: We start from a simple Gaussian function
+$g(x)$ given by
+\begin{equation}\label{eq-mimicry-underlying-gauss}
+g(x) = \exp\left(-\frac{1}{2}x^2\right)
+\end{equation}
+where $x=(r-r_0)/w_d$. From this we generate the optical depth profile
+\begin{equation}
+\tau_\nu(x) = \tau_\nu^{\mathrm{peak}}\,g(x)
+\end{equation}
+for a given value of $\tau_\nu^{\mathrm{peak}}$. We then compute the function
+\begin{equation}
+  f(x) \equiv \frac{I_\nu^{\mathrm{lb}}(x)}{B_\nu^{\mathrm{lb}}(T_d)}
+  = 1-e^{-\tau_\nu(x)}
+\end{equation}
+The results, for different values of $\tau_\nu^{\mathrm{peak}}$, are shown in
+the left panel of Fig.~\ref{fig-mimicry-profiles}. As one can see, the
+differences between $\tau_\nu(x)$ and $f(x)$ become quite substantial for
+$\tau_\nu^{\mathrm{peak}}\simeq 0.7$.
+
+\begin{figure*}
+\centerline{\includegraphics[width=0.95\textwidth]{saturation_example_combined.pdf}}
+\caption{\label{fig-mimicry-profiles}Demonstration of the Gaussian 'mimicry'
+  effect discussed in Appendix \ref{sec-mimicry-flat-topped}. Left panel:
+  Profiles before beam-convolution. Solid curves show the radiative transfer
+  result $f(x)=1-e^{-\tau_\nu(x)}$, dotted curves show the underlying
+  $\tau_\nu(x)$.  Middle panel is the same, but convolved with a beam that is
+  half the width of the Gaussian profile of $\tau_\nu(x)$. Right panel: Solid
+  lines are the same as for the middle panel, but the dashed lines are the best
+  fit Gaussian curves (also convolved with the beam).}
+\end{figure*}
+
+For both $\tau_\nu(x)$ and $f(x)$ we now compute the beam-convolved versions:
+\begin{equation}
+  \tau_\nu^{\mathrm{conv}}(x) = \frac{1}{\sqrt{2\pi}\sigma_{\mathrm{beam}}}\int_{-\infty}^{+\infty}
+  \tau_\nu(x')\,\exp\left(-\frac{(x-x')^2}{2\sigma_{\mathrm{beam}}^2}\right)dx'
+\end{equation}
+and likewise for $f(x)$, where $\sigma_{\mathrm{beam}}$ is the
+standard-deviation beam width in $x$-units. In this experiment the width of the
+underlying Gaussian `dust distribution' (Eq.~\ref{eq-mimicry-underlying-gauss})
+stays always fixed at $\sigma_{\mathrm{gauss}}=1$, and the beam size is
+expressed in relation to that. For the example of a beam that is half the width
+of the Gaussian profile of $\tau_\nu(x)$ (corresponding roughly to ring 1 of AS
+209, for instance) the results are shown in the middle panel of
+Fig.~\ref{fig-mimicry-profiles}. This panel shows that the beam convolution
+changes the results only by a little, at least for beams smaller than, or equal
+to, the original width of the dust distribution. Given that all the rings of
+this paper appear to be spatially resolved, we do not consider larger beams
+here.
+
+Now we try to find the best-fit Gaussian profile for $f(x)$. We do that by
+constructing an alternative Gaussian function $\tilde g(x)$
+\begin{equation}\label{eq-mimicry-mimicked-gauss}
+\tilde g(x) = \tilde a\exp\left(-\frac{x^2}{2\tilde\sigma^2}\right)
+\end{equation}
+where, in contrast to the original $g(x)$ of
+Eq.~(\ref{eq-mimicry-underlying-gauss}), the $\tilde a$ and $\tilde\sigma$ are
+free parameters to fit. We subsequently obtain $\tilde \tau_\nu(x)$ and $\tilde
+\tau_\nu^{\mathrm{conv}}(x)$ by the same procedure as above, then then use a
+minimization procedure to find the values of $\tilde a$ and $\tilde \sigma$ for
+which the difference to the function $f^{\mathrm{conv}}(x)$ is minimal.  We then
+plot the resulting $\tilde \tau_\nu^{\mathrm{conv}}(x)$ as dashed lines in the
+right panel of Fig.~\ref{fig-mimicry-profiles}. One can see that even for the
+case of $\tau_\nu^{\mathrm{peak}}=3.0$ the Gaussian fit mimicks the real curve
+remarkably (or perhaps disturbingly) well. Given the high signal to noise we
+have in our azimuthally-averaged radial profiles (see
+Fig.~\ref{fig-obs-gaussfits}), we can nevertheless exclude the case
+$\tau_\nu^{\mathrm{peak}}=3.0$. But it is much harder to exclude the case
+$\tau_\nu^{\mathrm{peak}}=1.2$, and impossible to exclude the case
+$\tau_\nu^{\mathrm{peak}}=0.7$.
+
+\begin{figure*}
+\centerline{\includegraphics[width=0.95\textwidth]{gausssatur_ratios.pdf}}
+\caption{\label{fig-mimicry-bestfitgauss-ratios}A quantitative analysis of
+  the mimicry effect of Appendix \ref{sec-mimicry-flat-topped}, scanning
+  the two parameters of the model: $(\sigma_{\mathrm{beam}},\tau_\nu^{\mathrm{peak}})$.
+  The four panels show the four derived parameters explained in the text.
+  Upper left shows the degree of overestimation of the width, upper right
+  the degree of underestimation of the dust mass, bottom left the underestimation
+  of the temperature, bottom right an estimate of the deviation of the Gauss fit
+  to the real curve (the closer to unity, the better the mimicry, and therefore
+  the worse the interpretation of the observations in terms of an optically thin
+  model).
+}
+\end{figure*}
+
+To quantify this a bit better, we have run the above models for a 2-D grid of
+parameters $(\sigma_{\mathrm{beam}},\tau_\nu^{\mathrm{peak}})$, and computed, for
+each pair of parameters, the following quantities:
+\begin{eqnarray}
+  {\cal W} &=& \tilde\sigma \\
+  {\cal M} &=& \tilde a \\
+  {\cal T} &=& f^{\mathrm{conv}}(x=0)\\
+  {\cal F} &=& \tilde \tau_\nu^{\mathrm{conv}}(0)/f^{\mathrm{conv}}(x=0)
+\end{eqnarray}
+They are plotted in Fig.~\ref{fig-mimicry-bestfitgauss-ratios}. The ${\cal W}$
+parameter tells us how much the mimicry will lead to an overestimation of the
+true width of the dust distribution. The ${\cal M}$ parameter tells us how much we
+would underestimate the dust mass by this effect. The ${\cal T}$ parameter tells
+us the degree to which we underestimate the true linear brightness temperature
+$B_\nu^{\mathrm{lb}}(T_d)$ (and by inference, the true dust temperature $T_d$)
+if we would interpret the observed linear brightness temperature as if it were
+optically thick (i.e.~by setting
+$B_\nu^{\mathrm{lb}}(T_d)=I_{\nu}^{\mathrm{lb,obs}}$). For the case of no
+convolution this becomes ${\cal T}=1-e^{\tau_\nu^{\mathrm{peak}}}$. Finally the
+${\cal F}$ parameter gives the ratio of the mimicking Gauss function to the real
+$f^{\mathrm{conv}}$ function, at $x=0$, as a representation of `how bad is the
+mimicking'. The closer ${\cal F}$ is to 1, the better is the mimicking, meaning
+the more difficult it is to distinguish the real from the mimicked curve.
+If ${\cal F}-1$ is less than the relative error of the observations at the
+peak of the curve, then they are indistinguishable.
+
+These results show that up to $\tau_\nu^{\mathrm{peak}}\lesssim 1$ the
+differences between the best-fit Gauss and the real curve are at most $\sim
+1\cdots 2$ \%, depending on the beam size. The beam size has most influence
+on ${\cal F}$, but less on the other parameters. That is because many of the
+effects of beam smearing are cancelled out because we know the beam size and
+can deconvolve. But the beam smearing does make a non-Gaussian profile more
+Gaussian-shaped, hence the stronger effect on ${\cal F}$. 
+
+Although the mimicry effect is bad news for the interpretation of the observed
+radial ring profiles, the upper-left panel of
+Fig.~\ref{fig-mimicry-bestfitgauss-ratios} shows that the effect on the derived
+width of the dust ring remains modest. The fact that the widths of the rings in
+our sample all seem to be spatially resolved by at least 2 beam widths can
+therefore not be due to an unresolved dust ring being broadened by the optical
+depth effect. To broaden by a factor of 2 (i.e.~${\cal W}=2$) you would need
+an optical depth so large that the mimicry will clearly fail, i.e.\ we would
+easily recognize the deviations from a Gaussian shape.
+
+
+
+\section{Thermal emission from a thin dust layer with scattering}
+\label{sec-oned-radtrans-model}
+%
+So far we have assumed that only the absorption opacity
+$\kappa_\nu^{\mathrm{abs}}$, not the scattering opacity, matters. For optically
+thin dust layers this is indeed appropriate. But we have seen in Sections
+\ref{sec-opt-thin-analysis} and \ref{sec-optical-depth-effects} that the
+optical depth are not that low. Furthermore, the CO line extinction data
+of HD 163296 discussed by \paperdsharpisella{} suggest that the dust
+layer has an extinction optical depth close to unity. Even if the absorption
+optical depth is substantially below 1, the total extinction (absorption +
+scattering) can easily exceed unity, if the grains are of similar size to
+the wavelength. For $a\simeq \lambda/2\pi=0.13/2\pi = 0.02\,\mathrm{cm}$ the
+albedo of the grain can, in fact, be as high as 0.8 {\bf CHECK}.
+
+The inclusion of scattering complicates the radiative transfer equation
+enormously. Strictly speaking a full radiative transfer calculation, for
+instance with a Monte Carlo code, is necessary. However, in the spirit of
+this paper we wish to find a simple approximation to handle this without
+resorting to numerical simulation.
+
+We will outline here a simple two-stream radiative transfer approach to the
+problem. We will assume that the dust seen in the ALMA observations is located
+in a geometrically thin layer at the midplane, so we can use the 1-D slab
+geometry approach. We will assume that the scattering is isotropic. This
+may be a bad approximation, especially for $2\pi a\gg \lambda$. To reduce
+the impact of this approximation we replace the scattering opacity
+$\kappa_\nu^{\mathrm{scat}}$
+with
+\begin{equation}
+\kappa_\nu^{\mathrm{scat,eff}} = (1-g_\nu)\, \kappa_\nu^{\mathrm{scat}}
+\end{equation}
+where $g_\nu$ is the usual forward-scattering parameter (the expectation
+value of $\cos\theta$, where $\theta$ is the scattering angle). According
+to \citet{1978wpsr.book.....I}, this approximation works well in
+optically thick media.
+
+We will now follow the two-steam / moment method approach from
+\citet{1986rpa..book.....R} to derive the solution to the
+emission/absorption/scattering problem in this slab. The slab is put between
+$z=-\tfrac{1}{2}\Delta z$ and $z=+\tfrac{1}{2}\Delta z$ and we assume a constant
+density of dust between these two boundaries. The mean intensity $J_\nu(z)$
+of the radiation field then obeys the equation
+\begin{equation}
+\frac{1}{3}\frac{d^2J_\nu(\tau)}{d\tau_\nu^2} = \epsilon_\nu \big(J_\nu-B_\nu(T_d)\big)
+\end{equation}
+where
+\begin{equation}
+  \tau_\nu=\rho_d\,(\kappa_\nu^{\mathrm{abs}}+\kappa_\nu^{\mathrm{scat,eff}}) z
+  \equiv \rho_d\, \kappa_\nu^{\mathrm{tot}} z
+\end{equation}
+with $\rho_d$ being the dust density, and
+\begin{equation}
+\epsilon_\nu = \frac{\kappa_\nu^{\mathrm{abs}}}{\kappa_\nu^{\mathrm{abs}}+\kappa_\nu^{\mathrm{scat,eff}}}
+\end{equation}
+The boundary conditions at $z=\pm\tfrac{1}{2}\Delta z$ are
+\begin{equation}
+\frac{dJ_\nu}{d\tau_\nu} = \mp \sqrt{3}J_\nu
+\end{equation}
+This leads to the following solution:
+\begin{equation}
+  \frac{J_\nu(\tau_\nu)}{B_\nu(T_d)} =  1-b\,
+    \left(e^{-\sqrt{3\epsilon_\nu}\left(\tfrac{1}{2}\Delta\tau-\tau_\nu\right)}+e^{-\sqrt{3\epsilon_\nu}\left(\tfrac{1}{2}\Delta\tau+\tau_\nu\right)}\right)
+\end{equation}
+where $\Delta\tau = \rho_d\, \kappa_\nu^{\mathrm{tot}} \Delta z$ and $b$ is
+\begin{equation}
+b = \left[(1-\sqrt{\epsilon_\nu})e^{-\sqrt{3\epsilon_\nu}\Delta\tau} + 1 + \sqrt{\epsilon_\nu}\right]^{-1}
+\end{equation}
+Given this solution for the mean intensity $J_\nu(\tau_\nu)$ we can now numerically integrate
+the formal transfer equation along a single line of sight passing through the slab at an
+angle $\theta$:
+\begin{equation}\label{eq-fte-slab-with-scat}
+  \mu\frac{dI_\nu(\tau_\nu)}{d\tau_\nu} = \epsilon_\nu B_\nu(T_d) + (1-\epsilon_\nu) J_\nu(\tau_\nu)
+  -I_\nu(\tau_\nu)
+\end{equation}
+where $\mu=\cos\theta$. We start at $\tau_\nu=-\tfrac{1}{2}\Delta \tau$ with
+$I_\nu=0$ and integrate to $\tau_\nu=+\tfrac{1}{2}\Delta \tau$. The resulting
+$I_\nu^{\mathrm{out}}=I_\nu(\tfrac{1}{2}\Delta \tau)$ is the intensity that is
+observed by the telescope. An approximation for $I_\nu^{\mathrm{out}}$ which
+works well to within a few percent is the following modifed version of the
+Eddington-Barbier approximation:
+\begin{equation}\label{eq-modif-eddington-barbier}
+I_\nu^{\mathrm{out}} \simeq \left(1-e^{-\Delta\tau/\mu}\right)\,S_\nu\left((\tfrac{1}{2}\Delta\tau-\tau_\nu)/\mu=2/3\right)
+\end{equation}
+where
+\begin{equation}
+S_\nu(\tau_\nu) = \epsilon_\nu B_\nu(T_d) + (1-\epsilon_\nu) J_\nu(\tau_\nu)
+\end{equation}
+is the source function. The results are shown in Fig.~\ref{fig-scatter-parscan}.
+
+For small optical depths ($\Delta\tau\ll 1$) the role of scattering vanishes,
+and the solution approaches: $I_\nu^{\mathrm{out}} \rightarrow \epsilon_\nu\Delta\tau
+B_\nu(T_d)$.  This is the same limiting solution as when
+$\kappa_\nu^{\mathrm{scat}}$ is set to zero but $\kappa_\nu^{\mathrm{abs}}$ is
+kept the same. For high optical depth the outcoming intensity does not saturate
+to the Planck function, but a bit below, if the albedo is non-zero. This is the
+well-known effect that scattering makes objects appear cooler than they really
+are.
+
+
+\begin{figure}
+\centerline{\includegraphics[width=0.47\textwidth]{scatter_parscan.pdf}}
+\caption{\label{fig-scatter-parscan}The intensity $I_\nu$, in units of the
+  Planck function, emerging from a slab seen face on, with total optical depth
+  $\Delta\tau$, a constant temperature, and an albedo of
+  $\eta_\nu=1-\epsilon_\nu$. See Appendix \ref{sec-oned-radtrans-model} for
+  details. The solid lines are the results of numerical integration of
+  Eq.~(\ref{eq-fte-slab-with-scat}). The dotted lines are the result of the
+  modified Eddington-Barbier approximation
+  (Eq.~\ref{eq-modif-eddington-barbier}).}
+\end{figure}
+
 
 \section{Steady-state dust distribution in a ringlike trap}
 \label{sec-steady-state-analytic-trap-model}
@@ -1661,133 +2381,123 @@ radial brightness profiles. On the other hand, optical thickness can also occur
 on smaller scales, as we will discuss in Section \ref{sec-si-clump}.
 
 
-\section{Gauss fitting procedure}
-\label{sec-gauss-fitting}
-%
-In this paper we study each dust ring individually, and try to understand it in
-terms of the trapping of dust in a pressure trap. In Appendix
-\ref{sec-steady-state-analytic-trap-model} we find that for a Gaussian pressure
-bump the solution to the radial dust mixing and drift problem is, to first
-approximation, also a Gaussian, albeit a narrower one. Fitting the dust trapping
-model to the data can therefore be done in two stages: first fitting a Gaussian
-radial profile to the observed rings, then interpreting these Gaussian fits
-through the dust trapping model. In this appendix
-
-
-
-
 \section{Computing the dust mass trapped in the rings}
 \label{sec-computing-dust-mass}
 %
-We can compute the dust mass trapped in each of the rings by integrating over
-the measured brightness temperature profiles. However, the profiles do not go
-down to zero far way from the peak, and so it is not well defined what belongs
-to the ring and what not. Instead, we will compute the dust mass from the
-Gaussian profile that is fitted to the ring emission. This will slightly
-underestimate the dust mass, because the excess emission in the flanks of the
-profiles (see Fig.~\ref{fig-obs-gaussfits}) will not be included. But there are
-far more serious issues to worry about, such as our limited knowledge of the
-disk temperature, the uncertainties of the dust opacities, as well as optical
-depth effects. So we will estimate the mass of the best fitting Gaussian model
-only.
 
-We will assume that the intrinsic dust temperature is as given in Table
-\ref{tab-gauss-params} (column $T_{\mathrm{d}}$), which was computed based on
-a simple flaring angle irradiation model. We consider the Gaussian profile with
-the deconvolved width, i.e.\ $w_d$ (not $\sigma$). The peak linear brightness
-temperature is taken to be
-\begin{equation}
-A_{\mathrm{deconv}} = \frac{\sigma}{w_d}\,A
-\end{equation}
-where $A$, $\sigma$ and $w_d$ are from Table \ref{tab-gauss-params}. We do not
-account for geometric terms in the deconvolution, which is justified as long as
-$\sigma\ll r$. The deconvolved Gaussian brightness profile is then
-\begin{equation}\label{eq-tbrlin-deconvolved}
-T_{\mathrm{br,lin,deconv}}(r) = A_{\mathrm{deconv}}\,\exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
-\end{equation}
-
-Next we have to worry about optical depth effects. From Table
-\ref{tab-gauss-params} one can see that for most rings 
-$A_{\mathrm{deconv}}$ is significantly smaller than $T_{\mathrm{d,br,lin}}$.
-However, for the rings of AS 209 the ratios
-$A_{\mathrm{deconv}}/T_{\mathrm{d,br,lin}}$ are around 0.5, so optical depth
-effects start to play a role. Given a dust surface density profile
-$\Sigma_{\mathrm{d}}(r)$ as a function of radial coordinate $r$, and
-given an absorption opacity $\kappa_{\mathrm{a}}$ at the wavelength we
-are measuring, the absorption optical depth $\tau_{\mathrm{a}}(r)$ is
-\begin{equation}\label{eq-tau-afo-sig-kap}
-\tau_{\mathrm{a}}(r) = \Sigma_{\mathrm{d}}(r)\kappa_{\mathrm{a}}
-\end{equation}
-We assume that scattering does not play a role. The emission from this
-dusty ring is then, expressed as linear brightness temperature:
-\begin{equation}
-T_{\mathrm{br,lin,deconv}}(r) = \left(1-e^{-\tau_{\mathrm{a}}(r)}\right)\,T_{\mathrm{d,br,lin}}
-\end{equation}
-If $\tau_{\mathrm{a}}(r)\ll 1$ for all $r$ this reduces to
-\begin{equation}\label{eq-int-afo-tau-bnu}
-T_{\mathrm{br,lin,deconv}}(r) = \tau_{\mathrm{a}}(r)\,T_{\mathrm{d,br,lin}}
-\end{equation}
-But given that for some rings $A_{\mathrm{deconv}}/T_{\mathrm{d,br,lin}}
-=\mathrm{max}(I_{\mathrm{obs}}(r)/B_\nu(T_{\mathrm{d}}))$ can be as large as
-$\sim 0.5$, this condition is not always fulfilled.  On the other hand, these
-optical depth effects cannot be too strong, because then the Gaussian shape
-would flatten off at the top, which is not what we see in the observations. We
-will therefore continue our computation without accounting for these (mild)
-optical depth effects. This will lead to a slight underestimation of the
-mass. The reader can estimate the magnitude of this underestimation by comparing
-$(1-\exp(-\tau_{\mathrm{a}}))$ to $\tau_{\mathrm{a}}$.
-
-Using Eq.~(\ref{eq-int-afo-tau-bnu}) we can, from the deconvolved
-$T_{\mathrm{br,lin,deconv}}(r)$ (Eq.~\ref{eq-tbrlin-deconvolved}), solve for
-$\tau_{\mathrm{a}}(r)$ and obtain
-\begin{equation}
-  \tau_{\mathrm{a}}(r)=\frac{A_{\mathrm{deconv}}}{T_{\mathrm{d,br,lin}}}\,
-  \exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
-\end{equation}
-leading with Eq.~(\ref{eq-tau-afo-sig-kap}) to
-\begin{equation}
-  \Sigma_{\mathrm{d}}(r)=\frac{A_{\mathrm{deconv}}}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}\,
-  \exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
-\end{equation}
-Integrating over $r$, ignoring geometric terms leads to
-\begin{equation}\label{eq-ringmass-from-obs}
-  \begin{split}
-    M_{\mathrm{d}} &\simeq 2\pi r_0\int_{r_{\mathrm{in}}}^{r_{\mathrm{out}}}\Sigma_{\mathrm{d}}(r)dr\\
-    &= (2\pi)^{3/2}\frac{r_0w_dA_{\mathrm{deconv}}}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}\\
-    &= (2\pi)^{3/2}\frac{r_0\sigma A}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}
-  \end{split}
-\end{equation}
-
-\begin{figure}
-\centerline{\includegraphics[width=0.47\textwidth]{kappas_alma_band_6.pdf}}
-\caption{\label{fig-opacities}The dust opacity at $\lambda=0.13\,\mathrm{cm}$
-  as a function of the grain radius $a$. Plotted are the absorption opacity of
-  \citet{2010A&A...512A..15R}, the corresponding scattering opacity, as well as
-  the analytic absorption opacity of \citet{1997MNRAS.291..121I}.}
-\end{figure}
-
-As the final step we have to make an estimate of the absorption opacity
-$\kappa_{\mathrm{a}}$. This is the biggest uncertainty because it is not well
-understood what the composition of the dust is, what the grain sizes are and
-what the effect of the geometry is on the opacity. We will use two estimates: on
-the one hand we will employ the opacity used by \citet{2010A&A...512A..15R},
-which is a mixture of astronomical silicate and amorphous carbon (see
-Fig.~\ref{fig-opacities}). On the other hand we will use the dummy opacity model
-of \citet{1997MNRAS.291..121I}. These two opacities serve as two extremes that
-bracket the likely true value. It is known that at long wavelengths the
-opacities computed with the Mie procedure from laboratory measured optical
-constants are likely to be underestimates by up to a factor of 10
-\citep{2017A&A...600A.123D}. The more realistic opacities of
-\citep{2017A&A...600A.123D} are in between our two bracketing opacities.  For
-the mass estimate we use the opacity at $\lambda=0.13\,\mathrm{cm}$ for small
-grains ($a=1\mu\mathrm{m}$). For the Ricci opacity this is
-$\kappa_{\mathrm{a,ri}}=1.70\,\mathrm{cm}^2/\mathrm{g}$, while for the Ivezic
-opacity this is $\kappa_{\mathrm{a,ri}}=31.3\,\mathrm{cm}^2/\mathrm{g}$. The
-masses estimated from Eq.~(\ref{eq-ringmass-from-obs}) using these two
-bracketing opacities are listed in Table \ref{fig-obs-gaussfits}. Note that the
-opacity of \citet{2010A&A...512A..15R} has a peak around a grain size of 2
-$\mathrm{mm}$. That peak value happens to be very close to the Ivezic value of
-$31.3\,\mathrm{cm}^2/\mathrm{g}$. We can thus also regard the Ivezic mass
-estimate to be the mass if all grains have a radius of 2 mm.
-
+{\bf THIS APPENDIX HAS TO BE COMPLETELY REWRITTEN: FOCUS ON OPACITY
+  UNCERTAINTY INSTEAD OF COMPUTATION OF DUST MASS, BECAUSE THE LATTER IS
+NOW IN THE MAIN TEXT.}
+% 
+% We can compute the dust mass trapped in each of the rings by integrating over
+% the measured brightness temperature profiles. However, the profiles do not go
+% down to zero far way from the peak, and so it is not well defined what belongs
+% to the ring and what not. Instead, we will compute the dust mass from the
+% Gaussian profile that is fitted to the ring emission. This will slightly
+% underestimate the dust mass, because the excess emission in the flanks of the
+% profiles (see Fig.~\ref{fig-obs-gaussfits}) will not be included. But there are
+% far more serious issues to worry about, such as our limited knowledge of the
+% disk temperature, the uncertainties of the dust opacities, as well as optical
+% depth effects. So we will estimate the mass of the best fitting Gaussian model
+% only.
+% 
+% We will assume that the intrinsic dust temperature is as given in Table
+% \ref{tab-gauss-params} (column $T_{\mathrm{d}}$), which was computed based on
+% a simple flaring angle irradiation model. We consider the Gaussian profile with
+% the deconvolved width, i.e.\ $w_d$ (not $\sigma$). The peak linear brightness
+% temperature is taken to be
+% \begin{equation}
+% A_{\mathrm{deconv}} = \frac{\sigma}{w_d}\,A
+% \end{equation}
+% where $A$, $\sigma$ and $w_d$ are from Table \ref{tab-gauss-params}. We do not
+% account for geometric terms in the deconvolution, which is justified as long as
+% $\sigma\ll r$. The deconvolved Gaussian brightness profile is then
+% \begin{equation}\label{eq-tbrlin-deconvolved}
+% T_{\mathrm{br,lin,deconv}}(r) = A_{\mathrm{deconv}}\,\exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
+% \end{equation}
+% 
+% Next we have to worry about optical depth effects. From Table
+% \ref{tab-gauss-params} one can see that for most rings 
+% $A_{\mathrm{deconv}}$ is significantly smaller than $T_{\mathrm{d,br,lin}}$.
+% However, for the rings of AS 209 the ratios
+% $A_{\mathrm{deconv}}/T_{\mathrm{d,br,lin}}$ are around 0.5, so optical depth
+% effects start to play a role. Given a dust surface density profile
+% $\Sigma_{\mathrm{d}}(r)$ as a function of radial coordinate $r$, and
+% given an absorption opacity $\kappa_{\mathrm{a}}$ at the wavelength we
+% are measuring, the absorption optical depth $\tau_{\mathrm{a}}(r)$ is
+% \begin{equation}\label{eq-tau-afo-sig-kap}
+% \tau_{\mathrm{a}}(r) = \Sigma_{\mathrm{d}}(r)\kappa_{\mathrm{a}}
+% \end{equation}
+% We assume that scattering does not play a role. The emission from this
+% dusty ring is then, expressed as linear brightness temperature:
+% \begin{equation}
+% T_{\mathrm{br,lin,deconv}}(r) = \left(1-e^{-\tau_{\mathrm{a}}(r)}\right)\,T_{\mathrm{d,br,lin}}
+% \end{equation}
+% If $\tau_{\mathrm{a}}(r)\ll 1$ for all $r$ this reduces to
+% \begin{equation}\label{eq-int-afo-tau-bnu}
+% T_{\mathrm{br,lin,deconv}}(r) = \tau_{\mathrm{a}}(r)\,T_{\mathrm{d,br,lin}}
+% \end{equation}
+% But given that for some rings $A_{\mathrm{deconv}}/T_{\mathrm{d,br,lin}}
+% =\mathrm{max}(I_{\mathrm{obs}}(r)/B_\nu(T_{\mathrm{d}}))$ can be as large as
+% $\sim 0.5$, this condition is not always fulfilled.  On the other hand, these
+% optical depth effects cannot be too strong, because then the Gaussian shape
+% would flatten off at the top, which is not what we see in the observations. We
+% will therefore continue our computation without accounting for these (mild)
+% optical depth effects. This will lead to a slight underestimation of the
+% mass. The reader can estimate the magnitude of this underestimation by comparing
+% $(1-\exp(-\tau_{\mathrm{a}}))$ to $\tau_{\mathrm{a}}$.
+% 
+% Using Eq.~(\ref{eq-int-afo-tau-bnu}) we can, from the deconvolved
+% $T_{\mathrm{br,lin,deconv}}(r)$ (Eq.~\ref{eq-tbrlin-deconvolved}), solve for
+% $\tau_{\mathrm{a}}(r)$ and obtain
+% \begin{equation}
+%   \tau_{\mathrm{a}}(r)=\frac{A_{\mathrm{deconv}}}{T_{\mathrm{d,br,lin}}}\,
+%   \exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
+% \end{equation}
+% leading with Eq.~(\ref{eq-tau-afo-sig-kap}) to
+% \begin{equation}
+%   \Sigma_{\mathrm{d}}(r)=\frac{A_{\mathrm{deconv}}}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}\,
+%   \exp\left(-\frac{(r-r_0)^2}{2w_d^2}\right)
+% \end{equation}
+% Integrating over $r$, ignoring geometric terms leads to
+% \begin{equation}\label{eq-ringmass-from-obs}
+%   \begin{split}
+%     M_{\mathrm{d}} &\simeq 2\pi r_0\int_{r_{\mathrm{in}}}^{r_{\mathrm{out}}}\Sigma_{\mathrm{d}}(r)dr\\
+%     &= (2\pi)^{3/2}\frac{r_0w_dA_{\mathrm{deconv}}}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}\\
+%     &= (2\pi)^{3/2}\frac{r_0\sigma A}{\kappa_{\mathrm{a}}T_{\mathrm{d,br,lin}}}
+%   \end{split}
+% \end{equation}
+% 
+% \begin{figure}
+% \centerline{\includegraphics[width=0.47\textwidth]{kappas_alma_band_6.pdf}}
+% \caption{\label{fig-opacities}The dust opacity at $\lambda=0.13\,\mathrm{cm}$
+%   as a function of the grain radius $a$. Plotted are the absorption opacity of
+%   \citet{2010A&A...512A..15R}, the corresponding scattering opacity, as well as
+%   the analytic absorption opacity of \citet{1997MNRAS.291..121I}.}
+% \end{figure}
+% 
+% As the final step we have to make an estimate of the absorption opacity
+% $\kappa_{\mathrm{a}}$. This is the biggest uncertainty because it is not well
+% understood what the composition of the dust is, what the grain sizes are and
+% what the effect of the geometry is on the opacity. We will use two estimates: on
+% the one hand we will employ the opacity used by \citet{2010A&A...512A..15R},
+% which is a mixture of astronomical silicate and amorphous carbon (see
+% Fig.~\ref{fig-opacities}). On the other hand we will use the dummy opacity model
+% of \citet{1997MNRAS.291..121I}. These two opacities serve as two extremes that
+% bracket the likely true value. It is known that at long wavelengths the
+% opacities computed with the Mie procedure from laboratory measured optical
+% constants are likely to be underestimates by up to a factor of 10
+% \citep{2017A&A...600A.123D}. The more realistic opacities of
+% \citep{2017A&A...600A.123D} are in between our two bracketing opacities.  For
+% the mass estimate we use the opacity at $\lambda=0.13\,\mathrm{cm}$ for small
+% grains ($a=1\mu\mathrm{m}$). For the Ricci opacity this is
+% $\kappa_{\mathrm{a,ri}}=1.70\,\mathrm{cm}^2/\mathrm{g}$, while for the Ivezic
+% opacity this is $\kappa_{\mathrm{a,ri}}=31.3\,\mathrm{cm}^2/\mathrm{g}$. The
+% masses estimated from Eq.~(\ref{eq-ringmass-from-obs}) using these two
+% bracketing opacities are listed in Table \ref{fig-obs-gaussfits}. Note that the
+% opacity of \citet{2010A&A...512A..15R} has a peak around a grain size of 2
+% $\mathrm{mm}$. That peak value happens to be very close to the Ivezic value of
+% $31.3\,\mathrm{cm}^2/\mathrm{g}$. We can thus also regard the Ivezic mass
+% estimate to be the mass if all grains have a radius of 2 mm.
+% 
 \end{document}
