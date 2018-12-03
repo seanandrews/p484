@@ -18,26 +18,61 @@ import os
 
 execfile('/home/shared/ALMA_data/p484_large/reduction_utils.py')
 
-skip_plots = False #if this is true, all of the plotting and inspection steps will be skipped and the script can be executed non-interactively in CASA if all relevant values have been hard-coded already 
+skip_plots = True #if this is true, all of the plotting and inspection steps will be skipped and the script can be executed non-interactively in CASA if all relevant values have been hard-coded already 
 
 #to fill this dictionary out, use listobs for the relevant measurement set 
 
 prefix = 'HD163296' #string that identifies the source and is at the start of the name for all output files
 
 #Note that if you are downloading data from the archive, your SPW numbering may differ from the SPWs in this script depending on how you split your data out!! 
-data_params = {'SB1': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/short_baseline_msfile_from_Jane/HD_163296_SB1_contfinal.ms',
-                       'name' : 'SB1',
-                       'field': 'HD_163296',
-                       'line_spws': '', #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
-                       'line_freqs': '', #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
+data_params = {'SB1_exec0': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/2013.1.00366.S/science_goal.uid___A001_X121_X2aa/group.uid___A001_X121_X2ab/member.uid___A001_X121_X2ac/calibrated/uid___A002_X847097_X125c.ms.split.cal',
+                             'name' : 'SB1_ex0',
+                             'field': 'HD_163296',
+                             'line_spws': 0, #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
+                             'line_freqs': 2.30538e11, #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
+                         }, #information about the short baseline measurement sets (SB1, SB2, SB3, etc in chronological order)
+               'SB1_exec1': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/2013.1.00366.S/science_goal.uid___A001_X121_X2aa/group.uid___A001_X121_X2ab/member.uid___A001_X121_X2ac/calibrated/uid___A002_X84187d_X17c0.ms.split.cal',
+                             'name' : 'SB1_ex1',
+                             'field': 'HD_163296',
+                             'line_spws': 0, #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
+                             'line_freqs': 2.30538e11, #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
+                         },
+               'SB1_exec2': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/2013.1.00366.S/science_goal.uid___A001_X121_X2aa/group.uid___A001_X121_X2ab/member.uid___A001_X121_X2ac/calibrated/uid___A002_X856bb8_X28dd.ms.split.cal',
+                             'name' : 'SB1_ex2',
+                             'field': 'HD_163296',
+                             'line_spws': 0, #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
+                             'line_freqs': 2.30538e11, #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
+                         },
+               'SB1_exec3': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/2013.1.00366.S/science_goal.uid___A001_X121_X2aa/group.uid___A001_X121_X2ab/member.uid___A001_X121_X2ac/calibrated/uid___A002_X8440e0_X3e97.ms.split.cal',
+                             'name' : 'SB1_ex3',
+                             'field': 'HD_163296',
+                             'line_spws': 0, #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
+                             'line_freqs': 2.30538e11, #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
+                         },
+               'SB1_exec4': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/2013.1.00366.S/science_goal.uid___A001_X121_X2aa/group.uid___A001_X121_X2ab/member.uid___A001_X121_X2ac/calibrated/uid___A002_X835491_X4bb.ms.split.cal',
+                             'name' : 'SB1_ex4',
+                             'field': 'HD_163296',
+                             'line_spws': 0, #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
+                             'line_freqs': 2.30538e11, #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
+                         },
+               'SB2_exec0': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/2013.1.00601.S/calibrated/uid___A002_Xa76868_X14f5.ms.split.cal',
+                             'name' : 'SB2_ex0',
+                             'field': 'HD_163296',
+                             'line_spws': 0, #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
+                             'line_freqs': 2.30538e11, #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
                       }, #information about the short baseline measurement sets (SB1, SB2, SB3, etc in chronological order)
-               'SB2': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/short_baseline_msfile_from_Jane/HD_163296_SB2_contfinal.ms',
-                       'name' : 'SB2',
-                       'field': 'HD_163296',
-                       'line_spws': '', #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
-                       'line_freqs': '', #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
+               'SB2_exec1': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/2013.1.00601.S/calibrated/uid___A002_Xa7a216_Xce2.ms.split.cal',
+                             'name' : 'SB2_ex1',
+                             'field': 'HD_163296',
+                             'line_spws': 0, #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
+                             'line_freqs': 2.30538e11, #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
                       }, #information about the short baseline measurement sets (SB1, SB2, SB3, etc in chronological order)
-
+               'SB2_exec2': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/2013.1.00601.S/calibrated/uid___A002_Xa7b91c_Xd6c.ms.split.cal',
+                             'name' : 'SB2_ex2',
+                             'field': 'HD_163296',
+                             'line_spws': 0, #SpwIDs of windows with lines that need to be flagged (this needs to be edited for each short baseline dataset)
+                             'line_freqs': 2.30538e11, #frequencies (Hz) corresponding to line_spws (in most cases this is just the 12CO 2-1 line at 230.538 GHz)
+                      }, #information about the short baseline measurement sets (SB1, SB2, SB3, etc in chronological order)
                'LB1': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/calibrated_msfile/calibrated_final_LB.ms',
                        'name' : 'LB1',
                        'field' : 'HD_163296',
@@ -46,17 +81,583 @@ data_params = {'SB1': {'vis' : '/home/shared/ALMA_data/p484_large/HD163296/short
                       }
                }
 
-if not skip_plots:
-    """
-    You can do this if you want to inspect amp vs. channel for every spectral window. This can be useful for deciding what you need to flag. 
-    Alternatively, if the dataset was pipeline-calibrated, you can go to the "qa" folder in the data products package downloaded from the ALMA archive, 
-    then go down a few directories until you see an "index.html" file. If you open that up in a browser, you'll see a "By Task" bar on the top. Click on that,
-    go to the left bar, and click "17. hif_applycal". Here, you can find a lot of plots of the amplitude and phases of the calibrator data and the science target. 
-    This can help you see whether any of the data are problematic.  
-    """
-    for i in data_params.keys():
-        plotms(vis=data_params[i]['vis'], xaxis='channel', yaxis='amplitude', field=data_params[i]['field'], 
-               ydatacolumn='data', avgtime='1e8', avgscan=True, avgbaseline=True, iteraxis='spw')
+"""
+Process SB1 data 
+"""
+
+# Split off USB windows for the short-baseline data.
+os.system('rm -rf HD_163296_SB1_exec0.ms')
+split(vis=data_params['SB1_exec0']['vis'],
+      spw = '0~1', 
+      field = data_params['SB1_exec0']['field'],    
+      outputvis='HD_163296_SB1_exec0.ms',
+      datacolumn='corrected',
+      keepflags=False)
+
+os.system('rm -rf HD_163296_SB1_exec1.ms')
+split(vis=data_params['SB1_exec1']['vis'],
+      spw = '0~1', 
+      field = data_params['SB1_exec1']['field'],    
+      outputvis='HD_163296_SB1_exec1.ms',
+      datacolumn='corrected',
+      keepflags=False)
+
+os.system('rm -rf HD_163296_SB1_exec2.ms')
+split(vis=data_params['SB1_exec2']['vis'],
+      spw = '0~1', 
+      field = data_params['SB1_exec2']['field'],    
+      outputvis='HD_163296_SB1_exec2.ms',
+      datacolumn='corrected',
+      keepflags=False)
+
+os.system('rm -rf HD_163296_SB1_exec3.ms')
+split(vis=data_params['SB1_exec3']['vis'],
+      spw = '0~1', 
+      field = data_params['SB1_exec3']['field'],    
+      outputvis='HD_163296_SB1_exec3.ms',
+      datacolumn='corrected',
+      keepflags=False)
+
+os.system('rm -rf HD_163296_SB1_exec4.ms')
+split(vis=data_params['SB1_exec4']['vis'],
+      spw = '0~1', 
+      field = data_params['SB1_exec4']['field'],    
+      outputvis='HD_163296_SB1_exec4.ms',
+      datacolumn='corrected',
+      keepflags=False)
+
+SB1_field = 'HD_163296_SB1.ms'
+os.system('rm -rf '+SB1_field)
+concat(vis = ['HD_163296_SB1_exec0.ms', 'HD_163296_SB1_exec1.ms','HD_163296_SB1_exec2.ms', 'HD_163296_SB1_exec3.ms', 'HD_163296_SB1_exec4.ms'], concatvis = SB1_field, dirtol = '0.1arcsec', copypointing = False)
+
+# spw 0,2,4,6,8 contains CO 2-1 
+contspws = '0~9'
+flagmanager(vis=SB1_field,mode='save', versionname='before_cont_flags')
+
+# Flag the CO 2-1 line
+flagchannels='0:1000~2950, 2:1000~2950, 4:1000~2950, 6:1000~2950, 8:1000~2950' #modify as appropriate for the given field
+
+flagdata(vis=SB1_field, mode='manual', spw=flagchannels, flagbackup=False, field = field)
+
+# Average the channels within spws
+field='HD_163296'
+SB1_initcont = field+'_SB1_initcont.ms'
+print SB1_initcont #just to double check for yourself that the name is actually ok
+os.system('rm -rf ' + SB1_initcont + '*')
+split(vis=SB1_field,
+       field = field,
+       spw=contspws,      
+       outputvis=SB1_initcont,
+       width=[3840,8,3840,8,3840,8, 3840, 8, 3840, 8], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
+       datacolumn='data')
+
+# Restore flagged line channels
+flagmanager(vis=SB1_field,mode='restore',
+            versionname='before_cont_flags')
+
+# Check amplitude vs. uvdist
+plotms(vis=SB1_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime='30', avgscan = True)
+
+flagdata(vis=SB1_initcont, spw = '1', antenna = 'DV02&DV17', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '1', antenna = 'DV02&DV16', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '1', antenna = 'DV02&DA44', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '1', antenna = 'DV02&DA46', action='apply', flagbackup=False)
+
+flagdata(vis=SB1_initcont, spw = '3', antenna = 'DV02&DV17', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '3', antenna = 'DV02&DV19', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '3', antenna = 'DV02&DA44', action='apply', flagbackup=False)
+
+flagdata(vis=SB1_initcont, spw = '5', antenna = 'DV02&DV17', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '5', antenna = 'DV02&DV16', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '5', antenna = 'DV02&DA44', action='apply', flagbackup=False)
+
+flagdata(vis=SB1_initcont, spw = '7', antenna = 'DV02&DV17', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '7', antenna = 'DV02&DV16', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '7', antenna = 'DV02&DA44', action='apply', flagbackup=False)
+
+flagdata(vis=SB1_initcont, spw = '1', timerange = '08:22:13.0~08:22:16.0', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '2', timerange = '06:38:35.0~06:38:40.0', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '2', timerange = '07:23:38.0~07:23:42.0', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '6', timerange = '08:14:45.0~08:14:50.0', action='apply', flagbackup=False)
+flagdata(vis=SB1_initcont, spw = '9', timerange = '06:00:24.0~06:00:25.0', antenna = 'DA57', action='apply', flagbackup=False)
+
+#Initial clean
+SB_scales=[0,10,20,30]
+
+mask_angle = 140 #position angle of mask in degrees
+mask_semimajor = 2.5 #semimajor axis of mask in arcsec
+mask_semiminor = 1.8 #semiminor axis of mask in arcsec
+mask_ra = '17h56m21.279s'
+mask_dec = '-21.57.22.421'
+SB_mask = 'ellipse[[%s, %s], [%.1farcsec, %.1farcsec], %.1fdeg]' % (mask_ra, mask_dec, mask_semimajor, mask_semiminor, mask_angle)
+noise_annulus ="annulus[[%s, %s],['%.2farcsec', '4.25arcsec']]" % (mask_ra, mask_dec, 1.3*mask_semimajor)
+
+SB1_p0 = field+'_SB1_initcont_p0'
+os.system('rm -rf '+SB1_p0+'.*')
+tclean_wrapper(vis=SB1_initcont, imagename = SB1_p0, mask=SB_mask, scales=SB_scales, threshold = '1mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.05arcsec', robust=0.5)
+estimate_SNR(SB1_p0+'.image', disk_mask = SB_mask, noise_mask = noise_annulus)
+#HD_163296_SB1_initcont_p0.image
+#Beam 0.539 arcsec x 0.451 arcsec (82.81 deg)
+#Flux inside disk mask: 681.79 mJy
+#Peak intensity of source: 172.07 mJy/beam
+#rms: 8.12e-01 mJy/beam
+#Peak SNR: 211.92
+
+SB1refant = 'DA63,DA48'
+
+SB1_p1 = field+'_SB1.p1'
+os.system('rm -rf '+SB1_p1)
+gaincal(vis=SB1_initcont, caltable=SB1_p1, gaintype='T', combine = 'spw', spw=contspws, refant=SB1refant, calmode='p', solint='int', minsnr=2.0, minblperant=4)
+
+plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2014/06/04/00:00:01~2014/06/04/11:59:59')
+plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2014/06/14/00:00:01~2014/06/14/11:59:59')
+plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2014/06/16/00:00:01~2014/06/16/11:59:59')
+plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2014/06/17/00:00:01~2014/06/17/11:59:59')
+plotcal(caltable=SB1_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2014/06/29/00:00:01~2014/06/29/11:59:59')
+
+applycal(vis=SB1_initcont, spw=contspws, spwmap = [0,0,2,2,4,4,6,6,8,8], gaintable=[SB1_p1], calwt=True, interp='linear')
+SB1_cont_p1 = field+'_SB1_contp1.ms'
+os.system('rm -rf '+SB1_cont_p1)
+split(vis=SB1_initcont, outputvis=SB1_cont_p1, datacolumn='corrected')
+
+SB1_ima_p1 = field+'_SB1_initcont_p1'
+os.system('rm -rf '+SB1_ima_p1+'.*')
+tclean_wrapper(vis=SB1_cont_p1, imagename = SB1_ima_p1, mask=SB_mask, scales=SB_scales, threshold = '1mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.05arcsec', robust=0.5)
+estimate_SNR(SB1_ima_p1+'.image', disk_mask = SB_mask, noise_mask = noise_annulus)
+#HD_163296_SB1_initcont_p1.image
+#Beam 0.539 arcsec x 0.451 arcsec (82.80 deg)
+#Flux inside disk mask: 697.96 mJy
+#Peak intensity of source: 183.72 mJy/beam
+#rms: 1.31e-01 mJy/beam
+#Peak SNR: 1402.81
+
+
+SB1_ap1 = field+'_SB1.ap1'
+os.system('rm -rf '+SB1_ap1)
+gaincal(vis=SB1_cont_p1, caltable=SB1_ap1, gaintype='T', combine = 'spw', 
+        spw='0~9', refant=SB1refant, calmode='ap', solint='60s', minsnr=2.0, minblperant=4, solnorm = True)
+
+plotcal(caltable=SB1_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = '2014/06/04/00:00:01~2014/06/04/11:59:59')
+plotcal(caltable=SB1_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = '2014/06/14/00:00:01~2014/06/14/11:59:59')
+plotcal(caltable=SB1_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = '2014/06/16/00:00:01~2014/06/16/11:59:59')
+plotcal(caltable=SB1_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = '2014/06/17/00:00:01~2014/06/17/11:59:59')
+plotcal(caltable=SB1_ap1, xaxis = 'time', yaxis = 'amp',subplot=441,iteration='antenna', timerange = '2014/06/29/00:00:01~2014/06/29/11:59:59')
+
+applycal(vis=SB1_cont_p1, spw=contspws, spwmap = [0,0,2,2,4,4,6,6,8,8], gaintable=[SB1_ap1], calwt=True, interp='linear')
+SB1_cont_ap1 = field+'_SB1_contap1.ms'
+os.system('rm -rf '+SB1_cont_ap1)
+split(vis=SB1_cont_p1, outputvis=SB1_cont_ap1, datacolumn='corrected')
+
+SB1_ima_ap1 = field+'_SB1_cont_ap1'
+os.system('rm -rf '+SB1_ima_ap1+'.*')
+tclean_wrapper(vis=SB1_cont_ap1, imagename = SB1_ima_ap1, mask=SB_mask, scales=SB_scales, threshold = '1mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.05arcsec', robust=0.5)
+estimate_SNR(SB1_ima_ap1+'.image', disk_mask = SB_mask, noise_mask = noise_annulus)
+#HD_163296_SB1_cont_ap1.image
+#Beam 0.538 arcsec x 0.452 arcsec (83.52 deg)
+#Flux inside disk mask: 689.76 mJy
+#Peak intensity of source: 183.55 mJy/beam
+#rms: 1.22e-01 mJy/beam
+#Peak SNR: 1507.99
+
+
+### We are now done with self-cal of the continuum of SB1 and rename the final measurement set. 
+### This is time-averaged to make the dataset smaller (test images indicate that image quality is not degraded)
+SB1_contms_final = field+'_SB1_contfinal.ms'
+mstransform(vis = SB1_cont_ap1, outputvis =SB1_contms_final, timeaverage = True, timebin = '30s', keepflags = False, datacolumn = 'data')
+
+##############################
+# Reduction of CO data in SB1
+#############################
+
+#apply calibration tables to CO data
+applycal(vis=SB1_field, spw='0~9',spwmap = [[0,0,2,2,4,4,6,6,8,8],[0,0,2,2,4,4,6,6,8,8]], gaintable=[SB1_p1, SB1_ap1], calwt=True, interp='linear')
+
+SB1_ap = field+'_SB1_all_ap.ms'
+os.system('rm -rf '+SB1_ap)
+split(vis=SB1_field, field=field, spw='',outputvis=SB1_ap, datacolumn='corrected')
+
+plotms(vis=SB1_ap,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime='30', avgscan = True)
+
+flagdata(vis=SB1_ap, spw = '1', antenna = 'DV02&DV17', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '1', antenna = 'DV02&DV16', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '1', antenna = 'DV02&DA44', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '1', antenna = 'DV02&DA46', action='apply', flagbackup=False)
+
+flagdata(vis=SB1_ap, spw = '3', antenna = 'DV02&DV17', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '3', antenna = 'DV02&DV19', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '3', antenna = 'DV02&DA44', action='apply', flagbackup=False)
+
+flagdata(vis=SB1_ap, spw = '5', antenna = 'DV02&DV17', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '5', antenna = 'DV02&DV16', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '5', antenna = 'DV02&DA44', action='apply', flagbackup=False)
+
+flagdata(vis=SB1_ap, spw = '7', antenna = 'DV02&DV17', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '7', antenna = 'DV02&DV16', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '7', antenna = 'DV02&DA44', action='apply', flagbackup=False)
+
+flagdata(vis=SB1_ap, spw = '1', timerange = '08:22:13.0~08:22:16.0', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '2', timerange = '06:38:35.0~06:38:40.0', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '2', timerange = '07:23:38.0~07:23:42.0', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '6', timerange = '08:14:45.0~08:14:50.0', action='apply', flagbackup=False)
+flagdata(vis=SB1_ap, spw = '9', timerange = '06:00:24.0~06:00:25.0', antenna = 'DA57', action='apply', flagbackup=False)
+
+
+# (optional) split out the CO 2-1 spectral window
+linespw = '0,2,4,6,8'
+SB1_CO_ms = field+'_SB1_CO21.ms'
+os.system('rm -rf ' + SB1_CO_ms + '*')
+split(vis=SB1_ap,
+      field = field,
+      spw=linespw,      
+      outputvis=SB1_CO_ms, 
+      datacolumn='data')
+
+
+# (Optional)
+SB1_CO_averaged = SB1_CO_ms+'.avg'
+os.system('rm -rf '+SB1_CO_averaged)
+split(vis=SB1_CO_ms, field = field, outputvis=SB1_CO_averaged, timebin = '30s', datacolumn='data')
+
+#(Optional) make dirty image of CO SB1_CO_data
+image = field+'_SB1_CO21cube'
+os.system('rm -rf '+image+'.*')
+tclean(vis=SB1_CO_averaged, 
+       imagename=image, 
+       specmode='cube',
+       start='-15km/s',
+       width='0.35km/s',
+       nchan=150,
+#       chanchunks=5,
+       outframe='LSRK',
+       weighting = 'briggs',
+       robust = 2,
+       niter = 0, 
+       imsize = 500, 
+       cell = '0.05arcsec',
+       restfreq='230.538GHz',
+       interactive=False)
+
+"""
+Process SB2 data 
+"""
+
+#split off USB windows
+os.system('rm -rf HD_163296_SB2_exec0.ms')
+split(vis=data_params['SB2_exec0']['vis'],
+      spw = '0~1', 
+      field = field,    
+      outputvis='HD_163296_SB2_exec0.ms',
+      datacolumn='data')
+
+os.system('rm -rf HD_163296_SB2_exec1.ms')
+split(vis=data_params['SB2_exec1']['vis'],
+      spw = '0~1', 
+      field = field,    
+      outputvis='HD_163296_SB2_exec1.ms',
+      datacolumn='data')
+
+os.system('rm -rf HD_163296_SB2_exec2.ms')
+split(vis=data_params['SB2_exec2']['vis'],
+      spw = '0~1',
+      field = field,
+      outputvis='HD_163296_SB2_exec2.ms',
+      datacolumn='data')
+
+
+# initial inspection of data before splitting out and averaging the continuum
+
+plotms(vis = 'HD_163296_SB2_exec0.ms', xaxis = 'channel', yaxis = 'amplitude', field = field, 
+       ydatacolumn = 'data',avgtime = '1e8', avgscan = True, 
+       avgbaseline = True, iteraxis = 'spw')
+
+plotms(vis = 'HD_163296_SB2_exec1.ms', xaxis = 'channel', yaxis = 'amplitude', field = field, 
+       ydatacolumn = 'data',avgtime = '1e8', avgscan = True, 
+       avgbaseline = True, iteraxis = 'spw')
+
+plotms(vis = 'HD_163296_SB2_exec2.ms', xaxis = 'channel', yaxis = 'amplitude', field = field, 
+       ydatacolumn = 'data',avgtime = '1e8', avgscan = True, 
+       avgbaseline = True, iteraxis = 'spw')
+
+SB2_field = 'HD_163296_SB2.ms'
+os.system('rm -rf '+SB2_field)
+concat(vis = ['HD_163296_SB2_exec0.ms', 'HD_163296_SB2_exec1.ms','HD_163296_SB2_exec2.ms'], concatvis = SB2_field, dirtol = '0.1arcsec', copypointing = False)
+
+# spw 0,2,4 contains CO 2-1 from chans 1300 to 2800
+contspws = '0~5'
+flagmanager(vis=SB2_field,mode='save', versionname='before_cont_flags')
+
+# Flag the CO 2-1 line
+flagchannels='0:1300~2800,2:1300~2800,4:1300~2800' #modify as appropriate for the given field
+
+flagdata(vis=SB2_field,mode='manual', spw=flagchannels, flagbackup=False, field = field)
+# Average the channels within spws
+SB2_initcont = field+'_SB2_initcont.ms'
+print SB2_initcont #just to double check for yourself that the name is actually ok
+os.system('rm -rf ' + SB2_initcont + '*')
+split(vis=SB2_field,
+      field = field,
+      spw=contspws,      
+      outputvis=SB2_initcont,
+      width=[3840,8,3840,8,3840,8], # ALMA recommends channel widths <= 125 MHz in Band 6 to avoid bandwidth smearing
+      datacolumn='data')
+
+
+# Restore flagged line channels
+flagmanager(vis=SB2_field,mode='restore',
+            versionname='before_cont_flags')
+
+# Check amplitude vs. uvdist looks normal
+plotms(vis=SB2_initcont,xaxis='uvdist',yaxis='amp',coloraxis='spw', avgtime = '30s',avgscan = True)
+
+# Inspect individual antennae. We do this step here rather than before splitting because plotms will load the averaged continuum much faster 
+
+plotms(vis = SB2_initcont, xaxis = 'time', yaxis = 'phase', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '0',
+       coloraxis = 'spw', iteraxis = 'antenna')
+
+
+plotms(vis = SB2_initcont, xaxis = 'time', yaxis = 'phase', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '1',
+       coloraxis = 'spw', iteraxis = 'antenna')
+
+plotms(vis = SB2_initcont, xaxis = 'time', yaxis = 'phase', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '2',
+       coloraxis = 'spw', iteraxis = 'antenna')
+
+flagdata(vis=SB2_initcont,mode='manual', spw='0', flagbackup=False, field = field, scan = '14, 16', antenna = 'DA50')
+flagdata(vis=SB2_initcont,mode='manual', spw='0~1', flagbackup=False, field = field, scan = '38,40', antenna = 'DV02')
+flagdata(vis=SB2_initcont,mode='manual', spw='2~3', flagbackup=False, field = field, scan = '59', antenna = 'DA62,DV05,DV12')
+flagdata(vis = SB2_initcont, mode='manual', spw='2~3', flagbackup=False, field = field, antenna = 'DA63')
+flagdata(vis=SB2_initcont,mode='manual', spw='4,5', flagbackup=False, field = field, scan = '76, 78,84, 86')
+flagdata(vis=SB2_initcont,mode='manual', spw='4,5', flagbackup=False, field = field, scan = '68,70', antenna = 'DA46&DA55;DA59&DA49;DA59&DV18;DA60&DV05;DA43&DV05')
+flagdata(vis=SB2_initcont,mode='manual', spw='4,5', flagbackup=False, field = field, timerange = '2015/08/09/01:18:20~2015/08/09/01:21:00')
+
+
+plotms(vis = SB2_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '0', 
+       coloraxis = 'spw', iteraxis = 'antenna') 
+
+plotms(vis = SB2_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '1', 
+       coloraxis = 'spw', iteraxis = 'antenna') 
+
+plotms(vis = SB2_initcont, xaxis = 'time', yaxis = 'amp', field = field, 
+       ydatacolumn = 'data',avgchannel = '16', observation = '2', 
+       coloraxis = 'spw', iteraxis = 'antenna') 
+
+
+# check the individual execution blocks
+SB2_EB1_initcontimage_dirty = field+'_SB2_EB1_initcontinuum_dirty'
+os.system('rm -rf '+SB2_EB1_initcontimage_dirty+'.*')
+clean(vis=SB2_initcont, 
+      imagename=SB2_EB1_initcontimage_dirty, 
+      observation = '0', 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      robust=0.5,
+      imsize=500,
+      cell='0.03arcsec', 
+      interactive=False, 
+      niter = 0)
+
+SB2_EB2_initcontimage_dirty = field+'_SB2_EB2_initcontinuum_dirty'
+os.system('rm -rf '+SB2_EB2_initcontimage_dirty+'.*')
+clean(vis=SB2_initcont, 
+      imagename=SB2_EB2_initcontimage_dirty, 
+      observation = '1', 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      robust=0.5,
+      imsize=500,
+      cell='0.03arcsec', 
+      interactive=False, 
+      niter = 0)
+
+SB2_EB3_initcontimage_dirty = field+'_SB2_EB3_initcontinuum_dirty'
+os.system('rm -rf '+SB2_EB3_initcontimage_dirty+'.*')
+clean(vis=SB2_initcont, 
+      imagename=SB2_EB3_initcontimage_dirty, 
+      observation = '2', 
+      mode='mfs', 
+      psfmode='clark', 
+      imagermode='csclean', 
+      weighting='briggs', 
+      robust=0.5,
+      imsize=500,
+      cell='0.03arcsec', 
+      interactive=False, 
+      niter = 0)
+
+
+SB2_p0 = field+'_SB2_initcont_p0'
+os.system('rm -rf '+SB2_p0+'.*')
+tclean_wrapper(vis=SB2_initcont, imagename = SB2_p0, mask=SB_mask, scales=SB_scales, threshold = '1mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.02arcsec', robust=0.5)
+estimate_SNR(SB2_p0+'.image', disk_mask = SB_mask, noise_mask = noise_annulus)
+#HD_163296_SB2_initcont_p0.image
+#Beam 0.282 arcsec x 0.181 arcsec (-88.86 deg)
+#Flux inside disk mask: 632.54 mJy
+#Peak intensity of source: 56.75 mJy/beam
+#rms: 4.74e-01 mJy/beam
+#Peak SNR: 119.71
+
+# First round of phase selfcal
+
+SB2refant = 'DA55'
+
+SB2_p1 = field+'_SB2.p1'
+os.system('rm -rf '+SB2_p1)
+gaincal(vis=SB2_initcont, caltable=SB2_p1, gaintype='T', combine = 'spw', spw=contspws, refant=SB2refant, calmode='p', solint='60s', minsnr=2.0, minblperant=4)
+
+plotcal(caltable=SB2_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/05/00:00:01~2015/08/05/11:59:59')
+
+
+plotcal(caltable=SB2_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/08/00:00:01~2015/08/08/11:59:59')
+
+plotcal(caltable=SB2_p1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/09/00:00:01~2015/08/09/11:59:59')
+
+applycal(vis=SB2_initcont, spw=contspws, spwmap = [0,0,2,2,4,4], gaintable=[SB2_p1], calwt=True)
+
+SB2_cont_p1 = field+'_SB2_contp1.ms'
+os.system('rm -rf '+SB2_cont_p1)
+split(vis=SB2_initcont, outputvis=SB2_cont_p1, datacolumn='corrected')
+
+SB2_ima_p1 = field+'_SB2_initcont_p1'
+os.system('rm -rf '+SB2_ima_p1+'.*')
+tclean_wrapper(vis=SB2_cont_p1, imagename = SB2_ima_p1, mask=SB_mask, scales=SB_scales, threshold = '1mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.02arcsec', robust=0.5)
+estimate_SNR(SB2_ima_p1+'.image', disk_mask = SB_mask, noise_mask = noise_annulus)
+#HD_163296_SB2_initcont_p1.image
+#Beam 0.281 arcsec x 0.181 arcsec (-88.85 deg)
+#Flux inside disk mask: 684.65 mJy
+#Peak intensity of source: 69.75 mJy/beam
+#rms: 1.34e-01 mJy/beam
+#Peak SNR: 521.10
+
+# Second phase self-cal 
+
+SB2_p2 = field+'_SB2.p2'
+os.system('rm -rf '+SB2_p2)
+gaincal(vis=SB2_cont_p1, caltable=SB2_p2, gaintype='T', combine = 'spw', spw=contspws, refant=SB2refant, calmode='p', solint='30s', minsnr=2.0, minblperant=4)
+
+plotcal(caltable=SB2_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/05/00:00:01~2015/08/05/11:59:59')
+
+
+plotcal(caltable=SB2_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/08/00:00:01~2015/08/08/11:59:59')
+
+plotcal(caltable=SB2_p2, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/09/00:00:01~2015/08/09/11:59:59')
+
+applycal(vis=SB2_cont_p1, spw=contspws, spwmap = [0,0,2,2,4,4], gaintable=[SB2_p2], calwt=True)
+
+SB2_cont_p2 = field+'_SB2_contp2.ms'
+os.system('rm -rf '+SB2_cont_p2)
+split(vis=SB2_cont_p1, outputvis=SB2_cont_p2, datacolumn='corrected')
+
+SB2_ima_p2 = field+'_SB2_initcont_p2'
+os.system('rm -rf '+SB2_ima_p2+'.*')
+tclean_wrapper(vis=SB2_cont_p2, imagename = SB2_ima_p2, mask=SB_mask, scales=SB_scales, threshold = '1mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.02arcsec', robust=0.5)
+estimate_SNR(SB2_ima_p2+'.image', disk_mask = SB_mask, noise_mask = noise_annulus)
+#HD_163296_SB2_initcont_p2.image
+#Beam 0.282 arcsec x 0.181 arcsec (-88.84 deg)
+#Flux inside disk mask: 685.71 mJy
+#Peak intensity of source: 71.59 mJy/beam
+#rms: 1.31e-01 mJy/beam
+#Peak SNR: 547.88
+
+
+
+# First amp/phase self-cal
+SB2_ap1 = field+'_SB2.ap1'
+os.system('rm -rf '+SB2_ap1)
+gaincal(vis=SB2_cont_p2, caltable=SB2_ap1, gaintype='T', combine = 'spw', spw=contspws, refant=SB2refant, calmode='ap', solint='inf', minsnr=2.0, minblperant=4)
+
+plotcal(caltable=SB2_ap1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/05/00:00:01~2015/08/05/11:59:59')
+
+plotcal(caltable=SB2_ap1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/08/00:00:01~2015/08/08/11:59:59')
+
+plotcal(caltable=SB2_ap1, xaxis = 'time', yaxis = 'phase',subplot=441,iteration='antenna', timerange = '2015/08/09/00:00:01~2015/08/09/11:59:59')
+
+applycal(vis=SB2_cont_p2, spw=contspws, spwmap = [0,0,2,2,4,4], gaintable=[SB2_ap1], calwt=True)
+
+SB2_cont_ap1 = field+'_SB2_contap1.ms'
+os.system('rm -rf '+SB2_cont_ap1)
+split(vis=SB2_cont_p2, outputvis=SB2_cont_ap1, datacolumn='corrected')
+
+SB2_ima_ap1 = field+'_SB2_initcont_ap1'
+os.system('rm -rf '+SB2_ima_ap1+'.*')
+tclean_wrapper(vis=SB2_cont_ap1, imagename = SB2_ima_ap1, mask=SB_mask, scales=SB_scales, threshold = '1mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.02arcsec', robust=0.5)
+estimate_SNR(SB2_ima_ap1+'.image', disk_mask = SB_mask, noise_mask = noise_annulus)
+#HD_163296_SB2_initcont_ap1.image
+#Beam 0.275 arcsec x 0.179 arcsec (-89.02 deg)
+#Flux inside disk mask: 642.43 mJy
+#Peak intensity of source: 68.40 mJy/beam
+#rms: 1.23e-01 mJy/beam
+#Peak SNR: 558.06
+
+
+### We are now done with self-cal of the continuum of SB2 and create the final measurement set. 
+SB2_contms_final = field+'_SB2_contfinal.ms'
+mstransform(vis = SB2_cont_ap1, outputvis =SB2_contms_final, timeaverage = True, timebin = '30s', keepflags = False, datacolumn = 'data')
+
+
+##############################
+# Reduction of CO data in SB2
+#############################
+
+#apply calibration tables to CO data
+applycal(vis=SB2_field, spw='0~5',spwmap = [[0,0,2,2,4,4],[0,0,2,2,4,4],[0,0,2,2,4,4]], gaintable=[SB2_p1, SB2_p2, SB2_ap1], calwt=True, interp='linear')
+
+SB2_ap = field+'_SB2_all_ap.ms'
+os.system('rm -rf '+SB2_ap)
+split(vis=SB2_field, field=field, spw='',outputvis=SB2_ap, datacolumn='corrected')
+
+flagdata(vis=SB2_ap,mode='manual', spw='0', flagbackup=False, field = field, scan = '14, 16', antenna = 'DA50')
+flagdata(vis=SB2_ap,mode='manual', spw='0~1', flagbackup=False, field = field, scan = '38,40', antenna = 'DV02')
+flagdata(vis=SB2_ap,mode='manual', spw='2~3', flagbackup=False, field = field, scan = '59', antenna = 'DA62,DV05,DV12')
+flagdata(vis = SB2_ap, mode='manual', spw='2~3', flagbackup=False, field = field, antenna = 'DA63')
+flagdata(vis=SB2_ap,mode='manual', spw='4,5', flagbackup=False, field = field, scan = '76, 78,84, 86')
+flagdata(vis=SB2_ap,mode='manual', spw='4,5', flagbackup=False, field = field, scan = '68,70', antenna = 'DA46&DA55;DA59&DA49;DA59&DV18;DA60&DV05;DA43&DV05')
+flagdata(vis=SB2_ap,mode='manual', spw='4,5', flagbackup=False, field = field, timerange = '2015/08/09/01:18:20~2015/08/09/01:21:00')
+
+
+# (optional) split out the CO 2-1 spectral window
+linespw = '0,2,4'
+SB2_CO_ms = field+'_SB2_CO21.ms'
+os.system('rm -rf ' + SB2_CO_ms + '*')
+split(vis=SB2_field,
+      field = field,
+      spw=linespw,      
+      outputvis=SB2_CO_ms, 
+      datacolumn='data')
+
+#(Optional) make dirty image of CO SB2_CO_data
+image = field+'_SB2_CO21cube'
+os.system('rm -rf '+image+'.*')
+tclean(vis=SB2_CO_ms, 
+       imagename=image, 
+       specmode='cube',
+       start='-15km/s',
+       width='0.35km/s',
+       nchan=150,
+#       chanchunks=5,
+       outframe='LSRK',
+       weighting = 'briggs',
+       robust = 2,
+       niter = 0, 
+       imsize = 1000, 
+       cell = '0.02arcsec',
+       restfreq='230.538GHz',
+       interactive=False)
+
+
+"""
+
+Combine and self calibrate long baseline data
+
+"""
+
 
 #######
 # Here you may wish to flag problematic data before we do spectral line flagging to form an averaged continuum. 
@@ -70,8 +671,6 @@ if not skip_plots:
 """
 Identify channels to flag based on the known velocity range of the line emission. The velocity range is based on line images from early reductions. If you are starting from scratch, 
 you can estimate the range from the plotms command above. You may wish to limit your uvrange to 0~300 or so to only view the baselines with the highest amplitudes.     
-
-NOTE: CO data in the SB1 and SB2 data were already flagged. So here we process only the LB data
 
 """
 
@@ -90,6 +689,7 @@ avg_cont(data_params['LB1'], prefix, flagchannels = flagchannels_string)
 
 # sample command to check that amplitude vs. uvdist looks normal
 # plotms(vis=prefix+'_SB1_initcont.ms', xaxis='uvdist', yaxis='amp', coloraxis='spw', avgtime='30', avgchannel='16')
+
 
 """
 Quick imaging of every execution block in the measurement set using tclean. 
@@ -127,7 +727,7 @@ if not skip_plots:
 
     image_each_obs(data_params['LB1'], prefix, mask = LB1_mask, scales = LB_scales, threshold = '0.1mJy', interactive = False)
 
-    ### I AM HERE
+ 
 
     """
     Since the source looks axisymmetric, we will fit a Gaussian to the disk to estimate the location of the peak in each image and record the output.
@@ -205,7 +805,7 @@ image peaks fall on the phase center.
 
 common_dir = 'J2000 17h56m21.27927s -021.57.22.563477'  # we choose the peak of the first execution of LB1 to be the common direction.
  
-mask_ra = '17h56m21.27927s'
+Mask_ra = '17h56m21.27927s'
 mask_dec = '-021.57.22.563477'
 common_mask = 'ellipse[[%s, %s], [%.1farcsec, %.1farcsec], %.1fdeg]' % (mask_ra, mask_dec, mask_semimajor, mask_semiminor, mask_angle)
 
@@ -219,18 +819,17 @@ fit_gaussian(shiftname+'.image', region = common_mask)
 
 shiftname = prefix+'_SB1_initcont_shift'
 os.system('rm -rf '+shiftname+'.*')
-fixvis(vis=prefix+'_SB1_initcont.ms', outputvis=shiftname+'.ms', field=data_params['SB1']['field'], phasecenter='J2000 17h56m21.278128s -21d57m22.42001') # get phase center from gaussian fit (using exec0)
-fixplanets(vis=shiftname+'.ms', field=data_params['SB1']['field'], direction=common_dir)
+fixvis(vis=field+'_SB1_contfinal.ms', outputvis=shiftname+'.ms', field=field, phasecenter='J2000 17h56m21.278128s -21d57m22.42001') # get phase center from gaussian fit (using exec0)
+fixplanets(vis=shiftname+'.ms', field=field, direction=common_dir)
 tclean_wrapper(vis=shiftname+'.ms', imagename=shiftname, mask=common_mask, scales=SB_scales, threshold='0.1mJy')
 fit_gaussian(shiftname+'.image', region = common_mask)
 
 shiftname = prefix+'_SB2_initcont_shift'
 os.system('rm -rf '+shiftname+'.*')
-fixvis(vis=prefix+'_SB2_initcont.ms', outputvis=shiftname+'.ms', field=data_params['SB2']['field'], phasecenter='J2000 17h56m21.278112s -21d57m22.42584s') # get phase center from gaussian fit (using exec1)
-fixplanets(vis=shiftname+'.ms', field=data_params['SB2']['field'], direction=common_dir)
+fixvis(vis=field+'_SB2_contfinal.ms', outputvis=shiftname+'.ms', field=field, phasecenter='J2000 17h56m21.278112s -21d57m22.42584s') # get phase center from gaussian fit (using exec1)
+fixplanets(vis=shiftname+'.ms', field=field, direction=common_dir)
 tclean_wrapper(vis=shiftname+'.ms', imagename=shiftname, mask=common_mask, scales=SB_scales, threshold='0.1mJy')
 fit_gaussian(shiftname+'.image', region = common_mask)
-
 
 
 """
@@ -434,40 +1033,44 @@ if not skip_plots:
     # LB1, EB1 has lower flux than SB1 blocks
 
     estimate_flux_scale(reference = prefix+'_SB1_initcont_shift_exec0.vis.npz', comparison = prefix+'_SB2_initcont_shift_exec0.vis.npz', incl = incl, PA = PA)
-    #The ratio of the fluxes of HD163296_SB2_initcont_shift_exec0.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 1.10598
-    #The scaling factor for gencal is 1.052 for your comparison measurement
-    #The error on the weighted mean ratio is 3.271e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD163296_SB2_initcont_shift_exec0.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 1.11622
+#The scaling factor for gencal is 1.057 for your comparison measurement
+#The error on the weighted mean ratio is 3.296e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
 
     estimate_flux_scale(reference = prefix+'_SB1_initcont_shift_exec0.vis.npz', comparison = prefix+'_SB2_initcont_shift_exec1.vis.npz', incl = incl, PA = PA)
-    #The ratio of the fluxes of HD163296_SB2_initcont_shift_exec1.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 1.10879
-    #The scaling factor for gencal is 1.053 for your comparison measurement
-    #The error on the weighted mean ratio is 2.414e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD163296_SB2_initcont_shift_exec1.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 1.11804
+#The scaling factor for gencal is 1.057 for your comparison measurement
+#The error on the weighted mean ratio is 2.405e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
 
     estimate_flux_scale(reference = prefix+'_SB1_initcont_shift_exec0.vis.npz', comparison = prefix+'_SB2_initcont_shift_exec2.vis.npz', incl = incl, PA = PA)
-    #The ratio of the fluxes of HD163296_SB2_initcont_shift_exec2.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 1.10673
-#The scaling factor for gencal is 1.052 for your comparison measurement
-#The error on the weighted mean ratio is 7.195e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD163296_SB2_initcont_shift_exec2.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 1.13208
+#The scaling factor for gencal is 1.064 for your comparison measurement
+#The error on the weighted mean ratio is 7.302e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
 
-    plot_deprojected([prefix+'_SB1_initcont_shift_exec0.vis.npz', prefix+'_SB2_initcont_shift_exec0.vis.npz', prefix+'_SB2_initcont_shift_exec1.vis.npz', prefix+'_SB2_initcont_shift_exec2.vis.npz'], fluxscale=[1.0,1.0/1.10598,1.0/1.10879,1.0/1.10673], PA = PA, incl = incl, show_err=False)
+    plot_deprojected([prefix+'_SB1_initcont_shift_exec0.vis.npz', prefix+'_SB2_initcont_shift_exec0.vis.npz', prefix+'_SB2_initcont_shift_exec1.vis.npz', prefix+'_SB2_initcont_shift_exec2.vis.npz'], fluxscale=[1.0,1.0/1.11622,1.0/1.11804,1.0/1.13208], PA = PA, incl = incl, show_err=False)
 
 
     estimate_flux_scale(reference = prefix+'_SB1_initcont_shift_exec0.vis.npz', comparison = prefix+'_LB1_initcont_shift_exec1.vis.npz', incl = incl, PA = PA)
-    #The ratio of the fluxes of HD163296_LB1_initcont_shift_exec1.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 0.92406
-    #The scaling factor for gencal is 0.961 for your comparison measurement
-    #The error on the weighted mean ratio is 1.797e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD163296_LB1_initcont_shift_exec1.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 0.96020
+#The scaling factor for gencal is 0.980 for your comparison measurement
+#The error on the weighted mean ratio is 1.865e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+
 
     estimate_flux_scale(reference = prefix+'_SB1_initcont_shift_exec0.vis.npz', comparison = prefix+'_LB1_initcont_shift_exec0.vis.npz', incl = incl, PA = PA)
-    #The ratio of the fluxes of HD163296_LB1_initcont_shift_exec0.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 1.03809
-    #The scaling factor for gencal is 1.019 for your comparison measurement
-    #The error on the weighted mean ratio is 2.304e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
+    #The ratio of the fluxes of HD163296_LB1_initcont_shift_exec0.vis.npz to HD163296_SB1_initcont_shift_exec0.vis.npz is 1.07902
+    #The scaling factor for gencal is 1.039 for your comparison measurement
+    #The error on the weighted mean ratio is 2.393e-04, although it's likely that the weights in the measurement sets are too off by some constant factor
 
-    plot_deprojected([prefix+'_SB1_initcont_shift_exec0.vis.npz', prefix+'_LB1_initcont_shift_exec0.vis.npz', prefix+'_LB1_initcont_shift_exec1.vis.npz'], fluxscale=[1.0,1.0/1.03809,1.0/0.92406], PA = PA, incl = incl, show_err=False)
+
+    plot_deprojected([prefix+'_SB1_initcont_shift_exec0.vis.npz', prefix+'_LB1_initcont_shift_exec0.vis.npz', prefix+'_LB1_initcont_shift_exec1.vis.npz'], fluxscale=[1.0,1/0.96020,1.0/1.07902], PA = PA, incl = incl, show_err=False)
+
+ plot_deprojected([prefix+'_SB1_initcont_shift_exec0.vis.npz', prefix+'_LB1_initcont_shift_exec0.vis.npz', prefix+'_LB1_initcont_shift_exec1.vis.npz'], fluxscale=[1.0,1.0,1.0], PA = PA, incl = incl, show_err=False)
 
 #now correct the flux scales
-rescale_flux(prefix+'_SB2_initcont_shift_exec0.ms', [1.052])
-rescale_flux(prefix+'_SB2_initcont_shift_exec1.ms', [1.053])
-rescale_flux(prefix+'_SB2_initcont_shift_exec2.ms', [1.052])
-rescale_flux(prefix+'_LB1_initcont_shift_exec1.ms', [0.961])
+rescale_flux(prefix+'_SB2_initcont_shift_exec0.ms', [1.057])
+rescale_flux(prefix+'_SB2_initcont_shift_exec1.ms', [1.057])
+rescale_flux(prefix+'_SB2_initcont_shift_exec2.ms', [1.064])
+rescale_flux(prefix+'_LB1_initcont_shift_exec1.ms', [1.000])
 
 #Splitting out rescaled values into new MS: HD163296_SB2_initcont_shift_exec0_rescaled.ms
 #Splitting out rescaled values into new MS: HD163296_SB2_initcont_shift_exec1_rescaled.ms
@@ -476,7 +1079,7 @@ rescale_flux(prefix+'_LB1_initcont_shift_exec1.ms', [0.961])
 
 
 """
-Since SB data were already selfcalibrated we proceed selfcalibrating the combined detaset. 
+combine and  selfcalibrate the combined detaset. 
 """
 
 #merge all data in a single MS
@@ -485,18 +1088,19 @@ os.system('rm -rf %s*' % comb_cont_p0)
 #pay attention here and make sure you're selecting the shifted (and potentially rescaled) measurement sets
 concat(vis = [prefix+'_SB1_initcont_shift_exec0.ms', prefix+'_SB1_initcont_shift_exec1.ms', prefix+'_SB1_initcont_shift_exec2.ms', prefix+'_SB1_initcont_shift_exec3.ms',prefix+'_SB1_initcont_shift_exec4.ms', prefix+'_SB2_initcont_shift_exec0_rescaled.ms', prefix+'_SB2_initcont_shift_exec1_rescaled.ms', prefix+'_SB2_initcont_shift_exec2_rescaled.ms',prefix+'_LB1_initcont_shift_exec0.ms',prefix+'_LB1_initcont_shift_exec1_rescaled.ms' ], concatvis = comb_cont_p0+'.ms', dirtol = '0.1arcsec', copypointing = False) 
 
-#make initial image
+#Make initial image
 tclean_wrapper(vis=comb_cont_p0+'.ms', imagename = comb_cont_p0, mask=common_mask, scales=LB_scales, threshold = '0.10mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.005arcsec', robust=-0.5)
 
 
 noise_annulus ="annulus[[%s, %s],['%.2farcsec', '4.25arcsec']]" % (mask_ra, mask_dec, 1.3*mask_semimajor) #annulus over which we measure the noise. The inner radius is slightly larger than the semimajor axis of the mask (to add some buffer space around the mask) and the outer radius is set so that the annulus fits inside the long-baseline image size 
 estimate_SNR(comb_cont_p0+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD163296_comb_contp0.image
-#Beam 0.071 arcsec x 0.058 arcsec (80.27 deg)
-#Flux inside disk mask: 716.19 mJy
-#Peak intensity of source: 7.45 mJy/beam
-#rms: 3.70e-02 mJy/beam
-#Peak SNR: 201.35
+#Beam 0.047 arcsec x 0.037 arcsec (73.80 deg)
+#Flux inside disk mask: 704.78 mJy
+#Peak intensity of source: 3.37 mJy/beam
+#rms: 2.69e-02 mJy/beam
+#Peak SNR: 124.91
+
 
 
 """ 
@@ -583,11 +1187,11 @@ split(vis=comb_cont_p0+'.ms', outputvis=comb_cont_p1+'.ms', datacolumn='correcte
 tclean_wrapper(vis=comb_cont_p1+'.ms', imagename = comb_cont_p1, mask=common_mask, scales=LB_scales, threshold = '0.10mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.005arcsec', robust=-0.5)
 estimate_SNR(comb_cont_p1+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 #HD163296_comb_contp1.image
-#Beam 0.049 arcsec x 0.038 arcsec (82.14 deg)
-#Flux inside disk mask: 714.28 mJy
-#Peak intensity of source: 3.91 mJy/beam
-#rms: 2.66e-02 mJy/beam
-#Peak SNR: 147.30
+#Beam 0.048 arcsec x 0.037 arcsec (80.39 deg)
+#Flux inside disk mask: 704.78 mJy
+#Peak intensity of source: 3.73 mJy/beam
+#rms: 2.56e-02 mJy/beam
+#Peak SNR: 146.09
 
 
 #second round of phase self-cal for short baseline data
@@ -619,12 +1223,14 @@ split(vis=comb_cont_p1+'.ms', outputvis=comb_cont_p2+'.ms', datacolumn='correcte
 tclean_wrapper(vis=comb_cont_p2+'.ms', imagename = comb_cont_p2, mask=common_mask, scales=LB_scales, threshold = '0.10mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.005arcsec', robust=-0.5)
 estimate_SNR(comb_cont_p2+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 
+
 #HD163296_comb_contp2.image
-#Beam 0.049 arcsec x 0.038 arcsec (82.14 deg)
-#Flux inside disk mask: 714.29 mJy
-#Peak intensity of source: 4.06 mJy/beam
-#rms: 2.54e-02 mJy/beam
-#Peak SNR: 159.80 -> SNR increase by 8%
+#Beam 0.048 arcsec x 0.037 arcsec (80.39 deg)
+#Flux inside disk mask: 704.72 mJy
+#Peak intensity of source: 3.87 mJy/beam
+#rms: 2.46e-02 mJy/beam
+#Peak SNR: 157.15
+
 
 #third round of phase self-cal for short baseline data
 comb_p3 = prefix+'_comb.p3'
@@ -656,11 +1262,12 @@ tclean_wrapper(vis=comb_cont_p3+'.ms', imagename = comb_cont_p3, mask=common_mas
 estimate_SNR(comb_cont_p3+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 
 #HD163296_comb_contp3.image
-#Beam 0.049 arcsec x 0.038 arcsec (82.14 deg)
-#Flux inside disk mask: 714.29 mJy
-#Peak intensity of source: 4.18 mJy/beam
-#rms: 2.47e-02 mJy/beam
-#Peak SNR: 169.40 -> SNR increased by 6%
+#Beam 0.048 arcsec x 0.037 arcsec (80.39 deg)
+#Flux inside disk mask: 704.78 mJy
+#Peak intensity of source: 3.96 mJy/beam
+#rms: 2.40e-02 mJy/beam
+#Peak SNR: 165.30
+
 
 #fourth round of phase self-cal for short baseline data
 comb_p4 = prefix+'_comb.p4'
@@ -690,13 +1297,12 @@ split(vis=comb_cont_p3+'.ms', outputvis=comb_cont_p4+'.ms', datacolumn='correcte
 
 tclean_wrapper(vis=comb_cont_p4+'.ms', imagename = comb_cont_p4, mask=common_mask, scales=LB_scales, threshold = '0.10mJy', savemodel = 'modelcolumn', imsize=2000, cellsize='0.005arcsec', robust=-0.5)
 estimate_SNR(comb_cont_p4+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
-
 #HD163296_comb_contp4.image
-#Beam 0.049 arcsec x 0.038 arcsec (82.14 deg)
-#Flux inside disk mask: 714.30 mJy
-#Peak intensity of source: 4.33 mJy/beam
-#rms: 2.45e-02 mJy/beam
-#Peak SNR: 177.01 -> SNR increased by 5%
+#Beam 0.048 arcsec x 0.037 arcsec (80.39 deg)
+#Flux inside disk mask: 704.89 mJy
+#Peak intensity of source: 4.08 mJy/beam
+#rms: 2.38e-02 mJy/beam
+#Peak SNR: 171.62
 
 
 #fifth round of phase self-cal for short baseline data
@@ -729,17 +1335,17 @@ tclean_wrapper(vis=comb_cont_p5+'.ms', imagename = comb_cont_p5, mask=common_mas
 estimate_SNR(comb_cont_p5+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 
 #HD163296_comb_contp5.image
-#Beam 0.049 arcsec x 0.038 arcsec (82.14 deg)
-#Flux inside disk mask: 714.34 mJy
-#Peak intensity of source: 4.41 mJy/beam
-#rms: 2.44e-02 mJy/beam
-#Peak SNR: 180.20 -> SNR increased by 2% -- we stop phase-only selfcal here
+#Beam 0.048 arcsec x 0.037 arcsec (80.39 deg)
+#Flux inside disk mask: 704.85 mJy
+#Peak intensity of source: 4.15 mJy/beam
+#rms: 2.36e-02 mJy/beam
+#Peak SNR: 175.69
+
 
 # Proceeding with amplitude self-cal
 
-
-os.system('rm -rf '+comb_cont_p5+'.ms')
-os.system('cp -r '+comb_cont_p5+'.backup.ms '+comb_cont_p5+'.ms ')
+#os.system('rm -rf '+comb_cont_p5+'.ms')
+#os.system('cp -r '+comb_cont_p5+'.backup.ms '+comb_cont_p5+'.ms ')
 
 comb_ap1 = prefix+'_comb.ap1'
 os.system('rm -rf '+comb_ap1)
@@ -772,11 +1378,11 @@ tclean_wrapper(vis=comb_cont_ap1+'.ms', imagename = comb_cont_ap1, mask=common_m
 estimate_SNR(comb_cont_ap1+'.image', disk_mask = common_mask, noise_mask = noise_annulus)
 
 #HD163296_comb_contap1.image
-#Beam 0.048 arcsec x 0.037 arcsec (81.31 deg)
-#Flux inside disk mask: 714.84 mJy
-#Peak intensity of source: 4.21 mJy/beam
-#rms: 2.34e-02 mJy/beam
-#Peak SNR: 180.26
+#Beam 0.047 arcsec x 0.037 arcsec (79.72 deg)
+#Flux inside disk mask: 708.34 mJy
+#Peak intensity of source: 3.99 mJy/beam
+#rms: 2.24e-02 mJy/beam
+#Peak SNR: 177.80
 
 # shorter solint do not provide any improvement in the SNR
 
@@ -806,10 +1412,268 @@ tclean(vis='HD163296_cont_final.ms',
       usemask='user',
       mask=common_mask)
 
-### I AM HERE
-
 exportfits(imagename=image+'.image', fitsimage='HD163296_script_image.fits', overwrite=True) 
 
 
 
+# Make final image with robust -2
+image = field+'_comb_cont_ap1_rn2'
+os.system('rm -rf '+image+'.*')
+tclean(vis='HD163296_cont_final.ms', 
+      imagename=image, 
+      specmode='mfs', 
+      gridder='standard',
+      deconvolver='multiscale',
+      scales = [0, 10, 30, 60, 120, 240, 480], #0, 1, 3, 6, 12, 24, 48 x the beam
+      smallscalebias=0.7, 
+      weighting='briggs', 
+      robust=-2.0,
+      gain=0.1,
+      calcpsf=True, # !!! Set to true if running for the first time
+      calcres=True, # !!! Set to true if running for the first time
+      imsize=3000,
+      cell='0.003arcsec',
+      threshold='0.017mJy', 
+      niter=100000,
+      cycleniter=5000,
+      interactive=True,
+      usemask='user',
+      mask=common_mask)
 
+# Beam size: 0.045x0.036
+# rms: 0.057 mJy/beam
+
+# Make final image with superuniform
+image = field+'_comb_cont_ap1_uvr_v2'
+os.system('rm -rf '+image+'.*')
+tclean(vis='HD163296_cont_final.ms', 
+       imagename=image, 
+       specmode='mfs', 
+       gridder='standard',
+       deconvolver='multiscale',
+       scales = [0, 10, 30, 60, 120, 240, 480], #0, 1, 3, 6, 12, 24, 48 x the beam
+       smallscalebias=0.6, 
+       weighting='briggs', 
+       robust=2.0,
+       uvrange='>2000klambda',
+       gain=0.1,
+       calcpsf=True, # !!! Set to true if running for the first time
+       calcres=True, # !!! Set to true if running for the first time
+       imsize=3000,
+       cell='0.003arcsec',
+       threshold='0.058mJy', 
+       niter=10000000,
+       cycleniter=1000,
+       startmodel='HD163296_comb_cont_ap1_rn2.model',
+       interactive=False,
+       usemask='user',
+       mask=common_mask)
+
+
+###  Self cal of CO data
+
+
+#make a copy of the originale data
+
+os.system('rm -rf '+prefix+'_LB1_coinit.ms')
+os.system('cp -r '+data_params['LB1']['vis']+' '+prefix+'_LB1_coinit.ms')
+
+#shift and change coords as for the continuum
+
+common_dir = 'J2000 17h56m21.27927s -021.57.22.563477'  # we choose the peak of the first execution of LB1 to be the common direction.
+ 
+shiftname = prefix+'_LB1_coinit_shift'
+os.system('rm -rf '+shiftname+'.*')
+fixvis(vis=prefix+'_LB1_coinit.ms', outputvis=shiftname+'.ms', field=field, phasecenter='J2000 17h56m21.27910s -021d57m22.577967s') # get phase center from gaussian fit
+fixplanets(vis=shiftname+'.ms', field=field, direction=common_dir)
+
+shiftname = prefix+'_SB1_coinit_shift'
+os.system('rm -rf '+shiftname+'.*')
+fixvis(vis=SB1_ap, outputvis=shiftname+'.ms', field=field, phasecenter='J2000 17h56m21.278128s -21d57m22.42001') # get phase center from gaussian fit (using exec0)
+fixplanets(vis=shiftname+'.ms', field=field, direction=common_dir)
+
+shiftname = prefix+'_SB2_coinit_shift'
+os.system('rm -rf '+shiftname+'.*')
+fixvis(vis=SB2_ap, outputvis=shiftname+'.ms', field=field, phasecenter='J2000 17h56m21.278112s -21d57m22.42584s') # get phase center from gaussian fit (using exec1)
+fixplanets(vis=shiftname+'.ms', field=field, direction=common_dir)
+
+
+#Rescale flux for SB2
+split_all_obs(prefix+'_SB2_coinit_shift.ms', prefix+'_SB2_coinit_shift_exec')
+rescale_flux(prefix+'_SB2_coinit_shift_exec0.ms', [1.057])
+rescale_flux(prefix+'_SB2_coinit_shift_exec1.ms', [1.057])
+rescale_flux(prefix+'_SB2_coinit_shift_exec2.ms', [1.064])
+
+#combine all data
+comb_all_p0 = prefix+'_comb_allp0.ms'
+os.system('rm -rf %s*' % comb_all_p0)
+concat(vis = [prefix+'_SB1_coinit_shift.ms', prefix+'_SB2_coinit_shift_exec0_rescaled.ms', prefix+'_SB2_coinit_shift_exec1_rescaled.ms', prefix+'_SB2_coinit_shift_exec2_rescaled.ms',prefix+'_LB1_coinit_shift.ms'], concatvis = comb_all_p0, dirtol = '0.1arcsec', copypointing = False) 
+
+#### I AM HERE #####
+
+#apply calibration tables
+comb_spwmap = [0,0,2,2,4,4,6,6,8,8,10,10,12,12,14,14,16,16,16,16,20,20,20,20]
+applycal(vis=comb_all_p0, spw=comb_contspws, spwmap=[[0,0,2,2,4,4,6,6,8,8,10,10,12,12,14,14,16,16,16,16,20,20,20,20],[0,0,2,2,4,4,6,6,8,8,10,10,12,12,14,14,16,16,16,16,20,20,20,20],[0,0,2,2,4,4,6,6,8,8,10,10,12,12,14,14,16,16,16,16,20,20,20,20],[0,0,2,2,4,4,6,6,8,8,10,10,12,12,14,14,16,16,16,16,20,20,20,20],[0,0,2,2,4,4,6,6,8,8,10,10,12,12,14,14,16,16,16,16,20,20,20,20],[0,0,2,2,4,4,6,6,8,8,10,10,12,12,14,14,16,16,16,16,20,20,20,20]], gaintable=[comb_p1, comb_p2, comb_p3, comb_p4, comb_p5, comb_ap1], interp = 'linearPD', calwt = True, applymode='calonly')
+
+
+# Splitout CO data
+
+cospws = '0,2,4,6,8,10,12,14,19,23'
+
+final_CO_ms = prefix+'_comb_12CO.ms'
+os.system('rm -rf '+final_CO_ms)
+split(vis=comb_all_p0, outputvis=final_CO_ms, spw=cospws, datacolumn='corrected')
+
+
+# Image CO data
+image = "HD163296_12co_rob2_dirty"
+os.system('rm -rf '+image+'.*')
+tclean(vis=final_CO_ms, 
+       imagename=image, 
+       specmode='cube',
+       start='-9km/s',
+       width='0.32km/s',
+       nchan=94,
+       chanchunks=3,
+       outframe='LSRK',
+       scales = LB_scales,
+       weighting = 'briggs',
+       robust = 2,
+#       uvtaper=['0.08arcsec'],
+       niter = 0, 
+#       cycleniter=1000,
+       imsize = 1500, 
+       cell = '0.005arcsec',
+       restfreq='230.538GHz',
+       interactive=False,
+#       deconvolver='multiscale',
+#       threshold='1.0mJy', # cleaning down to 10 sigma, image rms = 1.8 mJy/beam
+#       usemask='auto-thresh',
+#       maskthreshold=2.0, # mast is 1.0*rms (default is 3*rms)
+       pbcor=True,
+       parallel=False)
+
+# Image CO data
+image = "HD163296_12co_rob1_dirty"
+os.system('rm -rf '+image+'.*')
+tclean(vis=final_CO_ms, 
+       imagename=image, 
+       specmode='cube',
+       start='-9km/s',
+       width='0.32km/s',
+       nchan=94,
+       chanchunks=3,
+       outframe='LSRK',
+       scales = LB_scales,
+       weighting = 'briggs',
+       robust = 1,
+#       uvtaper=['0.08arcsec'],
+       niter = 0, 
+#       cycleniter=1000,
+       imsize = 1500, 
+       cell = '0.005arcsec',
+       restfreq='230.538GHz',
+       interactive=False,
+#       deconvolver='multiscale',
+#       threshold='1.0mJy', # cleaning down to 10 sigma, image rms = 1.8 mJy/beam
+#       usemask='auto-thresh',
+#       maskthreshold=2.0, # mast is 1.0*rms (default is 3*rms)
+       pbcor=True,
+       parallel=False)
+
+
+# Image CO data
+image = "HD163296_12co_rob0.5_clean"
+#os.system('rm -rf '+image+'.*')
+tclean(vis=final_CO_ms, 
+       imagename=image, 
+       specmode='cube',
+       start='-9km/s',
+       width='0.32km/s',
+       nchan=94,
+       chanchunks=1,
+       outframe='LSRK',
+       weighting = 'briggs',
+       robust = 0.5,
+#       uvtaper=['0.08arcsec'],
+       calcpsf = False, # !!! Set to true if running for the first time
+       calcres = False, # !!! Set to true if running for the first time
+       niter = 10000000, 
+       cycleniter=20000,
+       imsize = 2000, 
+       cell = '0.013arcsec',
+       restfreq='230.538GHz',
+       interactive=False,
+       deconvolver='multiscale',
+       scales=[0,5,15,45],
+       threshold='1.5mJy', #
+       usemask='auto-thresh',
+       maskthreshold=2.0, # mast is 1.0*rms (default is 3*rms)
+       pbcor=True,
+       parallel=False)
+
+# Image CO data
+image = "HD163296_12co_rob0.5_clean_shift2"
+#os.system('rm -rf '+image+'.*')
+tclean(vis=final_CO_ms, 
+       imagename=image, 
+       specmode='cube',
+       start='-9.213333km/s', # original start -9km/s, 
+       width='0.32km/s',
+       nchan=94,
+       chanchunks=1,
+       outframe='LSRK',
+       weighting = 'briggs',
+       robust = 0.5,
+#       uvtaper=['0.08arcsec'],
+       calcpsf = True, # !!! Set to true if running for the first time
+       calcres = True, # !!! Set to true if running for the first time
+       niter = 10000000, 
+       cycleniter=20000,
+       imsize = 2000, 
+       cell = '0.013arcsec',
+       restfreq='230.538GHz',
+       interactive=False,
+       deconvolver='multiscale',
+       scales=[0,5,15,45],
+       threshold='1.5mJy', #
+       usemask='auto-thresh',
+       maskthreshold=2.0, # mast is 1.0*rms (default is 3*rms)
+       pbcor=True,
+       parallel=False)
+
+
+# Subtract the continuum
+contspw = '0:0~999;2951~3839,1:0~999;2951~3839,2:0~999;2951~3839,3:0~999;2951~3839,4:0~999;2951~3839,5:0~1299;2801~3839,6:0~1299;2801~3839,7:0~1299;2801~3839,8:0~1853;1965~3839,9:0~1853;1965~3839'
+uvcontsub(vis=final_CO_ms,
+          fitspw=contspw,
+          fitorder=1)
+
+# Image CO data
+image = "HD163296_12co_rob0.5_clean_uvcontsub"
+#os.system('rm -rf '+image+'.*')
+tclean(vis='HD163296_comb_12CO.ms.contsub', 
+       imagename=image, 
+       specmode='cube',
+       start='-11km/s',
+       width='0.32km/s',
+       nchan=105,
+       chanchunks=1,
+       outframe='LSRK',
+       weighting = 'briggs',
+       robust = 0.5,
+       calcpsf = True, # !!! Set to true if running for the first time
+       calcres = True, # !!! Set to true if running for the first time
+       niter = 10000000, 
+       cycleniter=20000,
+       imsize = 2000, 
+       cell = '0.013arcsec',
+       restfreq='230.538GHz',
+       interactive=False,
+       deconvolver='multiscale',
+       scales=[0,10,30,90],
+       threshold='2.0mJy', #
+       usemask='auto-thresh',
+       maskthreshold=2.0, # (default is 3*rms)
+       pbcor=True,
+       parallel=False)
