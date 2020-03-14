@@ -13,6 +13,9 @@ def logspiral(theta, r0, b):
 def archspiral(theta, a, c):
     return a+c*theta
 
+def hyperspiral(theta, c):
+    return c/theta
+
 def transform_spiral(thetavals, rvals, distance, PA, incl):
     
     xpvals = rvals*np.cos(thetavals)*np.cos(incl*np.pi/180.)/distance

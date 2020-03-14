@@ -33,8 +33,8 @@ class Continuum:
         #we assume here that the image is square
         self.image = np.squeeze(hdulist[0].data).astype(np.float64) #stored as (y,x)
         assert self.image.shape[0]==self.image.shape[1]
-        #self.image = np.nan_to_num(np.squeeze(hdulist[0].data))
-        #self.image[np.where(np.abs(self.image)>1.e6)]=0
+        self.image = np.nan_to_num(np.squeeze(hdulist[0].data))
+        self.image[np.where(np.abs(self.image)>1.e6)]=0
         self.header = hdulist[0].header
         self.bmaj = self.header['BMAJ']*3600 #major axis of synthesized beam in arcsec
         self.bmin = self.header['BMIN']*3600 #minor axis of synthesized beam in arcsec
@@ -108,6 +108,39 @@ class Continuum:
             return self.get_TB(radial_profile)
         elif yaxis == 'intensity': #return intensity profile (mJy/beam)
             return radial_profile, rad_prof_scatter
+
+    def cumefluxprofile(self, radialbins):
+
+        rbins = radialbins
+        rwidth = (rbins[1]-rbins[0])
+
+        flux_bin = np.zeros( len(rbins) )
+ 
+        for i in range(len(rbins)):
+            annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+
+            flux_bin[i] = np.sum(annulus_intensities)
+
+        beamsize = np.pi*self.bmin*self.bmaj/(4*np.log(2))
+        
+        return np.cumsum(flux_bin)*(self.delt_y)**2/beamsize
+
+    def radialcontrast(self,radialbins): 
+        """
+        Parameters
+        ==========
+        """
+        rbins = radialbins
+        rwidth = (rbins[1]-rbins[0])
+
+        radial_contrast = np.zeros( len(rbins) )
+
+        for i in range(len(rbins)):
+            annulus_intensities = self.image[(self.r>=(rbins[i]-0.5*rwidth)) & (self.r<(rbins[i]+0.5*rwidth))]
+
+            radial_contrast[i] = np.max(annulus_intensities)/np.min(annulus_intensities)
+
+        return radial_contrast
 
     def profilepercentile(self,radialbins,percentile = 50): 
         """
@@ -319,11 +352,9 @@ class Continuum:
         radinterp = interp1d(extended_bins, extended_prof, bounds_error = False, fill_value = 0)
         return self.image - radinterp(self.r)
 
-    def plot_cont_intensity(self, ax, size, im = None, cmap ='magma', vmin =None, vmax = None, alpha = False, gamma = 1.0, contours=False, labels_off = False, show_beam = True, norm = None):
-        """Plots continuum image"""        
-        
-        if im is None:
-            im = self.image
+    def contours_only(self, ax, size, levels, colors='pink', flip=False):
+
+        im = self.image
         imshifted = shift(im, np.array([-self.offsety/self.delt_y,-self.offsetx/self.delt_x]))
 
         imgdata = imshifted*1000 #convert to mJy/beam if this is an intensity image
@@ -332,9 +363,34 @@ class Continuum:
 
         padding = int(0.5*(self.imsize-size_pix))
 
+       
+        zoomimgdata = imgdata[padding:self.imsize - padding, padding:self.imsize - padding]
+        if flip:
+            zoomimgdata = np.fliplr(zoomimgdata) #since reversing the x-axis later will flip the image around, we have to flip it back
+        cont = ax.contour(zoomimgdata,levels,linestyles='solid',colors=colors, extent=[-size/2., size/2., -size/2., size/2.], linewidths = .5)
+
+        #plt.gca().invert_xaxis() #since RA increases right to left 
+
+
+    
+    def plot_cont_intensity(self, ax, size, im = None, cmap ='magma', vmin =None, vmax = None, alpha = False, gamma = 1.0, levels = np.array([]), labels_off = False, show_beam = True, norm = None, quantity='intensity'):
+        """Plots continuum image"""        
+        
+        if im is None:
+            im = self.image
+        imshifted = shift(im, np.array([-self.offsety/self.delt_y,-self.offsetx/self.delt_x]))
+
+        if quantity=='intensity':
+            imgdata = imshifted*1000 #convert to mJy/beam if this is an intensity image
+        elif quantity=='temperature':
+            imgdata = np.nan_to_num(self.get_TB(imshifted))
+        size_pix = size/np.abs(self.delt_x) #size of zoomed-in image in pixels
+
+        padding = int(0.5*(self.imsize-size_pix))
+
         std =np.std(imgdata[int(0.2*padding):padding, int(0.2*padding):padding])
         n = np.arange(4,26)
-        levels = std*np.append([4,8],2**n)
+        #levels = std*np.append([4,8],2**n)
         
         zoomimgdata = imgdata[padding:self.imsize - padding, padding:self.imsize - padding]
         
@@ -351,8 +407,8 @@ class Continuum:
             finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,norm = norm,  interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
         else:
             finalimage = ax.imshow(zoomimgdata,origin='lower',cmap=cmap,vmin = vmin, vmax=vmax, interpolation='None', extent=[-size/2., size/2., -size/2., size/2.])
-        if contours: 
-            cont = ax.contour(zoomimgdata,levels,linestyles='solid',colors='white', extent=[-size/2., size/2., -size/2., size/2.], linewidths = .5)
+        if len(levels)>0: 
+            cont = ax.contour(zoomimgdata,levels,linestyles='solid',colors='gray', extent=[-size/2., size/2., -size/2., size/2.], linewidths = .75)
 
         
         if labels_off:
@@ -365,8 +421,10 @@ class Continuum:
                 ticks = np.arange(-np.floor(size/2.), np.floor(size/2.)+0.001, 2)
             elif 2<size<5:
                 ticks = np.arange(-np.floor(size/2.), np.floor(size/2.)+0.001, 1)
-            else:
+            elif 1<=size<=2:
                 ticks = np.arange(-np.floor(size)/2., np.floor(size)/2.+0.001, 0.5)
+            else:
+                ticks = np.arange(-np.floor(size*5), np.floor(size*5)+0.001, 2)/10.
 
 
             ax.tick_params(axis = "both", direction = 'in',which = 'major', colors = 'white', length = 3)
@@ -386,7 +444,7 @@ class Continuum:
     def plotbeamprofile(self, x,y, height, ax):
         bmin = self.bmin*self.src_distance
         sigma = bmin/(2*np.sqrt(2*np.log(2.)))
-        xvals = np.linspace(x-2.5*bmin, x+2.5*bmin)
+        xvals = np.linspace(x-15, x+15)
         ax.plot(xvals, y+height*np.exp(-(xvals-x)**2/(2*sigma**2)), color = 'gray')
                     
     def extract_spiral(self,residualimage, rmin,rmax,r_search_func,tbins = -177.5+5*np.arange(72), outfile = None): 
